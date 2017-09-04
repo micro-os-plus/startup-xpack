@@ -1,12 +1,14 @@
-## The µOS++ startup code for bare-metal platforms
+## The µOS++ portable startup code for bare-metal platforms
 
 This project provides a portable startup code for bare-metal platforms.
 
-The code starts with `_start`, where the reset handler should jump after setting the stack and possibly other registers required by the architecture API (like GP on RISC-V).
+The myth that startup code must be written in assembly because 'the C environment is not ready' is plainly wrong.
+
+The 'C environment' is mainly the stack (and maybe other architecture ABI registers, like GP on RISC-V), and this can be set in a short assembly entry code and then the standard `_start()` function can be safely called.
 
 ## Developer info
 
-This section is intended to developers that plan to include this library in their own projects.
+This section is intended to developers who plan to include this library in their own projects.
 
 ### Easy install
 
@@ -28,6 +30,5 @@ The source code require a modern C++ compiler, preferably GCC 5 or higher, but w
 
 ## License
 
-The original content is released under the MIT License, with
-all rights reserved to Liviu Ionescu.
+The original content is released under the MIT License, with all rights reserved to Liviu Ionescu.
 
