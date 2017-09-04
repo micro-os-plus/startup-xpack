@@ -1,2 +1,2 @@
-# startup
-An xPack with the µOS++ startup code for bare-metal platforms
+This project does not use the `master` branch, please
+switch to the `xpack` branch to get the project files.
