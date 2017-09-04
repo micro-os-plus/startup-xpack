@@ -1,6 +1,6 @@
 {
   "name": "@micro-os-plus/startup",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An xPack with the µOS++ startup code for bare-metal platforms",
   "main": "index.js",
   "scripts": {
@@ -28,6 +28,6 @@
   "dependencies": {
     "@micro-os-plus/diag-trace": "^1.0.1"
   },
-  "xpack": {}, 
+  "xpack": {},
   "homepage": "https://github.com/micro-os-plus/startup"
 }
