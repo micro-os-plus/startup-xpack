@@ -30,3 +30,27 @@
 *.exe
 *.out
 *.app
+
+# npm/xpm
+*.tgz
+node_modules/
+xpacks/
+package/
+
+# Windows
+Thumbs.db
+
+# macOS
+.DS_Store
+
+# Eclipse
+.settings/
+Debug/
+Release/
+test-*/
+build/
+
+# Visual Studio Code
+.vscode/
+
+# end
