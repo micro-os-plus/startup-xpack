@@ -29,8 +29,9 @@
 #include <micro-os-plus/diag/trace.h>
 #include <micro-os-plus/startup/initialize-hooks.h>
 
-#include <stdint.h>
-#include <stdlib.h>
+#include <cstdint>
+#include <cstdlib>
+#include <algorithm>
 #include <sys/types.h>
 
 // ----------------------------------------------------------------------------
@@ -69,16 +70,16 @@
 #if !defined(OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS)
 
 // Begin address for the initialisation values of the .data section.
-extern uint32_t __data_load_addr__;
+extern std::uintptr_t __data_load_addr__;
 // Begin address for the .data section.
-extern uint32_t __data_begin__;
+extern std::uintptr_t __data_begin__;
 // End address for the .data section.
-extern uint32_t __data_end__;
+extern std::uintptr_t __data_end__;
 
 // Begin address for the .bss section.
-extern uint32_t __bss_begin__;
+extern std::uintptr_t __bss_begin__;
 // End address for the .bss section.
-extern uint32_t __bss_end__;
+extern std::uintptr_t __bss_end__;
 
 #else
 
@@ -111,11 +112,11 @@ extern "C"
   _start (void);
 
   static void
-  os_initialize_data (uint32_t* from, uint32_t* region_begin,
-                      uint32_t* region_end);
+  os_initialize_data (std::uintptr_t* from, std::uintptr_t* region_begin,
+                      std::uintptr_t* region_end);
 
   static void
-  os_initialize_bss (uint32_t* region_begin, uint32_t* region_end);
+  os_initialize_bss (std::uintptr_t* region_begin, std::uintptr_t* region_end);
 
   static void
   os_run_init_array (void);
@@ -129,12 +130,12 @@ extern "C"
 
 inline void
 __attribute__((always_inline))
-os_initialize_data (uint32_t* from, uint32_t* region_begin,
-                    uint32_t* region_end)
+os_initialize_data (std::uintptr_t* from, std::uintptr_t* region_begin,
+                    std::uintptr_t* region_end)
 {
   // Iterate and copy word by word.
   // It is assumed that the pointers are word aligned.
-  uint32_t* p = region_begin;
+  std::uintptr_t* p = region_begin;
   while (p < region_end)
     {
       *p++ = *from++;
@@ -143,30 +144,42 @@ os_initialize_data (uint32_t* from, uint32_t* region_begin,
 
 inline void
 __attribute__((always_inline))
-os_initialize_bss (uint32_t* region_begin, uint32_t* region_end)
+os_initialize_bss (std::uintptr_t* region_begin, std::uintptr_t* region_end)
 {
   // Iterate and clear word by word.
   // It is assumed that the pointers are word aligned.
-  uint32_t* p = region_begin;
+  std::uintptr_t* p = region_begin;
   while (p < region_end)
     {
       *p++ = 0;
     }
 }
 
+
+typedef void
+(*function_ptr_t) (void);
+
 // These magic symbols are provided by the linker. newlib standard.
-extern void
-(*__preinit_array_begin__[]) (void) __attribute__((weak));
-extern void
-(*__preinit_array_end__[]) (void) __attribute__((weak));
-extern void
-(*__init_array_begin__[]) (void) __attribute__((weak));
-extern void
-(*__init_array_end__[]) (void) __attribute__((weak));
-extern void
-(*__fini_array_begin__[]) (void) __attribute__((weak));
-extern void
-(*__fini_array_end__[]) (void) __attribute__((weak));
+extern function_ptr_t __attribute__((weak))
+__preinit_array_begin__[];
+
+extern function_ptr_t __attribute__((weak))
+__preinit_array_end__[];
+
+extern function_ptr_t __attribute__((weak))
+__init_array_begin__[];
+
+extern function_ptr_t __attribute__((weak))
+__init_array_end__[];
+
+extern function_ptr_t __attribute__((weak))
+__fini_array_begin__[];
+
+extern function_ptr_t __attribute__((weak))
+__fini_array_end__[];
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Waggregate-return"
 
 // Iterate over all the preinit/init routines (mainly static constructors).
 inline __attribute__((always_inline))
@@ -175,22 +188,20 @@ os_run_init_array (void)
 {
   os::trace::printf ("%s()\n", __func__);
 
-  int count = static_cast<int> (__preinit_array_end__ - __preinit_array_begin__);
-  for (int i = 0; i < count; i++)
-    {
-      __preinit_array_begin__[i] ();
-    }
+  std::for_each (__preinit_array_begin__, __preinit_array_end__,
+                 [](const function_ptr_t pf)
+                   { pf();} //
+                 );
 
   // If the application needs to run the code in the .init section,
   // please use the startup files, since this requires the code in
   // crti.o and crtn.o to add the function prologue/epilogue.
   //_init(); // DO NOT ENABLE THIS!
 
-  count = static_cast<int> (__init_array_end__ - __init_array_begin__);
-  for (int i = 0; i < count; i++)
-    {
-      __init_array_begin__[i] ();
-    }
+  std::for_each (__init_array_begin__, __init_array_end__,
+                 [](const function_ptr_t pf)
+                   { pf();} //
+                 );
 }
 
 // Run all the cleanup routines (mainly static destructors).
@@ -199,17 +210,18 @@ os_run_fini_array (void)
 {
   os::trace::printf ("%s()\n", __func__);
 
-  int count = static_cast<int> (__fini_array_end__ - __fini_array_begin__);
-  for (int i = count; i > 0; i--)
-    {
-      __fini_array_begin__[i - 1] ();
-    }
+  std::for_each (__fini_array_begin__, __fini_array_end__,
+                 [](const function_ptr_t pf)
+                   { pf();} //
+                 );
 
   // If the application needs to run the code in the .fini section,
   // please use the startup files, since this requires the code in
   // crti.o and crtn.o to add the function prologue/epilogue.
   //_fini(); // DO NOT ENABLE THIS!
 }
+
+#pragma GCC diagnostic pop
 
 #if defined(DEBUG) && (OS_BOOL_STARTUP_GUARD_CHECKS)
 
@@ -238,7 +250,8 @@ __data_end_guard = DATA_END_GUARD_VALUE;
 /**
  * @details
  * This is the place where the MCU will go immediately
- * after reset (on Cortex-M the `Reset_Handler` calls this function).
+ * after reset (on Cortex-M the `Reset_Handler` calls this function,
+ * on RISC-V there is a small assembly stub).
  *
  * To reach this location, the reset stack must point to a valid
  * internal RAM area.
@@ -252,15 +265,15 @@ _start (void)
 {
   // --------------------------------------------------------------------------
 
-  // Initialise hardware right after reset, to switch clock to higher
-  // frequency and have the rest of the initialisations run faster.
+  // Initialize hardware right after reset, to switch clock to higher
+  // frequency and have the rest of the initializations run faster.
   //
   // Also useful on platform with external RAM, that need to be
-  // initialised before filling the BSS section.
+  // initialized before filling the BSS section.
 
   os_startup_initialize_hardware_early ();
 
-  // Use Old Style DATA and BSS section initialisation,
+  // Use Old Style DATA and BSS section initialization,
   // that will manage a single BSS sections.
 
 #if defined(DEBUG) && (OS_BOOL_STARTUP_GUARD_CHECKS)
@@ -318,6 +331,9 @@ _start (void)
 #else
 
   // Zero fill all BSS segments.
+  // Note: the linker script uses LONG() and generates 32-bits pointers.
+  // This is not a problem if RAM is in the first 4 GB part, but for
+  // 64-bits devices it might not be true and requires QUAD().
   for (uint32_t* p = &__bss_regions_array_begin__;
       p < &__bss_regions_array_end__;)
     {
@@ -341,13 +357,13 @@ _start (void)
 
 #endif /* OS_BOOL_STARTUP_GUARD_CHECKS */
 
-  // Initialise the trace output device. From this moment on,
+  // Initialize the trace output device. From this moment on,
   // os::trace::printf() calls are available (including in static constructors).
   os::trace::initialize ();
 
   os::trace::printf ("Hardware initialised.\n");
 
-  // Hook to continue the initialisations. Usually compute and store the
+  // Hook to continue the initializations. Usually compute and store the
   // clock frequency in a global variable, cleared above.
   os_startup_initialize_hardware ();
 
@@ -360,7 +376,7 @@ _start (void)
   char** argv;
   os_startup_initialize_args (&argc, &argv);
 
-  // Call the standard library initialisation (mandatory for C++ to
+  // Call the standard library initialization (mandatory for C++ to
   // execute the static objects constructors).
   os_run_init_array ();
 
