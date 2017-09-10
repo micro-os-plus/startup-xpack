@@ -2,7 +2,7 @@
   "name": "@micro-os-plus/startup",
   "version": "1.0.1",
   "description": "An xPack with the µOS++ startup code for bare-metal platforms",
-  "main": "index.js",
+  "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
