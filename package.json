@@ -4,7 +4,8 @@
   "description": "An xPack with the µOS++ startup code for bare-metal platforms",
   "main": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "link": "npm link @micro-os-plus/c-libs; npm link @micro-os-plus/cpp-libs; npm link @micro-os-plus/diag-trace"
   },
   "repository": {
     "type": "git",
