@@ -53,6 +53,11 @@
 // If OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS is defined, the
 // code is capable of initializing multiple regions.
 //
+// Note: External memory with variable size (size known after reading the
+// chip type) cannot be initialized via these linker script static tables
+// and need to be processed in the `os_startup_initialize_hardware_early ()`
+// hook.
+//
 // The normal configuration is standalone, with all support
 // functions implemented locally.
 //
@@ -271,6 +276,10 @@ _start (void)
   //
   // Also useful on platform with external RAM, that need to be
   // initialized before filling the BSS section.
+  //
+  // Note: External RAM whose size is known only after reading the
+  // chip type cannot be initialized via these linker script static tables
+  // and need to be handled by this hook.
   //
   // On devices with an active watchdog, configure or disable it
   // to accommodate for the initializations duration.
