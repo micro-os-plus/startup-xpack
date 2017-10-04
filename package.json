@@ -12,10 +12,12 @@
     "url": "git+https://github.com/micro-os-plus/startup.git"
   },
   "keywords": [
+    "xpack",
     "c++",
     "micro-os-plus",
     "startup"
   ],
+  "homepage": "https://github.com/micro-os-plus/startup",
   "author": {
     "name": "Liviu Ionescu",
     "email": "ilg@livius.net",
@@ -26,11 +28,12 @@
     "url": "https://github.com/micro-os-plus/startup/issues"
   },
   "config": {},
-  "dependencies": {
-    "@micro-os-plus/diag-trace": "^1.0.1",
-    "@micro-os-plus/c-libs": "^1.0.1",
-    "@micro-os-plus/cpp-libs": "^1.0.1"
-  },
-  "xpack": {},
-  "homepage": "https://github.com/micro-os-plus/startup"
+  "dependencies": {},
+  "xpack": {
+    "dependencies": {
+      "@micro-os-plus/diag-trace": "~1.0.2",
+      "@micro-os-plus/c-libs": "~1.0.2",
+      "@micro-os-plus/cpp-libs": "~1.0.2"
+    }
+  }
 }

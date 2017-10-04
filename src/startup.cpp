@@ -71,7 +71,7 @@
 
 // ----------------------------------------------------------------------------
 
-// All below symbols should be defined in the linker script.
+// All following symbols should be defined in the linker script.
 #if !defined(OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS)
 
 // Begin address for the initialization values of the .data section.
@@ -103,6 +103,16 @@ extern uint32_t __bss_regions_array_end__;
 
 extern uint32_t __heap_begin__;
 extern uint32_t __heap_end__;
+
+// Note: Strictly speaking, according to the recent C/C++ standards,
+// using symbols defined in the linker scripts rely on undefined
+// behaviour, since comparing pointers that do not point to elements
+// of the same area or members of the same object is undefined.
+// The danger is that compilers that perform very aggressive 
+// optimizations may completely remove such code.
+// If this happens, the workaround is to disable the specific
+// optimization that caused it, or reduce the optimization level 
+// for this file only.
 
 extern "C" int
 main (int argc, char* argv[]);
@@ -376,24 +386,24 @@ _start (void)
   // os::trace::printf() calls are available (including in static constructors).
   os::trace::initialize ();
 
-  os::trace::printf ("Hardware initialized.\n");
-
   // Hook to continue the initializations. Usually compute and store the
   // clock frequency in a global variable, cleared above.
   os_startup_initialize_hardware ();
 
+  os::trace::printf ("Hardware initialized.\n");
+  
   os_startup_initialize_free_store (
       &__heap_begin__,
       (size_t) ((char*) (&__heap_end__) - (char*) (&__heap_begin__)));
 
+  // Call the standard library initialization (mandatory for C++ to
+  // execute the static objects constructors).
+  os_run_init_array ();
+    
   // Get the argc/argv (useful in semihosting configurations).
   int argc;
   char** argv;
   os_startup_initialize_args (&argc, &argv);
-
-  // Call the standard library initialization (mandatory for C++ to
-  // execute the static objects constructors).
-  os_run_init_array ();
 
   // Call the main entry point, and save the exit code.
   int code = main (argc, argv);
