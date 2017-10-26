@@ -28,6 +28,14 @@ $ npm install @micro-os-plus/startup
 
 The source code require a modern C++ compiler, preferably GCC 5 or higher, but was also compiled with GCC 4.8. 
 
+### How to publish
+
+* commit all changes
+* update `CHANGELOG.md`; commit with a message like _prepare v0.1.2_
+* `npm version patch`
+* push all changes to GitHub
+* `npm publish`
+
 ## License
 
 The original content is released under the MIT License, with all rights reserved to Liviu Ionescu.
