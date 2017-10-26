@@ -392,10 +392,15 @@ _start (void)
 
   os::trace::printf ("Hardware initialized.\n");
   
+  // Must be done before `os_run_init_array()`, in case 
+  // dynamic memory is needed in constructors.
   os_startup_initialize_free_store (
       &__heap_begin__,
       (size_t) ((char*) (&__heap_end__) - (char*) (&__heap_begin__)));
 
+  // Warning: `malloc()` may need `errno` which may depend on knowing
+  // the current thread.
+   
   // Call the standard library initialization (mandatory for C++ to
   // execute the static objects constructors).
   os_run_init_array ();
