@@ -12,15 +12,15 @@ This section is intended to developers who plan to include this library in their
 
 ### Easy install
 
-The source files are available from [GitHub](https://github.com/micro-os-plus/startup):
+The source files are available from [GitHub](https://github.com/micro-os-plus/startup-xpack):
 
-```bash
-$ git clone https://github.com/micro-os-plus/startup.git startup.git
+```console
+$ git clone https://github.com/micro-os-plus/startup-xpack.git startup-xpack.git
 ```
 
 The library will shortly be available from the npm registry:
 
-```bash
+```console
 $ npm install @micro-os-plus/startup
 ```
 
