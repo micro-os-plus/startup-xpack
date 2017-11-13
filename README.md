@@ -38,5 +38,5 @@ The source code require a modern C++ compiler, preferably GCC 5 or higher, but w
 
 ## License
 
-The original content is released under the MIT License, with all rights reserved to Liviu Ionescu.
+The original content is released under the [MIT License](https://opensource.org/licenses/MIT), with all rights reserved to [Liviu Ionescu](https://github.com/ilg-ul).
 
