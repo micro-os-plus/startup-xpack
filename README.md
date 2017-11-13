@@ -12,21 +12,29 @@ This section is intended to developers who plan to include this library in their
 
 ### Easy install
 
-The source files are available from [GitHub](https://github.com/micro-os-plus/startup-xpack):
+This package can be installed from the `npm` [registry](https://www.npmjs.com/package/@micro-os-plus/startup).
+
+```console
+$ xpm install @micro-os-plus/startup
+```
+
+This package is also available from [GitHub](https://github.com/micro-os-plus/startup-xpack):
 
 ```console
 $ git clone https://github.com/micro-os-plus/startup-xpack.git startup-xpack.git
 ```
 
-The library will shortly be available from the npm registry:
-
-```console
-$ npm install @micro-os-plus/startup
-```
-
 ### Prerequisites
 
-The source code require a modern C++ compiler, preferably GCC 5 or higher, but was also compiled with GCC 4.8. 
+Installing from `npm` registry requires a recent [nodejs](https://nodejs.org) (>7.x); the 6.x LTS version is not compatible, and the `xpm` tool (https://www.npmjs.com/package/xpm).
+
+```console
+$ sudo npm install xpm --global
+```
+
+On Windows, global packages are installed in the user home folder, and do not require `sudo`.
+
+Compiling the source code require a modern C++ compiler, preferably GCC 5 or higher, but was also compiled with GCC 4.8. 
 
 ### How to publish
 
