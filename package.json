@@ -30,9 +30,9 @@
   "dependencies": {},
   "xpack": {
     "dependencies": {
-      "@micro-os-plus/diag-trace": "~1.0.2",
-      "@micro-os-plus/c-libs": "~1.0.2",
-      "@micro-os-plus/cpp-libs": "~1.0.2"
+      "@micro-os-plus/diag-trace": "~1.0.3",
+      "@micro-os-plus/c-libs": "~1.0.3",
+      "@micro-os-plus/cpp-libs": "~1.0.3"
     }
   }
 }
