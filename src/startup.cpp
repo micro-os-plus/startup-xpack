@@ -334,7 +334,7 @@ _start (void)
       os::arch::brk ();
       while (true)
         {
-          os::arch::nop ();
+          os::arch::wfi ();
         }
     }
 
@@ -376,7 +376,7 @@ _start (void)
       os::arch::brk ();
       while (true)
         {
-          os::arch::nop ();
+          os::arch::wfi ();
         }
     }
 
@@ -421,7 +421,7 @@ _start (void)
 #endif /* defined(DEBUG) */
   while (true)
     {
-      os::arch::nop ();
+      os::arch::wfi ();
     }
   /* NOTREACHED */
 }
@@ -486,7 +486,7 @@ os_terminate (int code __attribute__((unused)))
 #endif /* arch */
   while (true)
     {
-      os::arch::nop ();
+      os::arch::wfi ();
     }
   /* NOTREACHED */
 }
