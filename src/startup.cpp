@@ -471,26 +471,6 @@ os_startup_initialize_args (int* p_argc, char*** p_argv)
 
 #pragma GCC diagnostic pop
 
-/**
- * @details
- * This function resets the MCU core, if possible.
- */
-void
-__attribute__ ((noreturn,weak))
-os_terminate (int code __attribute__((unused)))
-{
-#if defined(__ARM_EABI__)
-  NVIC_SystemReset ();
-#elif defined(__riscv)
-  // TODO: find a RISC-V soft reset
-#endif /* arch */
-  while (true)
-    {
-      os::arch::wfi ();
-    }
-  /* NOTREACHED */
-}
-
 #endif /* !defined(OS_USE_SEMIHOSTING_SYSCALLS) */
 
 #pragma GCC diagnostic push
