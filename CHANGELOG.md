@@ -2,6 +2,8 @@
 
 Changes in reverse chronological order.
 
+### v1.0.5 2018-01-23
+
 ### 2018-01-21
 
 * [#2] Move os_terminate() to architecture/device.
