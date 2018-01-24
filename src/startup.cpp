@@ -410,6 +410,8 @@ _start (void)
   char** argv;
   os_startup_initialize_args (&argc, &argv);
 
+  os::trace::dump_args(argc, argv);
+
   // Call the main entry point, and save the exit code.
   int code = main (argc, argv);
 
