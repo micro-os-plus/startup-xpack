@@ -2,7 +2,11 @@
 
 Changes in reverse chronological order.
 
-### v1.0.5 2018-01-23
+### v1.0.6 2018-01-25
+
+* update dependencies
+
+### v1.0.5 2018-01-24
 
 ### 2018-01-21
 
