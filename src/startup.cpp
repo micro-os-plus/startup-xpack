@@ -396,7 +396,7 @@ _start (void)
   // dynamic memory is needed in constructors.
   os_startup_initialize_free_store (
       &__heap_begin__,
-      (size_t) ((char*) (&__heap_end__) - (char*) (&__heap_begin__)));
+      (std::size_t) ((char*) (&__heap_end__) - (char*) (&__heap_begin__)));
 
   // Warning: `malloc()` may need `errno` which may depend on knowing
   // the current thread.
@@ -481,7 +481,8 @@ os_startup_initialize_args (int* p_argc, char*** p_argv)
 // Redefine this function to initialise the free store.
 void
 __attribute__((weak))
-os_startup_initialize_free_store (void* heap_address, size_t heap_size_bytes)
+os_startup_initialize_free_store (void* heap_address, 
+                                  std::size_t heap_size_bytes)
 {
   ;
 }
