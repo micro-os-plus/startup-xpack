@@ -28,7 +28,7 @@
   },
   "config": {},
   "dependencies": {
-    "@micro-os-plus/diag-trace": "~1.0.6",
+    "@micro-os-plus/diag-trace": "~1.0.7",
     "@micro-os-plus/c-libs": "~1.0.6",
     "@micro-os-plus/cpp-libs": "~1.0.4"
   },
