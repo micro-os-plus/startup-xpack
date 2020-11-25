@@ -27,7 +27,7 @@
 
 #include <micro-os-plus/architecture.h>
 #include <micro-os-plus/diag/trace.h>
-#include <micro-os-plus/startup/initialize-hooks.h>
+#include <micro-os-plus/startup/hooks.h>
 
 #include <cstdint>
 #include <cstdlib>
