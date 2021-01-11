@@ -28,6 +28,7 @@
 #include <micro-os-plus/architecture.h>
 #include <micro-os-plus/diag/trace.h>
 #include <micro-os-plus/startup/hooks.h>
+#include <micro-os-plus/startup/defines.h>
 
 #include <cstdint>
 #include <cstdlib>
