@@ -67,7 +67,7 @@ extern "C"
   os_startup_initialize_hardware (void);
 
   /**
-   * @brief Initialise free store.
+   * @brief Initialise the free store.
    * @param heap_address The first unallocated RAM address (after the BSS).
    * @param heap_size_bytes The free store size.
    * @par Returns
@@ -75,6 +75,17 @@ extern "C"
    */
   void
   os_startup_initialize_free_store (void* heap_address, size_t heap_size_bytes);
+
+  /**
+   * @brief Initialise the interrupts stack.
+   * @param stack_begin_address The stack bottom address.
+   * @param stack_size_bytes The stack size.
+   * @par Returns
+   *  Nothing.
+   */
+  void
+  os_startup_initialize_interrupts_stack (void* stack_begin_address,
+                                          size_t stack_size_bytes);
 
   /**
    * @brief Initialise arguments.
@@ -116,6 +127,19 @@ extern "C"
 /**
  * @}
  */
+
+/**
+* @name Compatibility Macros
+* @{
+*/
+
+#define os_initialize_hardware_early os_startup_initialize_hardware_early
+#define os_initialize_hardware os_startup_initialize_hardware
+#define os_initialize_args os_startup_initialize_args
+
+/**
+* @}
+*/
 
 /**
  * @}
