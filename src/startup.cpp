@@ -29,6 +29,7 @@
 #include <micro-os-plus/diag/trace.h>
 #include <micro-os-plus/startup/hooks.h>
 #include <micro-os-plus/startup/defines.h>
+#include <micro-os-plus/versions.h>
 
 #include <cstdint>
 #include <cstdlib>
@@ -412,6 +413,9 @@ _start (void)
   os_startup_initialize_args (&argc, &argv);
 
   os::trace::dump_args(argc, argv);
+
+  os::trace::printf ("\nµOS++ IIIe version " OS_STRING_MICRO_OS_PLUS_VERSION ".\n");
+  os::trace::printf ("Copyright (c) 2007-" OS_STRING_MICRO_OS_PLUS_YEAR " Liviu Ionescu.\n");
 
   // Call the main entry point, and save the exit code.
   int code = main (argc, argv);
