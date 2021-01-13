@@ -28,8 +28,8 @@
 #ifndef MICRO_OS_PLUS_STARTUP_HOOKS_H_
 #define MICRO_OS_PLUS_STARTUP_HOOKS_H_
 
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 #if defined(__cplusplus)
 extern "C"
@@ -53,8 +53,7 @@ extern "C"
    * @par Returns
    *  Nothing.
    */
-  void
-  os_startup_initialize_hardware_early (void);
+  void os_startup_initialize_hardware_early (void);
 
   /**
    * @brief Initialise hardware.
@@ -63,8 +62,7 @@ extern "C"
    * @par Returns
    *  Nothing.
    */
-  void
-  os_startup_initialize_hardware (void);
+  void os_startup_initialize_hardware (void);
 
   /**
    * @brief Initialise the free store.
@@ -73,8 +71,8 @@ extern "C"
    * @par Returns
    *  Nothing.
    */
-  void
-  os_startup_initialize_free_store (void* heap_address, size_t heap_size_bytes);
+  void os_startup_initialize_free_store (void* heap_address,
+                                         size_t heap_size_bytes);
 
   /**
    * @brief Initialise the interrupts stack.
@@ -83,17 +81,15 @@ extern "C"
    * @par Returns
    *  Nothing.
    */
-  void
-  os_startup_initialize_interrupts_stack (void* stack_begin_address,
-                                          size_t stack_size_bytes);
+  void os_startup_initialize_interrupts_stack (void* stack_begin_address,
+                                               size_t stack_size_bytes);
 
   /**
    * @brief Initialise arguments.
    * @param [out] p_argc Pointer to argc.
    * @param [out] p_argv Pointer to argv.
    */
-  void
-  os_startup_initialize_args (int* p_argc, char*** p_argv);
+  void os_startup_initialize_args (int* p_argc, char*** p_argv);
 
   /**
    * @}
@@ -111,8 +107,7 @@ extern "C"
    * @par Returns
    *  Nothing.
    */
-  void
-  os_terminate_goodbye (void);
+  void os_terminate_goodbye (void);
 
   /**
    * @brief Terminate the application. There is no more life after this.
@@ -120,30 +115,28 @@ extern "C"
    * @par Returns
    *  Nothing.
    */
-  void
-  __attribute__ ((noreturn))
-  os_terminate (int code);
+  void __attribute__ ((noreturn)) os_terminate (int code);
 
-/**
- * @}
- */
+  /**
+   * @}
+   */
 
-/**
-* @name Compatibility Macros
-* @{
-*/
+  /**
+   * @name Compatibility Macros
+   * @{
+   */
 
 #define os_initialize_hardware_early os_startup_initialize_hardware_early
 #define os_initialize_hardware os_startup_initialize_hardware
 #define os_initialize_args os_startup_initialize_args
 
-/**
-* @}
-*/
+  /**
+   * @}
+   */
 
-/**
- * @}
- */
+  /**
+   * @}
+   */
 
 #if defined(__cplusplus)
 }
