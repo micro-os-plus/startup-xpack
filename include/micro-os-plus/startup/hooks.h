@@ -28,6 +28,8 @@
 #ifndef MICRO_OS_PLUS_STARTUP_HOOKS_H_
 #define MICRO_OS_PLUS_STARTUP_HOOKS_H_
 
+// ----------------------------------------------------------------------------
+
 #include <stddef.h>
 #include <stdbool.h>
 
@@ -74,7 +76,8 @@ extern "C"
    *  Nothing.
    */
   void
-  os_startup_initialize_free_store (void* heap_address, size_t heap_size_bytes);
+  os_startup_initialize_free_store (void* heap_address,
+                                    size_t heap_size_bytes);
 
   /**
    * @brief Initialise the interrupts stack.
@@ -120,34 +123,34 @@ extern "C"
    * @par Returns
    *  Nothing.
    */
-  void
-  __attribute__ ((noreturn))
-  os_terminate (int code);
+  void __attribute__ ((noreturn)) os_terminate (int code);
 
-/**
- * @}
- */
+  /**
+   * @}
+   */
 
-/**
-* @name Compatibility Macros
-* @{
-*/
+  /**
+   * @name Compatibility Macros
+   * @{
+   */
 
 #define os_initialize_hardware_early os_startup_initialize_hardware_early
 #define os_initialize_hardware os_startup_initialize_hardware
 #define os_initialize_args os_startup_initialize_args
 
-/**
-* @}
-*/
+  /**
+   * @}
+   */
 
-/**
- * @}
- */
+  /**
+   * @}
+   */
 
 #if defined(__cplusplus)
 }
 #endif /* __cplusplus */
+
+// ----------------------------------------------------------------------------
 
 #endif /* MICRO_OS_PLUS_STARTUP_HOOKS_H_ */
 
