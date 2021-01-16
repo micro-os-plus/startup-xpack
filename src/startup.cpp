@@ -69,7 +69,7 @@
 
 #if !defined(OS_INCLUDE_STARTUP_GUARD_CHECKS)
 #define OS_BOOL_STARTUP_GUARD_CHECKS (true)
-#endif /* !defined(OS_INCLUDE_STARTUP_GUARD_CHECKS) */
+#endif // !defined(OS_INCLUDE_STARTUP_GUARD_CHECKS)
 
 // ----------------------------------------------------------------------------
 
@@ -101,7 +101,7 @@ extern uint32_t __data_regions_array_end__;
 extern uint32_t __bss_regions_array_begin__;
 extern uint32_t __bss_regions_array_end__;
 
-#endif /* OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS */
+#endif // OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
 
 extern uint32_t __heap_begin__;
 extern uint32_t __heap_end__;
@@ -292,7 +292,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
   __data_begin_guard = DATA_GUARD_BAD_VALUE;
   __data_end_guard = DATA_GUARD_BAD_VALUE;
 
-#endif /* OS_BOOL_STARTUP_GUARD_CHECKS */
+#endif // OS_BOOL_STARTUP_GUARD_CHECKS
 
 #if !defined(OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS)
 
@@ -312,7 +312,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
       os_initialize_data (from, region_begin, region_end);
     }
 
-#endif /* OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS */
+#endif // OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
 
 #if defined(DEBUG) && (OS_BOOL_STARTUP_GUARD_CHECKS)
 
@@ -326,7 +326,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
         }
     }
 
-#endif /* OS_BOOL_STARTUP_GUARD_CHECKS */
+#endif // OS_BOOL_STARTUP_GUARD_CHECKS
 
 #if defined(DEBUG) && (OS_BOOL_STARTUP_GUARD_CHECKS)
 
@@ -355,7 +355,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
       os_initialize_bss (region_begin, region_end);
     }
 
-#endif /* OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS */
+#endif // OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
 
 #if defined(DEBUG) && (OS_BOOL_STARTUP_GUARD_CHECKS)
 
@@ -368,7 +368,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
         }
     }
 
-#endif /* OS_BOOL_STARTUP_GUARD_CHECKS */
+#endif // OS_BOOL_STARTUP_GUARD_CHECKS
 
   // Initialize the trace output device. From this moment on,
   // os::trace::printf() calls are available (including in static
@@ -414,7 +414,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
   exit (code);
 #if defined(DEBUG)
   os::arch::brk ();
-#endif /* defined(DEBUG) */
+#endif // defined(DEBUG)
   while (true)
     {
       os::arch::wfi ();
@@ -465,7 +465,7 @@ os_startup_initialize_args (int* p_argc, char*** p_argv)
 
 #pragma GCC diagnostic pop
 
-#endif /* !defined(OS_USE_SEMIHOSTING_SYSCALLS) */
+#endif // !defined(OS_USE_SEMIHOSTING_SYSCALLS)
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
