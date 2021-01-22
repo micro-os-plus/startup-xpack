@@ -25,6 +25,11 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#if (!(defined(__APPLE__) || defined(__linux__) || defined(__unix__))) \
+    || defined(__DOXYGEN__)
+
+// ----------------------------------------------------------------------------
+
 #include <micro-os-plus/architecture.h>
 #include <micro-os-plus/diag/trace.h>
 #include <micro-os-plus/startup/hooks.h>
@@ -486,5 +491,9 @@ void __attribute__ ((weak)) os_terminate_goodbye (void)
 }
 
 #pragma GCC diagnostic pop
+
+// ----------------------------------------------------------------------------
+
+#endif // !Unix
 
 // ----------------------------------------------------------------------------
