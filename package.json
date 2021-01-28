@@ -16,21 +16,17 @@
     "micro-os-plus",
     "startup"
   ],
-  "homepage": "https://github.com/micro-os-plus/startup",
+  "homepage": "https://github.com/micro-os-plus/startup/",
   "author": {
     "name": "Liviu Ionescu",
     "email": "ilg@livius.net",
-    "url": "https://github.com/ilg-ul"
+    "url": "https://github.com/ilg-ul/"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/micro-os-plus/startup/issues"
+    "url": "https://github.com/micro-os-plus/startup/issues/"
   },
   "config": {},
-  "dependencies": {
-    "@micro-os-plus/diag-trace": "~1.0.7",
-    "@micro-os-plus/libs-c": "~1.0.6",
-    "@micro-os-plus/libs-cpp": "~1.0.4"
-  },
+  "dependencies": {},
   "xpack": {}
 }
