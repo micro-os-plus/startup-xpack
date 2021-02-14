@@ -91,6 +91,7 @@ function(add_libraries_micro_os_plus_startup)
 
   # ---------------------------------------------------------------------------
 
+if(true)
   if (NOT TARGET micro-os-plus-startup-static)
 
     add_library(micro-os-plus-startup-static STATIC EXCLUDE_FROM_ALL)
@@ -112,6 +113,7 @@ function(add_libraries_micro_os_plus_startup)
     )
 
   endif()
+endif()
 
   # ---------------------------------------------------------------------------
 
