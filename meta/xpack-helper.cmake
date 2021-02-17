@@ -81,7 +81,6 @@ function(add_libraries_micro_os_plus_startup)
       micro-os-plus-startup-objects
 
       PUBLIC
-        micro-os-plus::common
         micro-os-plus::version
         micro-os-plus::diag-trace
         micro-os-plus::architecture
@@ -106,7 +105,6 @@ if(true)
       micro-os-plus-startup-static
       
       PUBLIC
-        micro-os-plus::common
         micro-os-plus::version
         micro-os-plus::diag-trace-static
         micro-os-plus::architecture
