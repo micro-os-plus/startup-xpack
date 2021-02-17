@@ -66,31 +66,6 @@ function(add_libraries_micro_os_plus_startup)
 
   # ---------------------------------------------------------------------------
 
-  if (NOT TARGET micro-os-plus-startup-objects)
-
-    add_library(micro-os-plus-startup-objects OBJECT EXCLUDE_FROM_ALL)
-
-    target_sources_micro_os_plus_startup(micro-os-plus-startup-objects)
-    target_include_directories_micro_os_plus_startup(micro-os-plus-startup-objects)
-    target_compile_definitions_micro_os_plus_startup(micro-os-plus-startup-objects)
-
-    add_library(micro-os-plus::startup ALIAS micro-os-plus-startup-objects)
-    message(STATUS "micro-os-plus::startup")
-
-    target_link_libraries(
-      micro-os-plus-startup-objects
-
-      PUBLIC
-        micro-os-plus::version
-        micro-os-plus::diag-trace
-        micro-os-plus::architecture
-    )
-
-  endif()
-
-  # ---------------------------------------------------------------------------
-
-if(true)
   if (NOT TARGET micro-os-plus-startup-static)
 
     add_library(micro-os-plus-startup-static STATIC EXCLUDE_FROM_ALL)
@@ -100,6 +75,7 @@ if(true)
     target_compile_definitions_micro_os_plus_startup(micro-os-plus-startup-static)
 
     add_library(micro-os-plus::startup-static ALIAS micro-os-plus-startup-static)
+    message(STATUS "micro-os-plus::startup-static")
 
     target_link_libraries(
       micro-os-plus-startup-static
@@ -111,7 +87,6 @@ if(true)
     )
 
   endif()
-endif()
 
   # ---------------------------------------------------------------------------
 
