@@ -35,7 +35,7 @@
 #include <micro-os-plus/diag/trace.h>
 #include <micro-os-plus/startup/hooks.h>
 #include <micro-os-plus/startup/defines.h>
-#include <micro-os-plus/versions.h>
+#include <micro-os-plus/version.h>
 
 #include <cstdint>
 #include <cstdlib>
