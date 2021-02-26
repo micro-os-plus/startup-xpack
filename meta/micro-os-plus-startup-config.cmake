@@ -39,11 +39,13 @@ if (NOT TARGET micro-os-plus-startup-static)
 
   # ---------------------------------------------------------------------------
 
+  file(GLOB_RECURSE source_files CONFIGURE_DEPENDS "${xpack_current_folder}/src/*.c*")
+
   target_sources(
     micro-os-plus-startup-static
 
     PRIVATE
-      ${xpack_current_folder}/src/startup.cpp
+      ${source_files}
   )
 
   target_include_directories(
