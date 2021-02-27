@@ -329,10 +329,10 @@ void __attribute__ ((noreturn, weak)) _start (void)
   if ((__data_begin_guard != DATA_BEGIN_GUARD_VALUE)
       || (__data_end_guard != DATA_END_GUARD_VALUE))
     {
-      arch::brk ();
+      architecture::brk ();
       while (true)
         {
-          arch::wfi ();
+          architecture::wfi ();
         }
     }
 
@@ -371,10 +371,10 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
   if ((__bss_begin_guard != 0) || (__bss_end_guard != 0))
     {
-      arch::brk ();
+      architecture::brk ();
       while (true)
         {
-          arch::wfi ();
+          architecture::wfi ();
         }
     }
 
@@ -414,9 +414,8 @@ void __attribute__ ((noreturn, weak)) _start (void)
   trace::printf (
       "\nµOS++ IIIe version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_VERSION
       ".\n");
-  trace::printf (
-      "Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_YEAR
-      " Liviu Ionescu.\n");
+  trace::printf ("Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_YEAR
+                 " Liviu Ionescu.\n");
 
   // Call the main entry point, and save the exit code.
   int code = main (argc, argv);
@@ -425,11 +424,11 @@ void __attribute__ ((noreturn, weak)) _start (void)
   // `atexit()` and C++ static destructors are executed.
   exit (code);
 #if defined(DEBUG)
-  arch::brk ();
+  architecture::brk ();
 #endif // defined(DEBUG)
   while (true)
     {
-      arch::wfi ();
+      architecture::wfi ();
     }
   /* NOTREACHED */
 }
