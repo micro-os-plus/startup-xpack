@@ -58,7 +58,7 @@
 // - run the fini array (for the C++ static destructors)
 // - call _exit(), directly or via exit()
 //
-// If OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS is defined, the
+// If MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS is defined, the
 // code is capable of initializing multiple regions.
 //
 // Note: External memory with variable size (size known after reading the
@@ -73,14 +73,14 @@
 // the startup sequence (-nostartfiles).
 // ----------------------------------------------------------------------------
 
-#if !defined(OS_INCLUDE_STARTUP_GUARD_CHECKS)
-#define OS_BOOL_STARTUP_GUARD_CHECKS (true)
-#endif // !defined(OS_INCLUDE_STARTUP_GUARD_CHECKS)
+#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_GUARD_CHECKS)
+#define MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS (true)
+#endif // !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_GUARD_CHECKS)
 
 // ----------------------------------------------------------------------------
 
 // All following symbols should be defined in the linker script.
-#if !defined(OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS)
+#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS)
 
 // Begin address for the initialization values of the .data section.
 extern std::uintptr_t __data_load_addr__;
@@ -107,7 +107,7 @@ extern uint32_t __data_regions_array_end__;
 extern uint32_t __bss_regions_array_begin__;
 extern uint32_t __bss_regions_array_end__;
 
-#endif // OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
+#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
 
 extern uint32_t __heap_begin__;
 extern uint32_t __heap_end__;
@@ -232,7 +232,7 @@ os_run_fini_array (void)
 
 #pragma GCC diagnostic pop
 
-#if defined(DEBUG) && (OS_BOOL_STARTUP_GUARD_CHECKS)
+#if defined(DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
 // These definitions are used to check if the routines used to
 // clear the BSS and to copy the initialized DATA perform correctly.
@@ -257,7 +257,7 @@ static uint32_t volatile __attribute__ ((section (".data_end")))
 __data_end_guard
     = DATA_END_GUARD_VALUE;
 
-#endif // defined(DEBUG) && (OS_BOOL_STARTUP_GUARD_CHECKS)
+#endif // defined(DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
 /**
  * @details
@@ -293,14 +293,14 @@ void __attribute__ ((noreturn, weak)) _start (void)
   // Use Old Style DATA and BSS section initialization,
   // that will manage a single BSS sections.
 
-#if defined(DEBUG) && (OS_BOOL_STARTUP_GUARD_CHECKS)
+#if defined(DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
   __data_begin_guard = DATA_GUARD_BAD_VALUE;
   __data_end_guard = DATA_GUARD_BAD_VALUE;
 
-#endif // OS_BOOL_STARTUP_GUARD_CHECKS
+#endif // MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS
 
-#if !defined(OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS)
+#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS)
 
   // Copy the DATA segment from flash to RAM (inlined).
   os_initialize_data (&__data_load_addr__, &__data_begin__, &__data_end__);
@@ -318,9 +318,9 @@ void __attribute__ ((noreturn, weak)) _start (void)
       os_initialize_data (from, region_begin, region_end);
     }
 
-#endif // OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
+#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
 
-#if defined(DEBUG) && (OS_BOOL_STARTUP_GUARD_CHECKS)
+#if defined(DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
   if ((__data_begin_guard != DATA_BEGIN_GUARD_VALUE)
       || (__data_end_guard != DATA_END_GUARD_VALUE))
@@ -332,16 +332,16 @@ void __attribute__ ((noreturn, weak)) _start (void)
         }
     }
 
-#endif // OS_BOOL_STARTUP_GUARD_CHECKS
+#endif // MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS
 
-#if defined(DEBUG) && (OS_BOOL_STARTUP_GUARD_CHECKS)
+#if defined(DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
   __bss_begin_guard = BSS_GUARD_BAD_VALUE;
   __bss_end_guard = BSS_GUARD_BAD_VALUE;
 
 #endif
 
-#if !defined(OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS)
+#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS)
 
   // Zero fill the BSS section (inlined).
   os_initialize_bss (&__bss_begin__, &__bss_end__);
@@ -361,9 +361,9 @@ void __attribute__ ((noreturn, weak)) _start (void)
       os_initialize_bss (region_begin, region_end);
     }
 
-#endif // OS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
+#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
 
-#if defined(DEBUG) && (OS_BOOL_STARTUP_GUARD_CHECKS)
+#if defined(DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
   if ((__bss_begin_guard != 0) || (__bss_end_guard != 0))
     {
@@ -374,7 +374,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
         }
     }
 
-#endif // OS_BOOL_STARTUP_GUARD_CHECKS
+#endif // MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS
 
   // Initialize the trace output device. From this moment on,
   // os::trace::printf() calls are available (including in static
@@ -407,9 +407,9 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
   os::trace::dump_args (argc, argv);
 
-  os::trace::printf ("\nµOS++ IIIe version " OS_STRING_MICRO_OS_PLUS_VERSION
+  os::trace::printf ("\nµOS++ IIIe version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_VERSION
                      ".\n");
-  os::trace::printf ("Copyright (c) 2007-" OS_STRING_MICRO_OS_PLUS_YEAR
+  os::trace::printf ("Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_YEAR
                      " Liviu Ionescu.\n");
 
   // Call the main entry point, and save the exit code.
@@ -430,7 +430,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
 // ----------------------------------------------------------------------------
 
-#if !defined(OS_USE_SEMIHOSTING_SYSCALLS)
+#if !defined(MICRO_OS_PLUS_USE_SEMIHOSTING_SYSCALLS)
 
 // Semihosting uses a more elaborate version of os_startup_initialize_args()
 // to parse args received from host.
@@ -471,7 +471,7 @@ os_startup_initialize_args (int* p_argc, char*** p_argv)
 
 #pragma GCC diagnostic pop
 
-#endif // !defined(OS_USE_SEMIHOSTING_SYSCALLS)
+#endif // !defined(MICRO_OS_PLUS_USE_SEMIHOSTING_SYSCALLS)
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
