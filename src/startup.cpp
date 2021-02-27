@@ -43,6 +43,10 @@
 #include <sys/types.h>
 
 // ----------------------------------------------------------------------------
+
+using namespace micro_os_plus;
+
+// ----------------------------------------------------------------------------
 // This file defines the startup code for a portable embedded
 // C/C++ application, built with newlib.
 //
@@ -198,7 +202,7 @@ extern function_ptr_t __attribute__ ((weak)) __fini_array_end__[];
 inline __attribute__ ((always_inline)) void
 os_run_init_array (void)
 {
-  os::trace::printf ("%s()\n", __func__);
+  trace::printf ("%s()\n", __func__);
 
   std::for_each (__preinit_array_begin__, __preinit_array_end__,
                  [] (const function_ptr_t pf) { pf (); } //
@@ -218,7 +222,7 @@ os_run_init_array (void)
 void
 os_run_fini_array (void)
 {
-  os::trace::printf ("%s()\n", __func__);
+  trace::printf ("%s()\n", __func__);
 
   std::for_each (__fini_array_begin__, __fini_array_end__,
                  [] (const function_ptr_t pf) { pf (); } //
@@ -325,10 +329,10 @@ void __attribute__ ((noreturn, weak)) _start (void)
   if ((__data_begin_guard != DATA_BEGIN_GUARD_VALUE)
       || (__data_end_guard != DATA_END_GUARD_VALUE))
     {
-      os::arch::brk ();
+      arch::brk ();
       while (true)
         {
-          os::arch::wfi ();
+          arch::wfi ();
         }
     }
 
@@ -367,25 +371,25 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
   if ((__bss_begin_guard != 0) || (__bss_end_guard != 0))
     {
-      os::arch::brk ();
+      arch::brk ();
       while (true)
         {
-          os::arch::wfi ();
+          arch::wfi ();
         }
     }
 
 #endif // MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS
 
   // Initialize the trace output device. From this moment on,
-  // os::trace::printf() calls are available (including in static
+  // trace::printf() calls are available (including in static
   // constructors).
-  os::trace::initialize ();
+  trace::initialize ();
 
   // Hook to continue the initializations. Usually compute and store the
   // clock frequency in a global variable, cleared above.
   os_startup_initialize_hardware ();
 
-  os::trace::printf ("Hardware initialized.\n");
+  trace::printf ("Hardware initialized.\n");
 
   // Must be done before `os_run_init_array()`, in case
   // dynamic memory is needed in constructors.
@@ -405,12 +409,12 @@ void __attribute__ ((noreturn, weak)) _start (void)
   char** argv;
   os_startup_initialize_args (&argc, &argv);
 
-  os::trace::dump_args (argc, argv);
+  trace::dump_args (argc, argv);
 
-  os::trace::printf (
+  trace::printf (
       "\nµOS++ IIIe version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_VERSION
       ".\n");
-  os::trace::printf (
+  trace::printf (
       "Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_YEAR
       " Liviu Ionescu.\n");
 
@@ -421,11 +425,11 @@ void __attribute__ ((noreturn, weak)) _start (void)
   // `atexit()` and C++ static destructors are executed.
   exit (code);
 #if defined(DEBUG)
-  os::arch::brk ();
+  arch::brk ();
 #endif // defined(DEBUG)
   while (true)
     {
-      os::arch::wfi ();
+      arch::wfi ();
     }
   /* NOTREACHED */
 }
@@ -490,7 +494,7 @@ os_startup_initialize_free_store (void* heap_address,
 // other statistics.
 void __attribute__ ((weak)) os_terminate_goodbye (void)
 {
-  os::trace::printf ("\nHasta la Vista!\n");
+  trace::printf ("\nHasta la Vista!\n");
 }
 
 #pragma GCC diagnostic pop
