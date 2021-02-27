@@ -407,10 +407,12 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
   os::trace::dump_args (argc, argv);
 
-  os::trace::printf ("\nµOS++ IIIe version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_VERSION
-                     ".\n");
-  os::trace::printf ("Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_YEAR
-                     " Liviu Ionescu.\n");
+  os::trace::printf (
+      "\nµOS++ IIIe version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_VERSION
+      ".\n");
+  os::trace::printf (
+      "Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_YEAR
+      " Liviu Ionescu.\n");
 
   // Call the main entry point, and save the exit code.
   int code = main (argc, argv);
