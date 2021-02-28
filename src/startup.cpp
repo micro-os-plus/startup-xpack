@@ -443,18 +443,19 @@ void __attribute__ ((noreturn, weak)) _start (void)
 #if !defined(MICRO_OS_PLUS_USE_SEMIHOSTING_SYSCALLS)
 
 // Semihosting uses a more elaborate version of
-// micro_os_plus_startup_initialize_args() to parse args received from host.
+// micro_os_plus_startup_initialize_args() to parse arguments received from
+// host.
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
 // This is the standard default implementation for the routine to
-// process args. It returns a single empty arg.
+// process arguments. It returns a single empty arg.
 //
 // For semihosting applications, this is redefined to get the real
-// args from the debugger.
+// arguments from the debugger.
 //
-// The application can redefine it to fetch some args from a
+// The application can redefine it to fetch some arguments from a
 // non-volatile memory.
 
 void __attribute__ ((weak))
