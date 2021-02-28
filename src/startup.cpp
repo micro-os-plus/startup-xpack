@@ -67,8 +67,8 @@ using namespace micro_os_plus;
 //
 // Note: External memory with variable size (size known after reading the
 // chip type) cannot be initialized via these linker script static tables
-// and need to be processed in the `os_startup_initialize_hardware_early ()`
-// hook.
+// and need to be processed in the
+// `micro_os_plus_startup_initialize_hardware_early ()` hook.
 //
 // The normal configuration is standalone, with all support
 // functions implemented locally.
@@ -139,25 +139,28 @@ extern "C"
   _start (void);
 
   static void
-  os_initialize_data (std::uintptr_t* from, std::uintptr_t* region_begin,
-                      std::uintptr_t* region_end);
+  micro_os_plus_initialize_data (std::uintptr_t* from,
+                                 std::uintptr_t* region_begin,
+                                 std::uintptr_t* region_end);
 
   static void
-  os_initialize_bss (std::uintptr_t* region_begin, std::uintptr_t* region_end);
+  micro_os_plus_initialize_bss (std::uintptr_t* region_begin,
+                                std::uintptr_t* region_end);
 
   static void
-  os_run_init_array (void);
+  micro_os_plus_run_init_array (void);
 
   // Not static since it is called from exit()
   void
-  os_run_fini_array (void);
+  micro_os_plus_run_fini_array (void);
 }
 
 // ----------------------------------------------------------------------------
 
 inline __attribute__ ((always_inline)) void
-os_initialize_data (std::uintptr_t* from, std::uintptr_t* region_begin,
-                    std::uintptr_t* region_end)
+micro_os_plus_initialize_data (std::uintptr_t* from,
+                               std::uintptr_t* region_begin,
+                               std::uintptr_t* region_end)
 {
   // Iterate and copy word by word.
   // Assume that the pointers are word aligned.
@@ -169,7 +172,8 @@ os_initialize_data (std::uintptr_t* from, std::uintptr_t* region_begin,
 }
 
 inline __attribute__ ((always_inline)) void
-os_initialize_bss (std::uintptr_t* region_begin, std::uintptr_t* region_end)
+micro_os_plus_initialize_bss (std::uintptr_t* region_begin,
+                              std::uintptr_t* region_end)
 {
   // Iterate and clear word by word.
   // Assume that the pointers are word aligned.
@@ -200,7 +204,7 @@ extern function_ptr_t __attribute__ ((weak)) __fini_array_end__[];
 
 // Iterate over all the preinit/init routines (mainly static constructors).
 inline __attribute__ ((always_inline)) void
-os_run_init_array (void)
+micro_os_plus_run_init_array (void)
 {
   trace::printf ("%s()\n", __func__);
 
@@ -220,7 +224,7 @@ os_run_init_array (void)
 
 // Run all the cleanup routines (mainly static destructors).
 void
-os_run_fini_array (void)
+micro_os_plus_run_fini_array (void)
 {
   trace::printf ("%s()\n", __func__);
 
@@ -292,7 +296,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
   // On devices with an active watchdog, configure or disable it
   // to accommodate for the initializations duration.
 
-  os_startup_initialize_hardware_early ();
+  micro_os_plus_startup_initialize_hardware_early ();
 
   // Use Old Style DATA and BSS section initialization,
   // that will manage a single BSS sections.
@@ -307,7 +311,8 @@ void __attribute__ ((noreturn, weak)) _start (void)
 #if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS)
 
   // Copy the DATA segment from flash to RAM (inlined).
-  os_initialize_data (&__data_load_addr__, &__data_begin__, &__data_end__);
+  micro_os_plus_initialize_data (&__data_load_addr__, &__data_begin__,
+                                 &__data_end__);
 
 #else
 
@@ -319,7 +324,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
       uint32_t* region_begin = (uint32_t*)(*p++);
       uint32_t* region_end = (uint32_t*)(*p++);
 
-      os_initialize_data (from, region_begin, region_end);
+      micro_os_plus_initialize_data (from, region_begin, region_end);
     }
 
 #endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
@@ -348,7 +353,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
 #if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS)
 
   // Zero fill the BSS section (inlined).
-  os_initialize_bss (&__bss_begin__, &__bss_end__);
+  micro_os_plus_initialize_bss (&__bss_begin__, &__bss_end__);
 
 #else
 
@@ -362,7 +367,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
       uint32_t* region_begin = (uint32_t*)(*p++);
       uint32_t* region_end = (uint32_t*)(*p++);
 
-      os_initialize_bss (region_begin, region_end);
+      micro_os_plus_initialize_bss (region_begin, region_end);
     }
 
 #endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
@@ -387,13 +392,13 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
   // Hook to continue the initializations. Usually compute and store the
   // clock frequency in a global variable, cleared above.
-  os_startup_initialize_hardware ();
+  micro_os_plus_startup_initialize_hardware ();
 
   trace::printf ("Hardware initialized.\n");
 
-  // Must be done before `os_run_init_array()`, in case
+  // Must be done before `micro_os_plus_run_init_array()`, in case
   // dynamic memory is needed in constructors.
-  os_startup_initialize_free_store (
+  micro_os_plus_startup_initialize_free_store (
       &__heap_begin__,
       (std::size_t) ((char*)(&__heap_end__) - (char*)(&__heap_begin__)));
 
@@ -402,12 +407,12 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
   // Call the standard library initialization (mandatory for C++ to
   // execute the static objects constructors).
-  os_run_init_array ();
+  micro_os_plus_run_init_array ();
 
   // Get the argc/argv (useful in semihosting configurations).
   int argc;
   char** argv;
-  os_startup_initialize_args (&argc, &argv);
+  micro_os_plus_startup_initialize_args (&argc, &argv);
 
   trace::dump_args (argc, argv);
 
@@ -437,8 +442,8 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
 #if !defined(MICRO_OS_PLUS_USE_SEMIHOSTING_SYSCALLS)
 
-// Semihosting uses a more elaborate version of os_startup_initialize_args()
-// to parse args received from host.
+// Semihosting uses a more elaborate version of
+// micro_os_plus_startup_initialize_args() to parse args received from host.
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -453,7 +458,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
 // non-volatile memory.
 
 void __attribute__ ((weak))
-os_startup_initialize_args (int* p_argc, char*** p_argv)
+micro_os_plus_startup_initialize_args (int* p_argc, char*** p_argv)
 {
   // By the time we reach this, the data and bss should have been initialized.
 
@@ -483,15 +488,15 @@ os_startup_initialize_args (int* p_argc, char*** p_argv)
 
 // Redefine this function to initialise the free store.
 void __attribute__ ((weak))
-os_startup_initialize_free_store (void* heap_address,
-                                  std::size_t heap_size_bytes)
+micro_os_plus_startup_initialize_free_store (void* heap_address,
+                                             std::size_t heap_size_bytes)
 {
   ;
 }
 
 // Redefine this function to display memory allocator reports or
 // other statistics.
-void __attribute__ ((weak)) os_terminate_goodbye (void)
+void __attribute__ ((weak)) micro_os_plus_terminate_goodbye (void)
 {
   trace::printf ("\nHasta la Vista!\n");
 }

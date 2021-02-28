@@ -56,7 +56,7 @@ extern "C"
    *  Nothing.
    */
   void
-  os_startup_initialize_hardware_early (void);
+  micro_os_plus_startup_initialize_hardware_early (void);
 
   /**
    * @brief Initialise hardware.
@@ -66,7 +66,7 @@ extern "C"
    *  Nothing.
    */
   void
-  os_startup_initialize_hardware (void);
+  micro_os_plus_startup_initialize_hardware (void);
 
   /**
    * @brief Initialise the free store.
@@ -76,8 +76,8 @@ extern "C"
    *  Nothing.
    */
   void
-  os_startup_initialize_free_store (void* heap_address,
-                                    size_t heap_size_bytes);
+  micro_os_plus_startup_initialize_free_store (void* heap_address,
+                                               size_t heap_size_bytes);
 
   /**
    * @brief Initialise the interrupts stack.
@@ -87,8 +87,8 @@ extern "C"
    *  Nothing.
    */
   void
-  os_startup_initialize_interrupts_stack (void* stack_begin_address,
-                                          size_t stack_size_bytes);
+  micro_os_plus_startup_initialize_interrupts_stack (void* stack_begin_address,
+                                                     size_t stack_size_bytes);
 
   /**
    * @brief Initialise arguments.
@@ -96,7 +96,7 @@ extern "C"
    * @param [out] p_argv Pointer to argv.
    */
   void
-  os_startup_initialize_args (int* p_argc, char*** p_argv);
+  micro_os_plus_startup_initialize_args (int* p_argc, char*** p_argv);
 
   /**
    * @}
@@ -115,7 +115,7 @@ extern "C"
    *  Nothing.
    */
   void
-  os_terminate_goodbye (void);
+  micro_os_plus_terminate_goodbye (void);
 
   /**
    * @brief Terminate the application. There is no more life after this.
@@ -123,20 +123,7 @@ extern "C"
    * @par Returns
    *  Nothing.
    */
-  void __attribute__ ((noreturn)) os_terminate (int code);
-
-  /**
-   * @}
-   */
-
-  /**
-   * @name Compatibility Macros
-   * @{
-   */
-
-#define os_initialize_hardware_early os_startup_initialize_hardware_early
-#define os_initialize_hardware os_startup_initialize_hardware
-#define os_initialize_args os_startup_initialize_args
+  void __attribute__ ((noreturn)) micro_os_plus_terminate (int code);
 
   /**
    * @}
