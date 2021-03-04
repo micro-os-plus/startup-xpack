@@ -69,7 +69,7 @@ if (NOT TARGET micro-os-plus-startup-static)
   # Aliases.
 
   add_library(micro-os-plus::startup-static ALIAS micro-os-plus-startup-static)
-  message(STATUS "micro-os-plus::startup-static")
+  message(STATUS "=> micro-os-plus::startup-static")
 
 endif()
 
