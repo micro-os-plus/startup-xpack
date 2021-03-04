@@ -500,6 +500,7 @@ micro_os_plus_startup_initialize_free_store (void* heap_address,
 void __attribute__ ((weak)) micro_os_plus_terminate_goodbye (void)
 {
   trace::printf ("\nHasta la Vista!\n");
+  trace::flush ();
 }
 
 #pragma GCC diagnostic pop
