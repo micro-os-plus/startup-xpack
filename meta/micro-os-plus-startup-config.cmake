@@ -61,15 +61,15 @@ if (NOT TARGET micro-os-plus-startup-static)
     
     PUBLIC
       micro-os-plus::version
-      micro-os-plus::diag-trace-static
+      micro-os-plus::diag-trace
       micro-os-plus::architecture
   )
 
   # ---------------------------------------------------------------------------
   # Aliases.
 
-  add_library(micro-os-plus::startup-static ALIAS micro-os-plus-startup-static)
-  message(STATUS "=> micro-os-plus::startup-static")
+  add_library(micro-os-plus::startup ALIAS micro-os-plus-startup-static)
+  message(STATUS "=> micro-os-plus::startup")
 
 endif()
 
