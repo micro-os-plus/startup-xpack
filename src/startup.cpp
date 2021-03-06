@@ -399,8 +399,9 @@ void __attribute__ ((noreturn, weak)) _start (void)
   // Must be done before `micro_os_plus_run_init_array()`, in case
   // dynamic memory is needed in constructors.
   micro_os_plus_startup_initialize_free_store (
-      &__heap_begin__,
-      (std::size_t) ((char*)(&__heap_end__) - (char*)(&__heap_begin__)));
+      &__heap_begin__, static_cast<std::size_t> (
+                           (reinterpret_cast<char*> ((&__heap_end__))
+                            - reinterpret_cast<char*> ((&__heap_begin__)))));
 
   // Warning: `malloc()` may need `errno` which may depend on knowing
   // the current thread.
@@ -422,8 +423,15 @@ void __attribute__ ((noreturn, weak)) _start (void)
   trace::printf ("Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_YEAR
                  " Liviu Ionescu.\n");
 
+#pragma GCC diagnostic push
+
+// ISO C++ forbids taking address of function '::main' [-Wpedantic]
+#pragma GCC diagnostic ignored "-Wpedantic"
+
   // Call the main entry point, and save the exit code.
   int code = main (argc, argv);
+
+#pragma GCC diagnostic pop
 
   // Standard program termination;
   // `atexit()` and C++ static destructors are executed.
