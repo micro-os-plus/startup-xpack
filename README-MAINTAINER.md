@@ -9,7 +9,7 @@
 
 The project is hosted on GitHub:
 
-- https://github.com/micro-os-plus/micro-test-plus-xpack.git
+- <https://github.com/micro-os-plus/micro-test-plus-xpack.git>
 
 To clone it:
 
@@ -60,7 +60,7 @@ as:
 
 The version is visible at:
 
-- https://www.npmjs.com/package/@micro-os-plus/micro-test-plus?activeTab=versions
+- <https://www.npmjs.com/package/@micro-os-plus/micro-test-plus?activeTab=versions>
 
 ## Testing
 
