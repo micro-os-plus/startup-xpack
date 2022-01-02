@@ -11,12 +11,18 @@
 
 # https://cmake.org/cmake/help/v3.19/
 # https://cmake.org/cmake/help/v3.19/manual/cmake-packages.7.html#package-configuration-file
+cmake_minimum_required(VERSION 3.19)
 
-if(micro-os-plus-startup-included)
+# Use targets as include markers (variables are not scope independent).
+if(TARGET micro-os-plus-startup-included)
   return()
+else()
+  add_custom_target(micro-os-plus-startup-included)
 endif()
 
-set(micro-os-plus-startup-included TRUE)
+if(NOT TARGET micro-os-plus-build-helper-included)
+  message(FATAL_ERROR "Include the mandatory build-helper (xpacks/micro-os-plus-build-helper/cmake/xpack-helper.cmake)")
+endif()
 
 message(STATUS "Processing xPack ${PACKAGE_JSON_NAME}@${PACKAGE_JSON_VERSION}...")
 
@@ -58,7 +64,7 @@ if (NOT TARGET micro-os-plus-startup-static)
 
   target_link_libraries(
     micro-os-plus-startup-static
-    
+
     PUBLIC
       micro-os-plus::version
       micro-os-plus::diag-trace
