@@ -79,7 +79,7 @@ git submodule add https://github.com/micro-os-plus/startup-xpack.git \
 
 Apart from the unused `master` branch, there are two active branches:
 
-- `xpack`, with the latest stable version
+- `xpack`, with the latest stable version (default)
 - `xpack-develop`, with the current development version
 
 All development is done in the `xpack-develop` branch, and contributions via
