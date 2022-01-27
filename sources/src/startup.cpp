@@ -153,6 +153,9 @@ extern "C"
   // Not static since it is called from exit()
   void
   micro_os_plus_run_fini_array (void);
+
+  void
+  initialise_monitor_handles (void);
 }
 
 // ----------------------------------------------------------------------------
@@ -395,6 +398,10 @@ void __attribute__ ((noreturn, weak)) _start (void)
   micro_os_plus_startup_initialize_hardware ();
 
   trace::printf ("Hardware initialized.\n");
+
+#if defined(MICRO_OS_PLUS_USE_SEMIHOSTING_SYSCALLS)
+  initialise_monitor_handles ();
+#endif
 
   // Must be done before `micro_os_plus_run_init_array()`, in case
   // dynamic memory is needed in constructors.
