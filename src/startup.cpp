@@ -40,6 +40,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <algorithm>
+#include <cstring>
 #include <sys/types.h>
 
 // ----------------------------------------------------------------------------
@@ -50,15 +51,15 @@ using namespace micro_os_plus;
 // This file defines the startup code for a portable embedded
 // C/C++ application, built with newlib.
 //
-// Control reaches here from the reset handler via jump or call.
+// Control reaches `_start()` from the reset handler.
 //
-// The actual steps performed by _start are:
+// The actual steps performed are:
 // - copy the initialized data region(s)
 // - clear the BSS region(s)
 // - initialize the system
 // - run the preinit/init array (for the C++ static constructors)
 // - initialize the arc/argv
-// - branch to main()
+// - call main()
 // - run the fini array (for the C++ static destructors)
 // - call _exit(), directly or via exit()
 //
@@ -73,8 +74,8 @@ using namespace micro_os_plus;
 // The normal configuration is standalone, with all support
 // functions implemented locally.
 //
-// For this to be called, the project linker must be configured without
-// the startup sequence (-nostartfiles).
+// For this to included by the linker, the project linker must be configured
+// without the startup sequence (-nostartfiles).
 // ----------------------------------------------------------------------------
 
 #if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_GUARD_CHECKS)
@@ -108,6 +109,7 @@ extern std::uintptr_t __bss_end__;
 // initialized) section.
 extern uint32_t __data_regions_array_begin__;
 extern uint32_t __data_regions_array_end__;
+
 extern uint32_t __bss_regions_array_begin__;
 extern uint32_t __bss_regions_array_end__;
 
@@ -154,6 +156,7 @@ extern "C"
   void
   micro_os_plus_run_fini_array (void);
 
+  // Specific to newlib libgloss.
   void
   initialise_monitor_handles (void);
 }
@@ -191,15 +194,12 @@ typedef void (*function_ptr_t) (void);
 
 // These magic symbols are provided by the linker. newlib standard.
 extern function_ptr_t __attribute__ ((weak)) __preinit_array_begin__[];
-
 extern function_ptr_t __attribute__ ((weak)) __preinit_array_end__[];
 
 extern function_ptr_t __attribute__ ((weak)) __init_array_begin__[];
-
 extern function_ptr_t __attribute__ ((weak)) __init_array_end__[];
 
 extern function_ptr_t __attribute__ ((weak)) __fini_array_begin__[];
-
 extern function_ptr_t __attribute__ ((weak)) __fini_array_end__[];
 
 #pragma GCC diagnostic push
@@ -225,7 +225,7 @@ micro_os_plus_run_init_array (void)
   );
 }
 
-// Run all the cleanup routines (mainly static destructors).
+// Run all the cleanup routines (mainly the static destructors).
 void
 micro_os_plus_run_fini_array (void)
 {
@@ -262,11 +262,11 @@ __bss_end_guard;
 
 static uint32_t volatile __attribute__ ((section (".data_begin")))
 __data_begin_guard
-    = DATA_BEGIN_GUARD_VALUE;
+    = DATA_BEGIN_GUARD_VALUE; // 305419896
 
 static uint32_t volatile __attribute__ ((section (".data_end")))
 __data_end_guard
-    = DATA_END_GUARD_VALUE;
+    = DATA_END_GUARD_VALUE; // 2557891634
 
 #endif // defined(DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
@@ -293,7 +293,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
   // initialized before filling the BSS section.
   //
   // Note: External RAM whose size is known only after reading the
-  // chip type cannot be initialized via these linker script static tables
+  // chip type, cannot be initialized via these linker script static tables
   // and need to be handled by this hook.
   //
   // On devices with an active watchdog, configure or disable it
@@ -317,6 +317,12 @@ void __attribute__ ((noreturn, weak)) _start (void)
   micro_os_plus_initialize_data (&__data_load_addr__, &__data_begin__,
                                  &__data_end__);
 
+  // Alternate solution in case the compiler complains about
+  // undefined behaviour of the linker script pointers.
+  // memcpy (&__data_begin__, &__data_load_addr__,
+  //        static_cast<size_t> (reinterpret_cast<char*> (&__data_end__)
+  //                             - reinterpret_cast<char*> (&__data_begin__)));
+
 #else
 
   // Copy all DATA sections from flash to RAM.
@@ -337,6 +343,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
   if ((__data_begin_guard != DATA_BEGIN_GUARD_VALUE)
       || (__data_end_guard != DATA_END_GUARD_VALUE))
     {
+      // Oops, DATA guard checks failed.
       architecture::brk ();
       while (true)
         {
@@ -379,6 +386,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
   if ((__bss_begin_guard != 0) || (__bss_end_guard != 0))
     {
+      // Oops, BSS guard checks failed.
       architecture::brk ();
       while (true)
         {
@@ -443,6 +451,8 @@ void __attribute__ ((noreturn, weak)) _start (void)
   // Standard program termination;
   // `atexit()` and C++ static destructors are executed.
   exit (code);
+
+  // Oops, should not get here.
 #if defined(DEBUG)
   architecture::brk ();
 #endif // defined(DEBUG)
