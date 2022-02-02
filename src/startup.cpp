@@ -507,7 +507,8 @@ void __attribute__ ((weak))
 micro_os_plus_startup_initialize_free_store (void* heap_address,
                                              std::size_t heap_size_bytes)
 {
-  ;
+  trace::printf ("Heap: @0x%08X (%dK)\n", heap_address,
+                 heap_size_bytes / 1024);
 }
 
 // Redefine this function to display memory allocator reports or
