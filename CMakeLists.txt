@@ -3,7 +3,9 @@
 #   (https://github.com/micro-os-plus)
 # Copyright (c) 2021 Liviu Ionescu
 #
-# This Source Code Form is subject to the terms of the MIT License.
+# Permission to use, copy, modify, and/or distribute this software
+# for any purpose is hereby granted, under the terms of the MIT license.
+#
 # If a copy of the license was not distributed with this file, it can
 # be obtained from https://opensource.org/licenses/MIT/.
 #
@@ -13,12 +15,9 @@
 #
 # `add_subdirectory("xpacks/micro-os-plus-startup")`
 #
-# The result is a library that can be added to the linker with:
+# The result is an interface library that can be added to the linker with:
 #
 # `target_link_libraries(your-target PUBLIC micro-os-plus::startup)`
-#
-# To avoid poluting this file with test related details, there is a separate
-# CMake configuration in the `tests` folder.
 
 # -----------------------------------------------------------------------------
 ## Preamble ##
@@ -44,33 +43,48 @@ endif()
 # INTERFACE: usage definitions, passed up to targets linking to it
 # PUBLIC: both
 
-add_library(micro-os-plus-startup-static STATIC EXCLUDE_FROM_ALL)
+add_library(micro-os-plus-startup-interface INTERFACE EXCLUDE_FROM_ALL)
 
 # -----------------------------------------------------------------------------
 # Target settings.
 
-target_sources(
-  micro-os-plus-startup-static
-
-  PRIVATE
-    "src/startup.cpp"
-)
-
-message(VERBOSE "+ sources/src/startup.cpp")
-
 target_include_directories(
-  micro-os-plus-startup-static
+  micro-os-plus-startup-interface
 
-  PUBLIC
+  INTERFACE
     "include"
 )
 
-message(VERBOSE "+ sources/include")
+message(VERBOSE "+ -I include")
+
+target_sources(
+  micro-os-plus-startup-interface
+
+  INTERFACE
+    "src/startup.cpp"
+)
+
+message(VERBOSE "+ src/startup.cpp")
+
+target_compile_definitions(
+  micro-os-plus-startup-interface
+
+  INTERFACE
+    # ... add preprocessor macro definitions.
+)
+
+target_compile_options(
+  micro-os-plus-startup-interface
+
+  INTERFACE
+    # ... perhaps ignore some warnings.
+)
 
 target_link_libraries(
-  micro-os-plus-startup-static
+  micro-os-plus-startup-interface
 
-  PUBLIC
+  INTERFACE
+    # Dependencies
     micro-os-plus::version
     micro-os-plus::diag-trace
     micro-os-plus::architecture
@@ -79,7 +93,8 @@ target_link_libraries(
 # -----------------------------------------------------------------------------
 # Aliases.
 
-add_library(micro-os-plus::startup ALIAS micro-os-plus-startup-static)
-message(VERBOSE "> micro-os-plus::startup -> micro-os-plus-startup-static")
+# https://cmake.org/cmake/help/v3.20/command/add_library.html#alias-libraries
+add_library(micro-os-plus::startup ALIAS micro-os-plus-startup-interface)
+message(VERBOSE "> micro-os-plus::startup -> micro-os-plus-startup-interface")
 
 # -----------------------------------------------------------------------------
