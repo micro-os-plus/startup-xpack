@@ -55,16 +55,12 @@ target_include_directories(
     "include"
 )
 
-message(VERBOSE "+ -I include")
-
 target_sources(
   micro-os-plus-startup-interface
 
   INTERFACE
     "src/startup.cpp"
 )
-
-message(VERBOSE "+ src/startup.cpp")
 
 target_compile_definitions(
   micro-os-plus-startup-interface
@@ -89,6 +85,10 @@ target_link_libraries(
     micro-os-plus::diag-trace
     micro-os-plus::architecture
 )
+
+if (COMMAND xpack_display_target_lists)
+  xpack_display_target_lists(micro-os-plus-startup-interface)
+endif()
 
 # -----------------------------------------------------------------------------
 # Aliases.
