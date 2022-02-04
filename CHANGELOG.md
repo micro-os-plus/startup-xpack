@@ -6,6 +6,24 @@ Please check
 [GitHub](https://github.com/micro-os-plus/startup-xpack/issues/)
 and close existing issues and pull requests.
 
+## 2022-02-04
+
+- v2.2.0
+- 49f6df2 cmake: add xpack_display_target_lists
+
+## 2022-02-02
+
+- fab0c59 add meson support
+- 20c0000 startup.cpp: trace Heap
+
+## 2022-01-28
+
+- 3d875d8 rework CMake, top config, no sources
+
+## 2022-01-27
+
+- 7442ca1 add call to initialise_monitor_handles()
+
 ## 2022-01-26
 
 - rework CMake
