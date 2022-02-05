@@ -6,6 +6,10 @@ Please check
 [GitHub](https://github.com/micro-os-plus/startup-xpack/issues/)
 and close existing issues and pull requests.
 
+## 2022-02-05
+
+- v2.2.1
+
 ## 2022-02-04
 
 - v2.2.0
