@@ -228,7 +228,7 @@ micro_os_plus_run_fini_array (void)
 
 #pragma GCC diagnostic pop
 
-#if defined(DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
+#if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
 // These definitions are used to check if the routines used to
 // clear the BSS and to copy the initialized DATA perform correctly.
@@ -253,7 +253,7 @@ static uint32_t volatile __attribute__ ((section (".data_end")))
 __data_end_guard
     = DATA_END_GUARD_VALUE; // 2557891634
 
-#endif // defined(DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
+#endif // defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
 /**
  * @details
@@ -289,7 +289,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
   // Use Old Style DATA and BSS section initialization,
   // that will manage a single BSS sections.
 
-#if defined(DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
+#if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
   __data_begin_guard = DATA_GUARD_BAD_VALUE;
   __data_end_guard = DATA_GUARD_BAD_VALUE;
@@ -323,7 +323,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
 #endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
 
-#if defined(DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
+#if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
   if ((__data_begin_guard != DATA_BEGIN_GUARD_VALUE)
       || (__data_end_guard != DATA_END_GUARD_VALUE))
@@ -338,7 +338,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
 #endif // MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS
 
-#if defined(DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
+#if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
   __bss_begin_guard = BSS_GUARD_BAD_VALUE;
   __bss_end_guard = BSS_GUARD_BAD_VALUE;
@@ -367,7 +367,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
 #endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
 
-#if defined(DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
+#if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
   if ((__bss_begin_guard != 0) || (__bss_end_guard != 0))
     {
@@ -438,9 +438,9 @@ void __attribute__ ((noreturn, weak)) _start (void)
   exit (code);
 
   // Oops, should not get here.
-#if defined(DEBUG)
+#if defined(MICRO_OS_PLUS_DEBUG)
   architecture::brk ();
-#endif // defined(DEBUG)
+#endif // defined(MICRO_OS_PLUS_DEBUG)
   while (true)
     {
       architecture::wfi ();
