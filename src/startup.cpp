@@ -15,6 +15,10 @@
 
 // ----------------------------------------------------------------------------
 
+#if defined(MICRO_OS_PLUS_INCLUDE_CONFIG_H)
+#include <micro-os-plus/config.h>
+#endif // MICRO_OS_PLUS_INCLUDE_CONFIG_H
+
 #include <micro-os-plus/architecture.h>
 
 #include <micro-os-plus/diag/trace.h>
