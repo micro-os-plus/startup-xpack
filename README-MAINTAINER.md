@@ -117,7 +117,7 @@ When the release is considered stable, promote it as `latest`:
 
 - `npm dist-tag ls @micro-os-plus/micro-test-plus`
 - `npm dist-tag add @micro-os-plus/micro-test-plus@3.0.0 latest`
-- `npm dist-tag ls @@micro-os-plus/micro-test-plus`
+- `npm dist-tag ls @micro-os-plus/micro-test-plus`
 
 ## Announce to the community
 
