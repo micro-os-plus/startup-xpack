@@ -407,6 +407,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
   initialise_monitor_handles ();
 #endif
 
+#if 0
   // Must be done before `micro_os_plus_run_init_array()`, in case
   // dynamic memory is needed in constructors.
   micro_os_plus_startup_initialize_free_store (
@@ -420,6 +421,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
   // Call the standard library initialization (mandatory for C++ to
   // execute the static objects constructors).
   micro_os_plus_run_init_array ();
+#endif
 
   // Get the argc/argv (useful in semihosting configurations).
   int argc;
