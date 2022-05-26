@@ -293,54 +293,60 @@ void __attribute__ ((noreturn, weak)) _start (void)
   // Use Old Style DATA and BSS section initialization,
   // that will manage a single BSS sections.
 
+  // When running in RAM, the .data section is already in place,
+  // no need to copy.
+  if (&__data_load_addr__ != &__data_begin__)
+    {
 #if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
-  __data_begin_guard = DATA_GUARD_BAD_VALUE;
-  __data_end_guard = DATA_GUARD_BAD_VALUE;
+      __data_begin_guard = DATA_GUARD_BAD_VALUE;
+      __data_end_guard = DATA_GUARD_BAD_VALUE;
 
 #endif // MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS
 
 #if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS)
 
-  // Copy the DATA segment from flash to RAM (inlined).
-  micro_os_plus_initialize_data (&__data_load_addr__, &__data_begin__,
-                                 &__data_end__);
+      // Copy the DATA segment from flash to RAM (inlined).
+      micro_os_plus_initialize_data (&__data_load_addr__, &__data_begin__,
+                                     &__data_end__);
 
-  // Alternate solution in case the compiler complains about
-  // undefined behaviour of the linker script pointers.
-  // memcpy (&__data_begin__, &__data_load_addr__,
-  //        static_cast<size_t> (reinterpret_cast<char*> (&__data_end__)
-  //                             - reinterpret_cast<char*> (&__data_begin__)));
+      // Alternate solution in case the compiler complains about
+      // undefined behaviour of the linker script pointers.
+      // memcpy (&__data_begin__, &__data_load_addr__,
+      //        static_cast<size_t> (reinterpret_cast<char*> (&__data_end__)
+      //                             - reinterpret_cast<char*>
+      //                             (&__data_begin__)));
 
 #else
 
-  // Copy all DATA sections from flash to RAM.
-  for (uint32_t* p = &__data_regions_array_begin__;
-       p < &__data_regions_array_end__;)
-    {
-      uint32_t* from = (uint32_t*)(*p++);
-      uint32_t* region_begin = (uint32_t*)(*p++);
-      uint32_t* region_end = (uint32_t*)(*p++);
+      // Copy all DATA sections from flash to RAM.
+      for (uint32_t* p = &__data_regions_array_begin__;
+           p < &__data_regions_array_end__;)
+        {
+          uint32_t* from = (uint32_t*)(*p++);
+          uint32_t* region_begin = (uint32_t*)(*p++);
+          uint32_t* region_end = (uint32_t*)(*p++);
 
-      micro_os_plus_initialize_data (from, region_begin, region_end);
-    }
+          micro_os_plus_initialize_data (from, region_begin, region_end);
+        }
 
 #endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
 
 #if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
-  if ((__data_begin_guard != DATA_BEGIN_GUARD_VALUE)
-      || (__data_end_guard != DATA_END_GUARD_VALUE))
-    {
-      // Oops, DATA guard checks failed.
-      architecture::brk ();
-      while (true)
+      if ((__data_begin_guard != DATA_BEGIN_GUARD_VALUE)
+          || (__data_end_guard != DATA_END_GUARD_VALUE))
         {
-          architecture::wfi ();
+          // Oops, DATA guard checks failed.
+          architecture::brk ();
+          while (true)
+            {
+              architecture::wfi ();
+            }
         }
-    }
 
 #endif // MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS
+    }
 
 #if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
