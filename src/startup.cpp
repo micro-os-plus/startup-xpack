@@ -257,7 +257,8 @@ static uint32_t volatile __attribute__ ((section (".data_end")))
 __data_end_guard
     = DATA_END_GUARD_VALUE; // 2557891634
 
-#endif // defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
+#endif // defined(MICRO_OS_PLUS_DEBUG) &&
+       // (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
 /**
  * @details
@@ -400,12 +401,13 @@ void __attribute__ ((noreturn, weak)) _start (void)
   // clock frequency in a global variable, cleared above.
   micro_os_plus_startup_initialize_hardware ();
 
-  trace::printf ("Hardware initialized.\n");
+  trace::puts ("Hardware initialized.");
 
 #if defined(MICRO_OS_PLUS_USE_SEMIHOSTING_SYSCALLS)
   initialise_monitor_handles ();
 #endif
 
+#if 0
   // Must be done before `micro_os_plus_run_init_array()`, in case
   // dynamic memory is needed in constructors.
   micro_os_plus_startup_initialize_free_store (
@@ -419,6 +421,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
   // Call the standard library initialization (mandatory for C++ to
   // execute the static objects constructors).
   micro_os_plus_run_init_array ();
+#endif
 
   // Get the argc/argv (useful in semihosting configurations).
   int argc;
@@ -427,11 +430,10 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
   trace::dump_args (argc, argv);
 
-  trace::printf (
-      "\nµOS++ IIIe version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_VERSION
-      ".\n");
-  trace::printf ("Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_YEAR
-                 " Liviu Ionescu.\n");
+  trace::puts (
+      "\nµOS++ IIIe version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_VERSION ".");
+  trace::puts ("Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_YEAR
+               " Liviu Ionescu.");
 
 #pragma GCC diagnostic push
 
