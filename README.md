@@ -110,7 +110,7 @@ To include this package in a project, consider the following details.
 
 - `include`
 
-TODO: list the available headeres
+TODO: list the available headers
 
 #### Preprocessor definitions
 
