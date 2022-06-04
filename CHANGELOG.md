@@ -6,6 +6,10 @@ Please check
 [GitHub](https://github.com/micro-os-plus/startup-xpack/issues/)
 and close existing issues and pull requests.
 
+## 2022-06-04
+
+* v3.1.1
+
 ## 2022-05-26
 
 * dacf413 simplify trace::puts()

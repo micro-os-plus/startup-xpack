@@ -1,7 +1,7 @@
-[![license](https://img.shields.io/github/license/micro-os-plus/micro-test-plus-xpack)](https://github.com/micro-os-plus/micro-test-plus-xpack/blob/xpack/LICENSE)
-[![CI on Push](https://github.com/micro-os-plus/micro-test-plus-xpack/workflows/CI%20on%20Push/badge.svg)](https://github.com/micro-os-plus/micro-test-plus-xpack/actions?query=workflow%3A%22CI+on+Push%22)
-[![GitHub issues](https://img.shields.io/github/issues/micro-os-plus/micro-test-plus-xpack.svg)](https://github.com/micro-os-plus/micro-test-plus-xpack/issues/)
-[![GitHub pulls](https://img.shields.io/github/issues-pr/micro-os-plus/micro-test-plus-xpack.svg)](https://github.com/micro-os-plus/micro-test-plus-xpack/pulls)
+[![license](https://img.shields.io/github/license/micro-os-plus/startup-xpack)](https://github.com/micro-os-plus/startup-xpack/blob/xpack/LICENSE)
+[![CI on Push](https://github.com/micro-os-plus/startup-xpack/workflows/CI%20on%20Push/badge.svg)](https://github.com/micro-os-plus/startup-xpack/actions?query=workflow%3A%22CI+on+Push%22)
+[![GitHub issues](https://img.shields.io/github/issues/micro-os-plus/startup-xpack.svg)](https://github.com/micro-os-plus/startup-xpack/issues/)
+[![GitHub pulls](https://img.shields.io/github/issues-pr/micro-os-plus/startup-xpack.svg)](https://github.com/micro-os-plus/startup-xpack/pulls)
 
 # Maintainer info
 
@@ -9,28 +9,28 @@
 
 The project is hosted on GitHub:
 
-- <https://github.com/micro-os-plus/micro-test-plus-xpack.git>
+- <https://github.com/micro-os-plus/startup-xpack.git>
 
 To clone the stable branch (`xpack`), run the following commands in a
 terminal (on Windows use the _Git Bash_ console):
 
 ```sh
-rm -rf ~/Work/micro-test-plus-xpack.git && \
+rm -rf ~/Work/startup-xpack.git && \
 mkdir -p ~/Work && \
 git clone \
-  https://github.com/micro-os-plus/micro-test-plus-xpack.git \
-  ~/Work/micro-test-plus-xpack.git
+  https://github.com/micro-os-plus/startup-xpack.git \
+  ~/Work/startup-xpack.git
 ```
 
 For development purposes, clone the `xpack-develop` branch:
 
 ```sh
-rm -rf ~/Work/micro-test-plus-xpack.git && \
+rm -rf ~/Work/startup-xpack.git && \
 mkdir -p ~/Work && \
 git clone \
   --branch xpack-develop \
-  https://github.com/micro-os-plus/micro-test-plus-xpack.git \
-  ~/Work/micro-test-plus-xpack.git
+  https://github.com/micro-os-plus/startup-xpack.git \
+  ~/Work/startup-xpack.git
 ```
 
 ## Prerequisites
@@ -49,14 +49,14 @@ CppStyle plug-in.
 In the `micro-os-plus/web-jekyll` GitHub repo:
 
 - select the `develop` branch
-- add a new file to `_posts/micro-test-plus/releases`
-- name the file like `2020-12-19-micro-test-plus-v1-1-0-released.md`
-- name the post like: **µOS++ startup v3.1.0 released**
+- add a new file to `_posts/startup/releases`
+- name the file like `2020-12-19-startup-v1-1-0-released.md`
+- name the post like: **µOS++ startup v3.1.1 released**
 - update the `date:` field with the current date
 - update the GitHub Actions URLs using the actual test pages
 
 If any, refer to closed
-[issues](https://github.com/micro-os-plus/micro-test-plus-xpack/issues/)
+[issues](https://github.com/micro-os-plus/startup-xpack/issues/)
 as:
 
 - **[Issue:\[#1\]\(...\)]**.
@@ -67,7 +67,7 @@ as:
 - commit all changes
 - update versions in `README.md` and `README-MAINTAINER.md`
 - update `CHANGELOG.md`
-- commit with a message like _prepare v3.1.0_
+- commit with a message like _prepare v3.1.1_
 - `npm pack` and check the content of the archive, which should list
   only `package.json`, `README.md`, `LICENSE`, `CHANGELOG.md`,
   the sources and CMake/meson files;
@@ -91,7 +91,7 @@ The project includes unit tests.
 To run them, run:
 
 ```sh
-cd micro-test-plus-xpack.git
+cd startup-xpack.git
 xpm run install-all
 xpm run test
 ```
@@ -99,7 +99,7 @@ xpm run test
 ## Continuous Integration
 
 The CI tests are performed on GitHub Actions, as the
-[CI on Push](https://github.com/micro-os-plus/micro-test-plus-xpack/actions?query=workflow%3A%22CI+on+Push%22)
+[CI on Push](https://github.com/micro-os-plus/startup-xpack/actions?query=workflow%3A%22CI+on+Push%22)
 workflow.
 
 ## Update the repo
@@ -115,14 +115,14 @@ When the package is considered stable:
 
 When the release is considered stable, promote it as `latest`:
 
-- `npm dist-tag ls @micro-os-plus/micro-test-plus`
-- `npm dist-tag add @micro-os-plus/micro-test-plus@3.1.0 latest`
-- `npm dist-tag ls @micro-os-plus/micro-test-plus`
+- `npm dist-tag ls @micro-os-plus/startup`
+- `npm dist-tag add @micro-os-plus/startup@3.1.1 latest`
+- `npm dist-tag ls @micro-os-plus/startup`
 
 ## Share on Twitter
 
 - in a separate browser windows, open [TweetDeck](https://tweetdeck.twitter.com/)
 - using the `@micro_os_plus` account
-- paste the release name like **µOS++ startup v3.1.0 released**
+- paste the release name like **µOS++ startup v3.1.1 released**
 - paste the link to the Web page release
 - click the **Tweet** button
