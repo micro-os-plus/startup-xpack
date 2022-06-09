@@ -19,6 +19,8 @@
 #include <micro-os-plus/config.h>
 #endif // MICRO_OS_PLUS_INCLUDE_CONFIG_H
 
+#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP)
+
 #include <micro-os-plus/architecture.h>
 
 #include <micro-os-plus/diag/trace.h>
@@ -525,6 +527,8 @@ void __attribute__ ((weak)) micro_os_plus_terminate_goodbye (void)
 }
 
 #pragma GCC diagnostic pop
+
+#endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP)
 
 // ----------------------------------------------------------------------------
 
