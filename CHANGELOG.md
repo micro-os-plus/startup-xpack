@@ -8,7 +8,7 @@ and close existing issues and pull requests.
 
 ## 2022-06-09
 
-* v4.0.0 prepared
+* v4.0.0 released
 * 9114a3c use newlib linker script definitions
 * 24cd0c9 MICRO_OS_PLUS_INCLUDE_STARTUP
 
