@@ -51,7 +51,7 @@ In the `micro-os-plus/web-jekyll` GitHub repo:
 - select the `develop` branch
 - add a new file to `_posts/startup/releases`
 - name the file like `2020-12-19-startup-v1-1-0-released.md`
-- name the post like: **µOS++ startup v3.1.1 released**
+- name the post like: **µOS++ startup v4.0.0 released**
 - update the `date:` field with the current date
 - update the GitHub Actions URLs using the actual test pages
 
@@ -67,7 +67,7 @@ as:
 - commit all changes
 - update versions in `README.md` and `README-MAINTAINER.md`
 - update `CHANGELOG.md`
-- commit with a message like _prepare v3.1.1_
+- commit with a message like _prepare v4.0.0_
 - `npm pack` and check the content of the archive, which should list
   only `package.json`, `README.md`, `LICENSE`, `CHANGELOG.md`,
   the sources and CMake/meson files;
@@ -116,13 +116,13 @@ When the package is considered stable:
 When the release is considered stable, promote it as `latest`:
 
 - `npm dist-tag ls @micro-os-plus/startup`
-- `npm dist-tag add @micro-os-plus/startup@3.1.1 latest`
+- `npm dist-tag add @micro-os-plus/startup@4.0.0 latest`
 - `npm dist-tag ls @micro-os-plus/startup`
 
 ## Share on Twitter
 
 - in a separate browser windows, open [TweetDeck](https://tweetdeck.twitter.com/)
 - using the `@micro_os_plus` account
-- paste the release name like **µOS++ startup v3.1.1 released**
+- paste the release name like **µOS++ startup v4.0.0 released**
 - paste the link to the Web page release
 - click the **Tweet** button

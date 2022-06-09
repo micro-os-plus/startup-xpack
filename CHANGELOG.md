@@ -6,6 +6,12 @@ Please check
 [GitHub](https://github.com/micro-os-plus/startup-xpack/issues/)
 and close existing issues and pull requests.
 
+## 2022-06-09
+
+* v4.0.0 prepared
+* 9114a3c use newlib linker script definitions
+* 24cd0c9 MICRO_OS_PLUS_INCLUDE_STARTUP
+
 ## 2022-06-04
 
 * v3.1.1

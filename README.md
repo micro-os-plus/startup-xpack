@@ -108,17 +108,21 @@ The following folders should be passed to the compiler during the build:
 
 - `include`
 
-TODO: list the available headers
+The header files to be included in user projects are:
+
+```c++
+#include <micro-os-plus/startup/hooks.h>
+```
 
 #### Source files
 
 The source files to be added to the build are:
 
-TODO
+- `src/startup.cpp`
 
 #### Preprocessor definitions
 
-TBD
+- `MICRO_OS_PLUS_INCLUDE_STARTUP` - to include the startup code
 
 #### Compiler options
 
@@ -144,6 +148,21 @@ TBD
 ### Tests
 
 TBD
+
+## Change log - incompatible changes
+
+According to [semver](https://semver.org) rules:
+
+> Major version X (X.y.z | X > 0) MUST be incremented if any
+backwards incompatible changes are introduced to the public API.
+
+The incompatible changes, in reverse chronological order,
+are:
+
+- v4.x: use newlib linker script definitions
+- v3.x: rename MICRO_OS_PLUS_DEBUG
+- v2.x: rename namespaces, use `MICRO_OS_PLUS_` prefix
+- v1.x: initial release
 
 ## License
 
