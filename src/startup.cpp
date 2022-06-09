@@ -184,14 +184,14 @@ micro_os_plus_initialize_bss (std::uintptr_t* region_begin,
 typedef void (*function_ptr_t) (void);
 
 // These magic symbols are provided by the linker. newlib standard.
-extern function_ptr_t __attribute__ ((weak)) __preinit_array_begin__[];
-extern function_ptr_t __attribute__ ((weak)) __preinit_array_end__[];
+extern function_ptr_t __attribute__ ((weak)) __preinit_array_start[];
+extern function_ptr_t __attribute__ ((weak)) __preinit_array_end[];
 
-extern function_ptr_t __attribute__ ((weak)) __init_array_begin__[];
-extern function_ptr_t __attribute__ ((weak)) __init_array_end__[];
+extern function_ptr_t __attribute__ ((weak)) __init_array_start[];
+extern function_ptr_t __attribute__ ((weak)) __init_array_end[];
 
-extern function_ptr_t __attribute__ ((weak)) __fini_array_begin__[];
-extern function_ptr_t __attribute__ ((weak)) __fini_array_end__[];
+extern function_ptr_t __attribute__ ((weak)) __fini_array_start[];
+extern function_ptr_t __attribute__ ((weak)) __fini_array_end[];
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Waggregate-return"
@@ -202,7 +202,7 @@ micro_os_plus_run_init_array (void)
 {
   trace::printf ("%s()\n", __func__);
 
-  std::for_each (__preinit_array_begin__, __preinit_array_end__,
+  std::for_each (__preinit_array_start, __preinit_array_end,
                  [] (const function_ptr_t pf) { pf (); } //
   );
 
@@ -211,7 +211,7 @@ micro_os_plus_run_init_array (void)
   // crti.o and crtn.o to add the function prologue/epilogue.
   //_init(); // DO NOT ENABLE THIS!
 
-  std::for_each (__init_array_begin__, __init_array_end__,
+  std::for_each (__init_array_start, __init_array_end,
                  [] (const function_ptr_t pf) { pf (); } //
   );
 }
@@ -222,7 +222,7 @@ micro_os_plus_run_fini_array (void)
 {
   trace::printf ("%s()\n", __func__);
 
-  std::for_each (__fini_array_begin__, __fini_array_end__,
+  std::for_each (__fini_array_start, __fini_array_end,
                  [] (const function_ptr_t pf) { pf (); } //
   );
 
