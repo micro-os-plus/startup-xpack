@@ -431,9 +431,9 @@ void __attribute__ ((noreturn, weak)) _start (void)
   trace::dump_args (argc, argv);
 
   trace::puts (
-      "\nµOS++ IIIe version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_VERSION ".");
+      "\nµOS++ IIIe version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_VERSION);
   trace::puts ("Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_YEAR
-               " Liviu Ionescu.");
+               " Liviu Ionescu");
 
 #pragma GCC diagnostic push
 
