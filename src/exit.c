@@ -19,6 +19,8 @@
 #include <micro-os-plus/config.h>
 #endif // MICRO_OS_PLUS_INCLUDE_CONFIG_H
 
+#if defined(MICRO_OS_PLUS_INCLUDE_EXIT)
+
 #include <micro-os-plus/startup/hooks.h>
 #include <micro-os-plus/architecture.h>
 #include <micro-os-plus/diag/trace.h>
@@ -128,6 +130,8 @@ void __attribute__ ((weak, noreturn)) _Exit (int code)
 void __attribute__ ((weak, noreturn, alias ("_Exit"))) _exit (int status);
 
 #pragma GCC diagnostic pop
+
+#endif // MICRO_OS_PLUS_INCLUDE_EXIT
 
 // ----------------------------------------------------------------------------
 
