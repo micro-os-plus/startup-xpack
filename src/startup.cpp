@@ -278,6 +278,8 @@ void __attribute__ ((noreturn, weak)) _start (void)
 {
   // --------------------------------------------------------------------------
 
+#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE_EARLY)
+
   // Initialize hardware right after reset, to switch clock to higher
   // frequency and have the rest of the initializations run faster.
   //
@@ -290,8 +292,9 @@ void __attribute__ ((noreturn, weak)) _start (void)
   //
   // On devices with an active watchdog, configure or disable it
   // to accommodate for the initializations duration.
-
   micro_os_plus_startup_initialize_hardware_early ();
+
+#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE_EARLY
 
   // Use Old Style DATA and BSS section initialization,
   // that will manage a single BSS sections.
@@ -399,11 +402,14 @@ void __attribute__ ((noreturn, weak)) _start (void)
   // constructors).
   trace::initialize ();
 
+#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE)
+
   // Hook to continue the initializations. Usually compute and store the
   // clock frequency in a global variable, cleared above.
   micro_os_plus_startup_initialize_hardware ();
-
   trace::puts ("Hardware initialized.");
+
+#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE
 
 #if defined(MICRO_OS_PLUS_USE_SEMIHOSTING_SYSCALLS)
   initialise_monitor_handles ();

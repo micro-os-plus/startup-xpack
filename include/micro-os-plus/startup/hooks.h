@@ -35,6 +35,9 @@ extern "C"
    * @{
    */
 
+#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE_EARLY) \
+    || defined(__DOXYGEN__)
+
   /**
    * @brief Initialise hardware early.
    * @par Parameters
@@ -45,6 +48,11 @@ extern "C"
   void
   micro_os_plus_startup_initialize_hardware_early (void);
 
+#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE_EARLY
+
+#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE) \
+    || defined(__DOXYGEN__)
+
   /**
    * @brief Initialise hardware.
    * @par Parameters
@@ -54,6 +62,8 @@ extern "C"
    */
   void
   micro_os_plus_startup_initialize_hardware (void);
+
+#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE
 
   /**
    * @brief Initialise the free store.
