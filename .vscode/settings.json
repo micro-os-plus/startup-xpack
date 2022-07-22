@@ -3,11 +3,13 @@
     80
   ],
   "cSpell.ignoreWords": [
+    "HEAPINFO",
     "Ionescu",
     "Liviu",
     "NOTREACHED",
     "POSIX",
     "Waggregate",
+    "Wmissing",
     "Wpedantic",
     "Wunused",
     "buildtype",
@@ -19,6 +21,7 @@
     "ctest",
     "diag",
     "eabi",
+    "exitprocs",
     "fini",
     "libgloss",
     "minsize",
