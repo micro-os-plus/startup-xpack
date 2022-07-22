@@ -411,9 +411,9 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
 #endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE
 
-#if defined(MICRO_OS_PLUS_USE_SEMIHOSTING_SYSCALLS)
+#if defined(MICRO_OS_PLUS_USE_SEMIHOSTING)
   initialise_monitor_handles ();
-#endif
+#endif // MICRO_OS_PLUS_USE_SEMIHOSTING
 
   // Must be done before `micro_os_plus_run_init_array()`, in case
   // dynamic memory is needed in constructors.
@@ -468,7 +468,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
 // ----------------------------------------------------------------------------
 
-#if !defined(MICRO_OS_PLUS_USE_SEMIHOSTING_SYSCALLS)
+#if !defined(MICRO_OS_PLUS_USE_SEMIHOSTING)
 
 // Semihosting uses a more elaborate version of
 // micro_os_plus_startup_initialize_args() to parse arguments received from
@@ -510,7 +510,7 @@ micro_os_plus_startup_initialize_args (int* p_argc, char*** p_argv)
 
 #pragma GCC diagnostic pop
 
-#endif // !defined(MICRO_OS_PLUS_USE_SEMIHOSTING_SYSCALLS)
+#endif // !defined(MICRO_OS_PLUS_USE_SEMIHOSTING)
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
