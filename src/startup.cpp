@@ -536,6 +536,11 @@ void __attribute__ ((weak)) micro_os_plus_terminate_goodbye (void)
 
 #endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP)
 
+#if defined(MICRO_OS_PLUS_INCLUDE_DSO_HANDLE_HACK)
+extern "C" void* __dso_handle;
+void* __dso_handle __attribute__ ((weak));
+#endif
+
 // ----------------------------------------------------------------------------
 
 #endif // !Unix
