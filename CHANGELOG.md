@@ -6,6 +6,17 @@ Please check
 [GitHub](https://github.com/micro-os-plus/startup-xpack/issues/)
 and close existing issues and pull requests.
 
+## 2022-07-22
+
+* v5.0.0
+* 517b806 README: list preprocessor options
+* 03ad60d #8: check MICRO_OS_PLUS_INCLUDE_EXIT
+* 88fe2c6 #8: move exit() and _sbrk() here
+* 0ed8089 #7: Conditionally add local __dso_handle hack
+* f92cd60 #6: use MICRO_OS_PLUS_USE_SEMIHOSTING
+* 51bec0c #5: MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE
+* 7b448e9 startup.cpp: remove trailing dot in messages
+
 ## 2022-06-09
 
 * v4.0.0 released
