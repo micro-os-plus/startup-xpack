@@ -534,12 +534,25 @@ void __attribute__ ((weak)) micro_os_plus_terminate_goodbye (void)
 
 #pragma GCC diagnostic pop
 
-#endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP)
+// ----------------------------------------------------------------------------
 
-#if defined(MICRO_OS_PLUS_INCLUDE_DSO_HANDLE_HACK)
+// The `__dso_handle` is normally defined in the GCC crtbegin.o, but with a
+// custom startup it must be explicitly defined in the application, otherwise
+// the linker will complain:
+//
+// (.text.startup._GLOBAL__sub_I__ZSt17iostream_categoryv+0x0): undefined
+// reference to `__dso_handle'
+//
+// For more details see the GCC libgcc/crtstuff.c file:
+//
+// https://github.com/gcc-mirror/gcc/blob/f8e6e2c046e1015697356ee7079fb39e0cb6add5/libgcc/crtstuff.c#L330
+
 extern "C" void* __dso_handle;
-void* __dso_handle __attribute__ ((weak));
-#endif
+void* __dso_handle = 0;
+
+// ----------------------------------------------------------------------------
+
+#endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP)
 
 // ----------------------------------------------------------------------------
 
