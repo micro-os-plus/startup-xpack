@@ -1,0 +1,62 @@
+{
+  "minimumXpmakeRequired": "0.0.0",
+  "license": "MIT",
+  "copyright": "Copyright (c) 2022 Liviu Ionescu",
+  "description": "Top startup components",
+  "cdlComponents": {
+    "startup": {
+      "description": "The portable startup C++ code for µOS++ applications.",
+      "parent": "micro-os-plus",
+      "defaultEnable": true,
+      "compilerIncludeFolders": [
+        "include"
+      ],
+      "compilerSourceFiles": [
+        "src/startup.cpp"
+      ],
+      "compilerDefinitions": [],
+      "compilerOptions": [],
+      "dependencies": [
+        "micro-os-plus/architecture",
+        "micro-os-plus/diag-trace"
+      ],
+      "generatedDefinition": "MICRO_OS_PLUS_INCLUDE_STARTUP",
+      "cdlOptions": {
+        "guardChecks": {
+          "description": "Add guard checks for data & bss.",
+          "type": "boolean",
+          "generatedDefinition": "MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS"
+        },
+        "initializeMultipleRamSections": {
+          "generatedDefinition": "MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_MULTIPLE_RAM_SECTIONS"
+        },
+        "initializeHardwareEarly": {
+          "generatedDefinition": "MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE_EARLY"
+        },
+        "initializeHardware": {
+          "generatedDefinition": "MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE"
+        }
+      },
+      "cdlComponents": {
+        "exit": {
+          "defaultEnable": true,
+          "compilerSourceFiles": [
+            "src/exit.c"
+          ],
+          "dependencies": [
+            "micro-os-plus/architecture",
+            "micro-os-plus/diag-trace"
+          ],
+          "generatedDefinition": "MICRO_OS_PLUS_INCLUDE_EXIT"
+        },
+        "sbrk": {
+          "defaultEnable": true,
+          "compilerSourceFiles": [
+            "src/_sbrk.c"
+          ],
+          "generatedDefinition": "MICRO_OS_PLUS_INCLUDE_SBRK"
+        }
+      }
+    }
+  }
+}
