@@ -54,8 +54,8 @@ using namespace micro_os_plus;
 // - run the fini array (for the C++ static destructors)
 // - call _exit(), directly or via exit()
 //
-// If MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS is defined, the
-// code is capable of initializing multiple regions.
+// If MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_MULTIPLE_RAM_SECTIONS is
+// defined, the code is capable of initializing multiple regions.
 //
 // Note: External memory with variable size (size known after reading the
 // chip type) cannot be initialized via these linker script static tables
@@ -76,7 +76,7 @@ using namespace micro_os_plus;
 // ----------------------------------------------------------------------------
 
 // All following symbols should be defined in the linker script.
-#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS)
+#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_MULTIPLE_RAM_SECTIONS)
 
 // Begin address for the initialization values of the .data section.
 extern std::uintptr_t __data_load_addr__;
@@ -104,7 +104,7 @@ extern uint32_t __data_regions_array_end__;
 extern uint32_t __bss_regions_array_begin__;
 extern uint32_t __bss_regions_array_end__;
 
-#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
+#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_MULTIPLE_RAM_SECTIONS
 
 extern uint32_t __heap_begin__;
 extern uint32_t __heap_end__;
@@ -310,7 +310,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
 #endif // MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS
 
-#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS)
+#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_MULTIPLE_RAM_SECTIONS)
 
       // Copy the DATA segment from flash to RAM (inlined).
       micro_os_plus_initialize_data (&__data_load_addr__, &__data_begin__,
@@ -336,7 +336,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
           micro_os_plus_initialize_data (from, region_begin, region_end);
         }
 
-#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
+#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_MULTIPLE_RAM_SECTIONS
 
 #if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
@@ -361,7 +361,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
 #endif
 
-#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS)
+#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_MULTIPLE_RAM_SECTIONS)
 
   // Zero fill the BSS section (inlined).
   micro_os_plus_initialize_bss (&__bss_begin__, &__bss_end__);
@@ -381,7 +381,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
       micro_os_plus_initialize_bss (region_begin, region_end);
     }
 
-#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
+#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_MULTIPLE_RAM_SECTIONS
 
 #if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
