@@ -22,23 +22,28 @@
       ],
       "generatedDefinition": "MICRO_OS_PLUS_INCLUDE_STARTUP",
       "cdlOptions": {
-        "guardChecks": {
+        "guard-checks": {
           "description": "Add guard checks for data & bss.",
-          "type": "boolean",
+          "valueType": "boolean",
+          "defaultEnable": true,
+          "defaultValue": true,
           "generatedDefinition": "MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS"
         },
-        "initializeMultipleRamSections": {
+        "initialize-multiple-ram-sections": {
           "generatedDefinition": "MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_MULTIPLE_RAM_SECTIONS"
         },
-        "initializeHardwareEarly": {
+        "initialize-hardware-early": {
+          "description": "Call the custom early hardware initialization.",
           "generatedDefinition": "MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE_EARLY"
         },
-        "initializeHardware": {
+        "initialize-hardware": {
+          "description": "Call the custom hardware initialization.",
           "generatedDefinition": "MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE"
         }
       },
       "cdlComponents": {
         "exit": {
+          "description": "The exit() and abort() functions used to terminate the application in a civilised way, especially when using semihosting.",
           "defaultEnable": true,
           "compilerSourceFiles": [
             "src/exit.c"
@@ -50,6 +55,7 @@
           "generatedDefinition": "MICRO_OS_PLUS_INCLUDE_EXIT"
         },
         "sbrk": {
+          "description": "The heap allocator, in sync with the startup and the linker scripts.",
           "defaultEnable": true,
           "compilerSourceFiles": [
             "src/_sbrk.c"
