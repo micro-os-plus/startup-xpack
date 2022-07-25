@@ -17,8 +17,8 @@
       "compilerDefinitions": [],
       "compilerOptions": [],
       "dependencies": [
-        "micro-os-plus/architecture",
-        "micro-os-plus/diag-trace"
+        "micro-os-plus::architecture",
+        "micro-os-plus::diag-trace"
       ],
       "generatedDefinition": "MICRO_OS_PLUS_INCLUDE_STARTUP",
       "cdlOptions": {
@@ -49,8 +49,8 @@
             "src/exit.c"
           ],
           "dependencies": [
-            "micro-os-plus/architecture",
-            "micro-os-plus/diag-trace"
+            "micro-os-plus::architecture",
+            "micro-os-plus::diag-trace"
           ],
           "generatedDefinition": "MICRO_OS_PLUS_INCLUDE_EXIT"
         },
