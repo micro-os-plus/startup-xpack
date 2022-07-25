@@ -524,13 +524,15 @@ micro_os_plus_startup_initialize_free_store (void* heap_address,
                  heap_size_bytes / 1024);
 }
 
-// Redefine this function to display memory allocator reports or
+
+// The RTOS redefines this function to display memory allocator reports or
 // other statistics.
 void __attribute__ ((weak)) micro_os_plus_terminate_goodbye (void)
 {
-  trace::printf ("\nHasta la Vista!\n");
-  trace::flush ();
+  trace::puts("\nHasta la Vista!");
 }
+
+#endif
 
 #pragma GCC diagnostic pop
 
