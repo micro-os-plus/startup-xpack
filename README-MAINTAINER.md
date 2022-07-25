@@ -1,5 +1,5 @@
 [![license](https://img.shields.io/github/license/micro-os-plus/startup-xpack)](https://github.com/micro-os-plus/startup-xpack/blob/xpack/LICENSE)
-[![CI on Push](https://github.com/micro-os-plus/startup-xpack/workflows/CI%20on%20Push/badge.svg)](https://github.com/micro-os-plus/startup-xpack/actions?query=workflow%3A%22CI+on+Push%22)
+[![CI on Push](https://github.com/micro-os-plus/startup-xpack/actions/workflows/CI.yml/badge.svg)](https://github.com/micro-os-plus/startup-xpack/actions/workflows/CI.yml)
 [![GitHub issues](https://img.shields.io/github/issues/micro-os-plus/startup-xpack.svg)](https://github.com/micro-os-plus/startup-xpack/issues/)
 [![GitHub pulls](https://img.shields.io/github/issues-pr/micro-os-plus/startup-xpack.svg)](https://github.com/micro-os-plus/startup-xpack/pulls)
 
@@ -44,30 +44,68 @@ Code formatting is done using `clang-format --style=file`, either manually
 from a script, or automatically from Visual Studio Code, or the Eclipse
 CppStyle plug-in.
 
-## Prepare a new blog post
+Always reformat the source files that were changed.
 
-In the `micro-os-plus/web-jekyll` GitHub repo:
+## How to make new releases
 
-- select the `develop` branch
-- add a new file to `_posts/startup/releases`
-- name the file like `2020-12-19-startup-v1-1-0-released.md`
-- name the post like: **µOS++ startup v5.0.0 released**
-- update the `date:` field with the current date
-- update the GitHub Actions URLs using the actual test pages
+### Release schedule
 
-If any, refer to closed
-[issues](https://github.com/micro-os-plus/startup-xpack/issues/)
-as:
+There are no fixed releases.
 
-- **[Issue:\[#1\]\(...\)]**.
+### Check Git
+
+In the `micro-os-plus/startup-xpack` Git repo:
+
+- switch to the `xpack-develop` branch
+- if needed, merge the `xpack` branch
+
+No need to add a tag here, it'll be added when the release is created.
+
+### Increase the version
+
+Determine the upstream version (like `5.0.0`) and update the `package.json`
+file; the format is `5.0.0-pre`.
+
+### Fix possible open issues
+
+Check GitHub issues and pull requests:
+
+- <https://github.com/micro-os-plus/startup-xpack/issues/>
+
+and fix them; assign them to a milestone (like `5.0.0`).
+
+### Update `README-MAINTAINER.md`
+
+Update the `README-MAINTAINER.md` file to reflect the changes
+related to the new version.
+
+### Update `CHANGELOG.md`
+
+- open the `CHANGELOG.md` file
+- check if all previous fixed issues are in
+- add a new entry like _- v5.0.0 prepared_
+- commit with a message like _prepare v5.0.0_
+
+### Push changes
+
+- reformat the source files that were changed
+- commit and push
+
+### Manual tests
+
+To run the tests manually on the local machine:
+
+```sh
+cd ~Work/startup-xpack.git
+
+xpm run install-all
+xpm run test-all
+```
 
 ## Publish on the npmjs.com server
 
 - select the `xpack-develop` branch
 - commit all changes
-- update versions in `README.md` and `README-MAINTAINER.md`
-- update `CHANGELOG.md`
-- commit with a message like _prepare v5.0.0_
 - `npm pack` and check the content of the archive, which should list
   only `package.json`, `README.md`, `LICENSE`, `CHANGELOG.md`,
   the sources and CMake/meson files;
@@ -84,23 +122,16 @@ The version is visible at:
 
 - <https://www.npmjs.com/package/@micro-os-plus/startup?activeTab=versions>
 
-## Testing
+### Test on all platforms
 
-The project includes unit tests.
+In addition, it is possible to manually trigger a **test-all** job, that
+runs all available builds, on all supported platforms, including Linux Arm
+and macOS Apple Silicon.
 
-To run them, run:
+For this, run the `trigger-workflow-test-all` action before publishing.
 
-```sh
-cd startup-xpack.git
-xpm run install-all
-xpm run test
-```
-
-## Continuous Integration
-
-The CI tests are performed on GitHub Actions, as the
-[CI on Push](https://github.com/micro-os-plus/startup-xpack/actions?query=workflow%3A%22CI+on+Push%22)
-workflow.
+Wait for the **test-all** job to complete
+  (<https://github.com/micro-os-plus/startup-xpack/actions/workflows/test-all.yml>)
 
 ## Update the repo
 
@@ -118,11 +149,3 @@ When the release is considered stable, promote it as `latest`:
 - `npm dist-tag ls @micro-os-plus/startup`
 - `npm dist-tag add @micro-os-plus/startup@5.0.0 latest`
 - `npm dist-tag ls @micro-os-plus/startup`
-
-## Share on Twitter
-
-- in a separate browser windows, open [TweetDeck](https://tweetdeck.twitter.com/)
-- using the `@micro_os_plus` account
-- paste the release name like **µOS++ startup v5.0.0 released**
-- paste the link to the Web page release
-- click the **Tweet** button

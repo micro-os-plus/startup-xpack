@@ -1,12 +1,15 @@
 [![license](https://img.shields.io/github/license/micro-os-plus/startup-xpack)](https://github.com/micro-os-plus/startup-xpack/blob/xpack/LICENSE)
-[![CI on Push](https://github.com/micro-os-plus/startup-xpack/workflows/CI%20on%20Push/badge.svg)](https://github.com/micro-os-plus/startup-xpack/actions?query=workflow%3A%22CI+on+Push%22)
+[![CI on Push](https://github.com/micro-os-plus/startup-xpack/actions/workflows/CI.yml/badge.svg)](https://github.com/micro-os-plus/startup-xpack/actions/workflows/CI.yml)
 
 ## A source library xPack with the µOS++ portable startup code for bare-metal platforms
 
-This project provides a portable startup code for bare-metal platforms.
+This project provides the **startup** source library as an xPack
+dependency and includes a portable startup code for bare-metal platforms.
 
 The myth that startup code must be written in assembly because
-'the C environment is not ready' is plainly wrong.
+'the C environment is not ready' is not exactly right, and,
+with some care to avoid undefined behaviour, can be
+overcome.
 
 The 'C environment' is mainly the stack (and maybe other architecture
 ABI registers, like GP on RISC-V), and this can be set in a short
@@ -26,7 +29,7 @@ For maintainer info, please see the
 
 ## Install
 
-As a source library xPacks, the easiest way to add it to a project is via
+As a source library xPack, the easiest way to add it to a project is via
 **xpm**, but it can also be used as any Git project, for example as a submodule.
 
 ### Prerequisites
@@ -92,15 +95,112 @@ into `xpack`.
 
 ## Developer info
 
-TBD
+### Overview
+
+This source xPack provides the `_startup()` routine, as a replacement for
+the newlib code in crt0.o or GCC code in crtbegin.o.
+
+It is responsible for clearing the BSS, copying the DATA section,
+and running the static constructors.
+
+Specific for bare-metal applications, the code also perform
+hardware initialisations, by calling custom hooks.
 
 ### Status
 
-The startup code is fully functional.
+The **startup** source library is fully functional.
+
+### C++ API
+
+- none
+
+### C API
+
+This library defines a C function that can be called from the
+reset handler.
+
+```c
+void __attribute__ ((noreturn, weak))
+_start (void);
+```
+
+Optionally it can define:
+
+```c
+#if defined(MICRO_OS_PLUS_INCLUDE_EXIT)
+
+void __attribute__ ((weak, noreturn))
+abort (void);
+
+void __attribute__ ((noreturn))
+exit (int code);
+
+void __attribute__ ((weak, noreturn))
+_Exit (int code);
+
+void __attribute__ ((weak, noreturn, alias ("_Exit")))
+_exit (int status);
+
+#endif // MICRO_OS_PLUS_INCLUDE_EXIT
+```
+
+and also:
+
+```c
+#if defined(MICRO_OS_PLUS_INCLUDE_SBRK)
+
+void*
+_sbrk (ptrdiff_t incr);
+
+#endif // defined(MICRO_OS_PLUS_INCLUDE_SBRK)
+```
+
+### Hooks
+
+The
+
+```c
+#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE_EARLY)
+
+void
+micro_os_plus_startup_initialize_hardware_early (void);
+
+#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE_EARLY
+
+#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE)
+
+void
+micro_os_plus_startup_initialize_hardware (void);
+
+#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE
+
+// A weak definition is provided here.
+void
+micro_os_plus_startup_initialize_free_store (void* heap_address,
+                                              size_t heap_size_bytes);
+
+// A weak definition is provided here. The RTOS redefines it.
+// Called from _Exit().
+void
+micro_os_plus_terminate_goodbye (void);
+
+// Must be defined by the device package.
+void __attribute__ ((noreturn))
+micro_os_plus_terminate (int code);
+```
 
 ### Build & integration info
 
-To include this package in a project, consider the following details.
+The project is written in C++, and it is expected
+to be used in C and C++ projects.
+
+The source code was compiled with GCC 11, clang 12, clang 13
+arm-none-eabi-gcc 11, riscv-none-elf-gcc 12, and should be warning free.
+
+To ease the integration of this package into user projects, there
+are already made CMake and meson configuration files (see below).
+
+For other build systems, consider the following details:
 
 #### Include folders
 
@@ -122,6 +222,7 @@ The source files to be added to the build are:
 
 #### Preprocessor definitions
 
+- `MICRO_OS_PLUS_INCLUDE_CONFIG_H` - to include `<micro-os-plus/config.h>`
 - `MICRO_OS_PLUS_INCLUDE_STARTUP` - to include the startup code
 - `MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE_EARLY`
 - `MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE`
@@ -137,11 +238,58 @@ The source files to be added to the build are:
 
 #### C++ Namespaces
 
-TBD
+- none
 
 #### C++ Classes
 
-TBD
+- none
+
+#### Dependencies
+
+- the `@micro-os-plus/diag/trace` package, for the tracing features
+
+#### CMake
+
+To integrate the startup source library into a CMake application,
+add this folder to the build:
+
+```cmake
+add_subdirectory("xpacks/micro-os-plus-startup")`
+```
+
+The result is an interface library that can be added as an application
+dependency with:
+
+```cmake
+target_link_libraries(your-target PRIVATE
+
+  micro-os-plus::startup
+)
+```
+
+#### meson
+
+To integrate the startup source library into a meson application,
+add this folder to the build:
+
+```meson
+subdir('xpacks/micro-os-plus-startup')
+```
+
+The result is a dependency object that can be added
+to an application with:
+
+```meson
+exe = executable(
+  your-target,
+  link_with: [
+    # Nothing, not static.
+  ],
+  dependencies: [
+    micro_os_plus_startup_dependency,
+  ]
+)
+```
 
 ### Examples
 
