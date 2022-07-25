@@ -76,6 +76,8 @@ extern "C"
   micro_os_plus_startup_initialize_free_store (void* heap_address,
                                                size_t heap_size_bytes);
 
+#if defined(MICRO_OS_PLUS_HAS_INTERRUPTS_STACK) || defined(__DOXYGEN__)
+
   /**
    * @brief Initialise the interrupts stack.
    * @param stack_begin_address The stack bottom address.
@@ -86,6 +88,8 @@ extern "C"
   void
   micro_os_plus_startup_initialize_interrupts_stack (void* stack_begin_address,
                                                      size_t stack_size_bytes);
+
+#endif // MICRO_OS_PLUS_HAS_INTERRUPTS_STACK
 
   /**
    * @brief Initialise arguments.
