@@ -63,8 +63,8 @@ No need to add a tag here, it'll be added when the release is created.
 
 ### Increase the version
 
-Determine the upstream version (like `5.0.0`) and update the `package.json`
-file; the format is `5.0.0-pre`.
+Determine the upstream version (like `5.1.0`) and update the `package.json`
+file; the format is `5.1.0-pre`.
 
 ### Fix possible open issues
 
@@ -72,7 +72,7 @@ Check GitHub issues and pull requests:
 
 - <https://github.com/micro-os-plus/startup-xpack/issues/>
 
-and fix them; assign them to a milestone (like `5.0.0`).
+and fix them; assign them to a milestone (like `5.1.0`).
 
 ### Update `README-MAINTAINER.md`
 
@@ -83,8 +83,8 @@ related to the new version.
 
 - open the `CHANGELOG.md` file
 - check if all previous fixed issues are in
-- add a new entry like _- v5.0.0 prepared_
-- commit with a message like _prepare v5.0.0_
+- add a new entry like _* v5.1.0_
+- commit with a message like _prepare v5.1.0_
 
 ### Push changes
 
@@ -147,5 +147,5 @@ When the package is considered stable:
 When the release is considered stable, promote it as `latest`:
 
 - `npm dist-tag ls @micro-os-plus/startup`
-- `npm dist-tag add @micro-os-plus/startup@5.0.0 latest`
+- `npm dist-tag add @micro-os-plus/startup@5.1.0 latest`
 - `npm dist-tag ls @micro-os-plus/startup`

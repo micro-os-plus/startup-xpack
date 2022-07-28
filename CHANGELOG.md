@@ -6,6 +6,30 @@ Please check
 [GitHub](https://github.com/micro-os-plus/startup-xpack/issues/)
 and close existing issues and pull requests.
 
+## 2022-07-28
+
+* v5.1.0
+* 3bad7e6 cosmetics in messages
+* 811d1f1 #7: use cast to init __dso_handle
+* e8d6c00 #8: add exit.c & _sbrk.c to CMake/meson
+* bb3e7d2 #10: make version dependency optional
+
+## 2022-07-25
+
+* 88c5477 startup.cpp: use trace::puts() for goodbye
+* c529619 hooks.h: check MICRO_OS_PLUS_HAS_INTERRUPTS_STACK
+* 2fbd2c4 add preliminary xpack.json
+
+## 2022-07-24
+
+* ef8040d xpack.json: no more camelCase for option names
+
+## 2022-07-23
+
+* d7c32b8 add experimental xpack.json
+* 9233e0b #7: __dso_handle inside startup; no hack
+* f28cb35 #9: MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_MULTIPLE_RAM_SECTIONS
+
 ## 2022-07-22
 
 * v5.0.0
