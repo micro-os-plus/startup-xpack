@@ -34,6 +34,8 @@ micro_os_plus_startup_dependency = declare_dependency(
   ),
   sources: files(
     'src/startup.cpp',
+    'src/exit.c',
+    'src/_sbrk.c'
   ),
   dependencies: [
     # micro_os_plus_version_dependency, # No longer mandatory

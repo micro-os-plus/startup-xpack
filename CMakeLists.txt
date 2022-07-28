@@ -55,6 +55,8 @@ target_include_directories(micro-os-plus-startup-interface INTERFACE
 
 target_sources(micro-os-plus-startup-interface INTERFACE
   "src/startup.cpp"
+  "src/exit.c"
+  "src/_sbrk.c"
 )
 
 target_compile_definitions(micro-os-plus-startup-interface INTERFACE
