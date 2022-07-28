@@ -426,7 +426,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
   // Hook to continue the initializations. Usually compute and store the
   // clock frequency in a global variable, cleared above.
   micro_os_plus_startup_initialize_hardware ();
-  trace::puts ("Hardware initialized.");
+  trace::puts ("Hardware initialized");
 
 #endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE
 
@@ -454,11 +454,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
   micro_os_plus_startup_initialize_args (&argc, &argv);
 
   trace::dump_args (argc, argv);
-
-  trace::puts (
-      "\nµOS++ IIIe version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_VERSION);
-  trace::puts ("Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_YEAR
-               " Liviu Ionescu");
+  trace::puts();
 
 #pragma GCC diagnostic push
 
@@ -539,7 +535,7 @@ void __attribute__ ((weak))
 micro_os_plus_startup_initialize_free_store (void* heap_address,
                                              std::size_t heap_size_bytes)
 {
-  trace::printf ("Heap: @0x%08X (%dK)\n", heap_address,
+  trace::printf ("Heap: @0x%08X (%d KiB)\n", heap_address,
                  heap_size_bytes / 1024);
 }
 
@@ -548,10 +544,8 @@ micro_os_plus_startup_initialize_free_store (void* heap_address,
 // other statistics.
 void __attribute__ ((weak)) micro_os_plus_terminate_goodbye (void)
 {
-  trace::puts("\nHasta la Vista!");
+  trace::puts("\nHasta la vista!");
 }
-
-#endif
 
 #pragma GCC diagnostic pop
 

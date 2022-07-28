@@ -62,7 +62,7 @@ void __attribute__ ((weak, noreturn)) abort (void)
  */
 void __attribute__ ((noreturn)) exit (int code)
 {
-  trace_printf ("%s(%d)\n", __func__, code);
+  trace_printf ("\n%s(%d)\n", __func__, code);
 
   // Call the cleanup functions enrolled with atexit().
   __call_exitprocs (code, NULL);
