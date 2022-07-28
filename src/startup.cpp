@@ -569,7 +569,7 @@ void __attribute__ ((weak)) micro_os_plus_terminate_goodbye (void)
 // https://github.com/gcc-mirror/gcc/blob/f8e6e2c046e1015697356ee7079fb39e0cb6add5/libgcc/crtstuff.c#L330
 
 extern "C" void* __dso_handle;
-void* __dso_handle = 0;
+void* __dso_handle = static_cast<void*> (0);
 
 // ----------------------------------------------------------------------------
 
