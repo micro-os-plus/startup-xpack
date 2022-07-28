@@ -26,13 +26,19 @@
 #include <micro-os-plus/diag/trace.h>
 #include <micro-os-plus/startup/hooks.h>
 #include <micro-os-plus/startup/defines.h>
-#include <micro-os-plus/version.h>
 
 #include <cstdint>
 #include <cstdlib>
 #include <algorithm>
 #include <cstring>
 #include <sys/types.h>
+
+#if defined(MICRO_OS_PLUS_INCLUDE_VERSION)
+#include <micro-os-plus/version.h>
+#else
+#define MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_QUICK_VERSION "7.x"
+#define MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_QUICK_YEAR "2022"
+#endif // MICRO_OS_PLUS_INCLUDE_VERSION
 
 // ----------------------------------------------------------------------------
 
@@ -401,6 +407,19 @@ void __attribute__ ((noreturn, weak)) _start (void)
   // trace::printf() calls are available (including in static
   // constructors).
   trace::initialize ();
+
+#if defined(MICRO_OS_PLUS_INCLUDE_VERSION)
+  // For an accurate version, include the `@micro-os-plus/version` package.
+  trace::puts (
+      "\nµOS++ IIIe version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_VERSION);
+  trace::puts ("Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_YEAR
+               " Liviu Ionescu\n");
+#else
+  trace::puts (
+      "\nµOS++ IIIe version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_QUICK_VERSION);
+  trace::puts ("Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_QUICK_YEAR
+               " Liviu Ionescu\n");
+#endif
 
 #if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE)
 

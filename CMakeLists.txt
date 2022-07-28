@@ -67,7 +67,7 @@ target_compile_options(micro-os-plus-startup-interface INTERFACE
 
 target_link_libraries(micro-os-plus-startup-interface INTERFACE
   # Dependencies
-  micro-os-plus::version
+  # micro-os-plus::version # No longer mandatory
   micro-os-plus::diag-trace
   micro-os-plus::architecture
 )

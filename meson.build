@@ -36,7 +36,7 @@ micro_os_plus_startup_dependency = declare_dependency(
     'src/startup.cpp',
   ),
   dependencies: [
-    micro_os_plus_version_dependency,
+    # micro_os_plus_version_dependency, # No longer mandatory
     micro_os_plus_diag_trace_dependency,
     micro_os_plus_architecture_dependency,
   ],
@@ -44,6 +44,8 @@ micro_os_plus_startup_dependency = declare_dependency(
 
 message('+ -I include')
 message('+ src/startup.cpp')
+message('+ src/exit.c')
+message('+ src/_sbrk.c')
 message('> micro_os_plus_startup_dependency')
 
 # -----------------------------------------------------------------------------
