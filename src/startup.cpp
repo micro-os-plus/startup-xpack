@@ -413,13 +413,43 @@ void __attribute__ ((noreturn, weak)) _start (void)
   trace::puts (
       "\nµOS++ IIIe version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_VERSION);
   trace::puts ("Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_YEAR
-               " Liviu Ionescu\n");
+               " Liviu Ionescu");
 #else
+  trace::puts ("\nµOS++ IIIe "
+               "version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_QUICK_VERSION);
   trace::puts (
-      "\nµOS++ IIIe version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_QUICK_VERSION);
-  trace::puts ("Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_QUICK_YEAR
-               " Liviu Ionescu\n");
+      "Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_QUICK_YEAR
+      " Liviu Ionescu");
 #endif
+
+#if defined(__clang__)
+  trace::printf ("Built with clang " __VERSION__);
+#elif defined(__GNUC__)
+  trace::printf ("Built with GCC " __VERSION__);
+#else
+#error "Built with an unknown compiler"
+#endif
+#if !(defined(__APPLE__) || defined(__linux__) || defined(__unix__) \
+      || defined(WIN32))
+// This is relevant only on bare-metal.
+#if defined(__ARM_PCS_VFP) || defined(__ARM_FP)
+  trace::printf (", with FP");
+#else
+  trace::printf (", no FP");
+#endif
+#endif
+#if defined(__EXCEPTIONS)
+  trace::printf (", with exceptions");
+#else
+  trace::printf (", no exceptions");
+#endif
+#if defined(MICRO_OS_PLUS_DEBUG)
+  trace::printf (", with MICRO_OS_PLUS_DEBUG");
+#endif
+#if defined(DEBUG)
+  trace::printf (", with DEBUG");
+#endif
+  trace::puts ("\n");
 
 #if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE)
 
@@ -454,7 +484,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
   micro_os_plus_startup_initialize_args (&argc, &argv);
 
   trace::dump_args (argc, argv);
-  trace::puts();
+  trace::puts ();
 
 #pragma GCC diagnostic push
 
@@ -539,12 +569,11 @@ micro_os_plus_startup_initialize_free_store (void* heap_address,
                  heap_size_bytes / 1024);
 }
 
-
 // The RTOS redefines this function to display memory allocator reports or
 // other statistics.
 void __attribute__ ((weak)) micro_os_plus_terminate_goodbye (void)
 {
-  trace::puts("\nHasta la vista!");
+  trace::puts ("\nHasta la vista!");
 }
 
 #pragma GCC diagnostic pop
