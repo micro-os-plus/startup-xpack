@@ -6,6 +6,11 @@ Please check
 [GitHub](https://github.com/micro-os-plus/startup-xpack/issues/)
 and close existing issues and pull requests.
 
+## 2022-07-30
+
+* v5.2.0
+* 0dc5ed1 #11: Display "Built with GCC..." line on trace
+
 ## 2022-07-28
 
 * v5.1.0
