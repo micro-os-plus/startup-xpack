@@ -37,11 +37,14 @@ micro_os_plus_startup_dependency = declare_dependency(
     'src/exit.c',
     'src/_sbrk.c'
   ),
+  compile_args: [
+    # None.
+  ],
   dependencies: [
     # micro_os_plus_version_dependency, # No longer mandatory
     micro_os_plus_diag_trace_dependency,
     micro_os_plus_architecture_dependency,
-  ],
+  ]
 )
 
 message('+ -I include')
