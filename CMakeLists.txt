@@ -14,7 +14,7 @@
 
 # This file is intended to be consumed by applications with:
 #
-# `add_subdirectory("xpacks/micro-os-plus-startup")`
+# `add_subdirectory("xpacks/@micro-os-plus/startup")`
 #
 # The result is an interface library that can be added to the linker with:
 #
