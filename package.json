@@ -15,9 +15,9 @@
     "type": "git",
     "url": "https://github.com/micro-os-plus/startup.git"
   },
-  "homepage": "https://github.com/micro-os-plus/startup/",
+  "homepage": "https://github.com/micro-os-plus/startup",
   "bugs": {
-    "url": "https://github.com/micro-os-plus/startup/issues/"
+    "url": "https://github.com/micro-os-plus/startup/issues"
   },
   "keywords": [
     "xpack",
@@ -28,7 +28,7 @@
   "author": {
     "name": "Liviu Ionescu",
     "email": "ilg@livius.net",
-    "url": "https://github.com/ilg-ul/"
+    "url": "https://github.com/ilg-ul"
   },
   "license": "MIT",
   "config": {},
