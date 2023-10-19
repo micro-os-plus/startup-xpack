@@ -1,7 +1,7 @@
 {
   "name": "@micro-os-plus/startup",
   "version": "5.2.0",
-  "description": "A source library xPack with the µOS++ startup code for bare-metal platforms",
+  "description": "A source code library with the µOS++ startup code for bare-metal platforms",
   "main": "",
   "scripts": {
     "npm-install": "npm install",
