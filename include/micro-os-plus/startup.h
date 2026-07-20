@@ -1,6 +1,6 @@
 /*
  * This file is part of the µOS++ project (https://micro-os-plus.github.io/).
- * Copyright (c) 2017-2026 Liviu Ionescu. All rights reserved.
+ * Copyright (c) 2021-2026 Liviu Ionescu. All rights reserved.
  *
  * Permission to use, copy, modify, and/or distribute this software
  * for any purpose is hereby granted, under the terms of the MIT license.
@@ -9,13 +9,29 @@
  * be obtained from https://opensource.org/licenses/mit.
  */
 
-#ifndef MICRO_OS_PLUS_STARTUP_HOOKS_H_
-#define MICRO_OS_PLUS_STARTUP_HOOKS_H_
+#ifndef MICRO_OS_PLUS_STARTUP_H_
+#define MICRO_OS_PLUS_STARTUP_H_
 
 // ----------------------------------------------------------------------------
 
+#if __has_include(<micro-os-plus/project-config.h>)
+#include <micro-os-plus/project-config.h>
+#elif __has_include(<micro-os-plus/config.h>)
+#pragma message \
+    "micro-os-plus/config.h is deprecated, rename to micro-os-plus/project-config.h and include it instead of micro-os-plus/config.h"
+#include <micro-os-plus/config.h>
+#endif // __has_include(<micro-os-plus/project-config.h>)
+
+#if __has_include(<micro-os-plus/startup-defines.h>)
+#include <micro-os-plus/startup-defines.h>
+#endif // __has_include(<micro-os-plus/startup-defines.h>)
+
 #include <stddef.h>
 #include <stdbool.h>
+
+// ----------------------------------------------------------------------------
+
+#if defined(MICRO_OS_PLUS_STARTUP_ENABLED)
 
 // ----------------------------------------------------------------------------
 
@@ -34,8 +50,7 @@ extern "C"
    * @{
    */
 
-#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE_EARLY) \
-    || defined(__DOXYGEN__)
+#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
 
   /**
    * @brief Initialise hardware early.
@@ -45,12 +60,11 @@ extern "C"
    *  Nothing.
    */
   void
-  micro_os_plus_startup_initialize_hardware_early (void);
+  micro_os_plus_startup_initialise_hardware_early (void);
 
-#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE_EARLY
+#endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
 
-#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE) \
-    || defined(__DOXYGEN__)
+#if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
 
   /**
    * @brief Initialise hardware.
@@ -60,9 +74,9 @@ extern "C"
    *  Nothing.
    */
   void
-  micro_os_plus_startup_initialize_hardware (void);
+  micro_os_plus_startup_initialise_hardware (void);
 
-#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE
+#endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
 
   /**
    * @brief Initialise the free store.
@@ -72,10 +86,10 @@ extern "C"
    *  Nothing.
    */
   void
-  micro_os_plus_startup_initialize_free_store (void* heap_address,
+  micro_os_plus_startup_initialise_free_store (void* heap_address,
                                                size_t heap_size_bytes);
 
-#if defined(MICRO_OS_PLUS_HAS_INTERRUPTS_STACK) || defined(__DOXYGEN__)
+#if defined(MICRO_OS_PLUS_HAS_INTERRUPTS_STACK)
 
   /**
    * @brief Initialise the interrupts stack.
@@ -85,10 +99,10 @@ extern "C"
    *  Nothing.
    */
   void
-  micro_os_plus_startup_initialize_interrupts_stack (void* stack_begin_address,
+  micro_os_plus_startup_initialise_interrupts_stack (void* stack_begin_address,
                                                      size_t stack_size_bytes);
 
-#endif // MICRO_OS_PLUS_HAS_INTERRUPTS_STACK
+#endif // defined(MICRO_OS_PLUS_HAS_INTERRUPTS_STACK)
 
   /**
    * @brief Initialise arguments.
@@ -96,7 +110,7 @@ extern "C"
    * @param [out] p_argv Pointer to argv.
    */
   void
-  micro_os_plus_startup_initialize_args (int* p_argc, char*** p_argv);
+  micro_os_plus_startup_initialise_args (int* p_argc, char*** p_argv);
 
   /**
    * @}
@@ -123,7 +137,8 @@ extern "C"
    * @par Returns
    *  Nothing.
    */
-  void __attribute__ ((noreturn)) micro_os_plus_terminate (int code);
+  void __attribute__ ((noreturn))
+  micro_os_plus_terminate (int code);
 
   /**
    * @}
@@ -139,6 +154,10 @@ extern "C"
 
 // ----------------------------------------------------------------------------
 
-#endif // MICRO_OS_PLUS_STARTUP_HOOKS_H_
+#endif // defined(MICRO_OS_PLUS_STARTUP_ENABLED)
+
+// ----------------------------------------------------------------------------
+
+#endif // MICRO_OS_PLUS_STARTUP_H_
 
 // ----------------------------------------------------------------------------

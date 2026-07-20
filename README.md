@@ -136,7 +136,7 @@ _start (void);
 Optionally it can define:
 
 ```c
-#if defined(MICRO_OS_PLUS_INCLUDE_EXIT)
+#if defined(MICRO_OS_PLUS_STARTUP_EXIT_ENABLED)
 
 void __attribute__ ((weak, noreturn))
 abort (void);
@@ -150,18 +150,18 @@ _Exit (int code);
 void __attribute__ ((weak, noreturn, alias ("_Exit")))
 _exit (int status);
 
-#endif // MICRO_OS_PLUS_INCLUDE_EXIT
+#endif // defined(MICRO_OS_PLUS_STARTUP_EXIT_ENABLED)
 ```
 
 and also:
 
 ```c
-#if defined(MICRO_OS_PLUS_INCLUDE_SBRK)
+#if defined(MICRO_OS_PLUS_STARTUP_SBRK_ENABLED)
 
 void*
 _sbrk (ptrdiff_t incr);
 
-#endif // defined(MICRO_OS_PLUS_INCLUDE_SBRK)
+#endif // defined(MICRO_OS_PLUS_STARTUP_SBRK_ENABLED)
 ```
 
 ### Hooks
@@ -169,23 +169,23 @@ _sbrk (ptrdiff_t incr);
 The
 
 ```c
-#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE_EARLY)
+#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
 
 void
-micro_os_plus_startup_initialize_hardware_early (void);
+micro_os_plus_startup_initialise_hardware_early (void);
 
-#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE_EARLY
+#endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
 
-#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE)
+#if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
 
 void
-micro_os_plus_startup_initialize_hardware (void);
+micro_os_plus_startup_initialise_hardware (void);
 
-#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE
+#endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
 
 // A weak definition is provided here.
 void
-micro_os_plus_startup_initialize_free_store (void* heap_address,
+micro_os_plus_startup_initialise_free_store (void* heap_address,
                                               size_t heap_size_bytes);
 
 // A weak definition is provided here. The RTOS redefines it.
@@ -220,7 +220,7 @@ The following folders should be passed to the compiler during the build:
 The header files to be included in user projects are:
 
 ```c++
-#include <micro-os-plus/startup/hooks.h>
+#include <micro-os-plus/startup.h>
 ```
 
 #### Source files
@@ -231,14 +231,13 @@ The source files to be added to the build are:
 
 #### Preprocessor definitions
 
-- `MICRO_OS_PLUS_INCLUDE_CONFIG_H` - to include `<micro-os-plus/config.h>`
-- `MICRO_OS_PLUS_INCLUDE_STARTUP` - to include the startup code
-- `MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE_EARLY`
-- `MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE`
-- `MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS`
-- `MICRO_OS_PLUS_INCLUDE_SBRK`
-- `MICRO_OS_PLUS_INCLUDE_EXIT`
-- `MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS=false`
+- `MICRO_OS_PLUS_STARTUP_ENABLED` - to include the startup code
+- `MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_EARLY_ENABLED`
+- `MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED`
+- `MICRO_OS_PLUS_STARTUP_INIT_MULTIPLE_RAM_SECTIONS_ENABLED`
+- `MICRO_OS_PLUS_STARTUP_SBRK_ENABLED`
+- `MICRO_OS_PLUS_STARTUP_EXIT_ENABLED`
+- `MICRO_OS_PLUS_STARTUP_GUARD_CHECKS_ENABLED`
 
 #### Compiler options
 
@@ -317,7 +316,7 @@ TBD
 According to [semver](https://semver.org) rules:
 
 > Major version X (X.y.z | X > 0) MUST be incremented if any
-backwards incompatible changes are introduced to the public API.
+> backwards incompatible changes are introduced to the public API.
 
 The incompatible changes, in reverse chronological order,
 are:
@@ -330,6 +329,6 @@ are:
 ## License
 
 Unless otherwise stated, the content is released under the terms of the
-[MIT License](https://opensource.org/licenses/mit/),
+[MIT License](https://opensource.org/licenses/mit),
 with all rights reserved to
 [Liviu Ionescu](https://github.com/ilg-ul).

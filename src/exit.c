@@ -9,26 +9,26 @@
  * be obtained from https://opensource.org/licenses/mit.
  */
 
+// ----------------------------------------------------------------------------
+
 #if (!(defined(__APPLE__) || defined(__linux__) || defined(__unix__))) \
     || defined(__DOXYGEN__)
 
 // ----------------------------------------------------------------------------
 
-#if __has_include(<micro-os-plus/project-config.h>)
-#include <micro-os-plus/project-config.h>
-#elif __has_include(<micro-os-plus/config.h>)
-#pragma message "micro-os-plus/config.h is deprecated, rename to micro-os-plus/project-config.h and include it instead of micro-os-plus/config.h"
-#include <micro-os-plus/config.h>
-#endif // __has_include(<micro-os-plus/project-config.h>)
-
-#if defined(MICRO_OS_PLUS_INCLUDE_EXIT)
-
-#include <micro-os-plus/startup/hooks.h>
+#include <micro-os-plus/startup.h>
 #include <micro-os-plus/architecture.h>
 #include <micro-os-plus/diag/trace.h>
 
 #include <stdlib.h>
 #include <stdbool.h>
+
+// ----------------------------------------------------------------------------
+
+#if defined(MICRO_OS_PLUS_STARTUP_ENABLED) \
+    && defined(MICRO_OS_PLUS_STARTUP_EXIT_ENABLED)
+
+// ----------------------------------------------------------------------------
 
 extern void
 micro_os_plus_run_fini_array (void);
@@ -38,9 +38,10 @@ __call_exitprocs (int, void*);
 
 // ----------------------------------------------------------------------------
 
-void __attribute__ ((weak, noreturn)) abort (void)
+void __attribute__ ((weak, noreturn))
+abort (void)
 {
-  trace_puts ("abort(), exiting...");
+  micro_os_plus_trace_puts ("abort(), exiting...");
 
   _Exit (1);
   /* NOTREACHED */
@@ -62,9 +63,10 @@ void __attribute__ ((weak, noreturn)) abort (void)
  * When all cleanups are done, `_Exit()` is called to perform
  * the actual termination.
  */
-void __attribute__ ((noreturn)) exit (int code)
+void __attribute__ ((noreturn))
+exit (int code)
 {
-  trace_printf ("\n%s(%d)\n", __func__, code);
+  micro_os_plus_trace_printf ("\n%s(%d)\n", __func__, code);
 
   // Call the cleanup functions enrolled with atexit().
   __call_exitprocs (code, NULL);
@@ -94,9 +96,6 @@ void __attribute__ ((noreturn)) exit (int code)
 // ----------------------------------------------------------------------------
 
 #pragma GCC diagnostic push
-//#pragma GCC diagnostic ignored "-Wunused-parameter"
-// arm-none-eabi/include/stdlib.h:202:6: note: '_exit' target declared here
-//  202 | void _Exit (int __status) _ATTRIBUTE ((__noreturn__));
 #pragma GCC diagnostic ignored "-Wmissing-attributes"
 
 // On Release, call the hardware reset procedure.
@@ -106,15 +105,16 @@ void __attribute__ ((noreturn)) exit (int code)
 // is required. For example, when semihosting is used, this
 // function sends the return code to the host.
 
-void __attribute__ ((weak, noreturn)) _Exit (int code)
+void __attribute__ ((weak, noreturn))
+_Exit (int code)
 {
-  trace_printf ("%s(%d)\n", __func__, code);
+  micro_os_plus_trace_printf ("%s(%d)\n", __func__, code);
 
   // Print some statistics about memory use.
   micro_os_plus_terminate_goodbye ();
 
   // Gracefully terminate the trace session.
-  trace_flush ();
+  micro_os_plus_trace_flush ();
 
   // Reset hardware or terminate the semihosting session.
   micro_os_plus_terminate (code);
@@ -129,11 +129,13 @@ void __attribute__ ((weak, noreturn)) _Exit (int code)
   /* NOTREACHED */
 }
 
-void __attribute__ ((weak, noreturn, alias ("_Exit"))) _exit (int status);
+void __attribute__ ((weak, noreturn, alias ("_Exit")))
+_exit (int status);
 
 #pragma GCC diagnostic pop
 
-#endif // MICRO_OS_PLUS_INCLUDE_EXIT
+#endif // defined(MICRO_OS_PLUS_STARTUP_ENABLED) &&
+       // defined(MICRO_OS_PLUS_STARTUP_EXIT_ENABLED)
 
 // ----------------------------------------------------------------------------
 

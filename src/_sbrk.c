@@ -14,20 +14,18 @@
 
 // ----------------------------------------------------------------------------
 
-#if __has_include(<micro-os-plus/project-config.h>)
-#include <micro-os-plus/project-config.h>
-#elif __has_include(<micro-os-plus/config.h>)
-#pragma message "micro-os-plus/config.h is deprecated, rename to micro-os-plus/project-config.h and include it instead of micro-os-plus/config.h"
-#include <micro-os-plus/config.h>
-#endif // __has_include(<micro-os-plus/project-config.h>)
-
-#if defined(MICRO_OS_PLUS_INCLUDE_SBRK)
+#include <micro-os-plus/startup.h>
 
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <errno.h>
 #include <stddef.h>
+
+// ----------------------------------------------------------------------------
+
+#if defined(MICRO_OS_PLUS_STARTUP_ENABLED) \
+    && defined(MICRO_OS_PLUS_STARTUP_SBRK_ENABLED)
 
 // ----------------------------------------------------------------------------
 
@@ -39,13 +37,13 @@ _sbrk (ptrdiff_t incr);
 // The definitions used here should be kept in sync with the
 // stack definitions in the linker script.
 
-extern uint32_t __heap_begin__; // Defined by the linker.
-extern uint32_t __heap_end__; // Defined by the linker.
+extern uint32_t __heap_begin__; // Defined by the linker script.
+extern uint32_t __heap_end__; // Defined by the linker script.
 
-#if defined(MICRO_OS_PLUS_USE_SEMIHOSTING)
+#if defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
 // Heap limit returned from SYS_HEAPINFO semihosting call.
 char* __heap_limit = (char*)0xCAFEDEAD;
-#endif // MICRO_OS_PLUS_USE_SEMIHOSTING
+#endif // defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
 
 void*
 _sbrk (ptrdiff_t incr)
@@ -66,11 +64,11 @@ _sbrk (ptrdiff_t incr)
   // hence make sure we always add a multiple of 4 to it.
   incr = (incr + 3) & (~3); // align value to 4
   if ((current_heap_end + incr > (char*)&__heap_end__)
-#if defined(MICRO_OS_PLUS_USE_SEMIHOSTING)
+#if defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
       // Honour heap limit if it's valid.
       || (__heap_limit != (char*)0xCAFEDEAD
           && current_heap_end + incr > __heap_limit)
-#endif // MICRO_OS_PLUS_USE_SEMIHOSTING
+#endif // defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
   )
     {
       // Some of the libstdc++-v3 tests rely upon detecting 'out of memory'
@@ -85,7 +83,8 @@ _sbrk (ptrdiff_t incr)
   return (caddr_t)current_block_address;
 }
 
-#endif // defined(MICRO_OS_PLUS_INCLUDE_SBRK)
+#endif // defined(MICRO_OS_PLUS_STARTUP_ENABLED) &&
+       // defined(MICRO_OS_PLUS_STARTUP_SBRK_ENABLED)
 
 // ----------------------------------------------------------------------------
 

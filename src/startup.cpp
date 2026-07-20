@@ -14,33 +14,29 @@
 
 // ----------------------------------------------------------------------------
 
-#if __has_include(<micro-os-plus/project-config.h>)
-#include <micro-os-plus/project-config.h>
-#elif __has_include(<micro-os-plus/config.h>)
-#pragma message "micro-os-plus/config.h is deprecated, rename to micro-os-plus/project-config.h and include it instead of micro-os-plus/config.h"
-#include <micro-os-plus/config.h>
-#endif // __has_include(<micro-os-plus/project-config.h>)
-
-#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP)
-
 #include <micro-os-plus/architecture.h>
 
 #include <micro-os-plus/diag/trace.h>
-#include <micro-os-plus/startup/hooks.h>
-#include <micro-os-plus/startup/defines.h>
+#include <micro-os-plus/startup.h>
+#include <micro-os-plus/semihosting.h>
 
 #include <cstdint>
 #include <cstdlib>
 #include <algorithm>
 #include <cstring>
 #include <sys/types.h>
+#include <inttypes.h>
 
-#if defined(MICRO_OS_PLUS_INCLUDE_VERSION)
+#if __has_include(<micro-os-plus/version.h>)
 #include <micro-os-plus/version.h>
 #else
-#define MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_QUICK_VERSION "7.x"
-#define MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_QUICK_YEAR "2022"
-#endif // MICRO_OS_PLUS_INCLUDE_VERSION
+#define MICRO_OS_PLUS_QUICK_VERSION_STRING "7.x"
+#define MICRO_OS_PLUS_QUICK_YEAR_INTEGER "2026"
+#endif // __has_include(<micro-os-plus/version.h>)
+
+// ----------------------------------------------------------------------------
+
+#if defined(MICRO_OS_PLUS_STARTUP_ENABLED)
 
 // ----------------------------------------------------------------------------
 
@@ -62,13 +58,13 @@ using namespace micro_os_plus;
 // - run the fini array (for the C++ static destructors)
 // - call _exit(), directly or via exit()
 //
-// If MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_MULTIPLE_RAM_SECTIONS is
+// If MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS is
 // defined, the code is capable of initializing multiple regions.
 //
 // Note: External memory with variable size (size known after reading the
 // chip type) cannot be initialized via these linker script static tables
 // and need to be processed in the
-// `micro_os_plus_startup_initialize_hardware_early ()` hook.
+// `micro_os_plus_startup_initialise_hardware_early ()` hook.
 //
 // The normal configuration is standalone, with all support
 // functions implemented locally.
@@ -84,7 +80,7 @@ using namespace micro_os_plus;
 // ----------------------------------------------------------------------------
 
 // All following symbols should be defined in the linker script.
-#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_MULTIPLE_RAM_SECTIONS)
+#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
 
 // Begin address for the initialization values of the .data section.
 extern std::uintptr_t __data_load_addr__;
@@ -112,7 +108,7 @@ extern uint32_t __data_regions_array_end__;
 extern uint32_t __bss_regions_array_begin__;
 extern uint32_t __bss_regions_array_end__;
 
-#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_MULTIPLE_RAM_SECTIONS
+#endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
 
 extern uint32_t __heap_begin__;
 extern uint32_t __heap_end__;
@@ -140,12 +136,12 @@ extern "C"
   _start (void);
 
   static void
-  micro_os_plus_initialize_data (std::uintptr_t* from,
+  micro_os_plus_initialise_data (std::uintptr_t* from,
                                  std::uintptr_t* region_begin,
                                  std::uintptr_t* region_end);
 
   static void
-  micro_os_plus_initialize_bss (std::uintptr_t* region_begin,
+  micro_os_plus_initialise_bss (std::uintptr_t* region_begin,
                                 std::uintptr_t* region_end);
 
   static void
@@ -163,7 +159,7 @@ extern "C"
 // ----------------------------------------------------------------------------
 
 inline __attribute__ ((always_inline)) void
-micro_os_plus_initialize_data (std::uintptr_t* from,
+micro_os_plus_initialise_data (std::uintptr_t* from,
                                std::uintptr_t* region_begin,
                                std::uintptr_t* region_end)
 {
@@ -177,7 +173,7 @@ micro_os_plus_initialize_data (std::uintptr_t* from,
 }
 
 inline __attribute__ ((always_inline)) void
-micro_os_plus_initialize_bss (std::uintptr_t* region_begin,
+micro_os_plus_initialise_bss (std::uintptr_t* region_begin,
                               std::uintptr_t* region_end)
 {
   // Iterate and clear word by word.
@@ -249,22 +245,22 @@ micro_os_plus_run_fini_array (void)
 
 #define BSS_GUARD_BAD_VALUE (0xCADEBABA)
 
-static uint32_t volatile __attribute__ ((section (".bss_begin")))
-__bss_begin_guard;
+static uint32_t volatile
+    __attribute__ ((section (".bss_begin"))) __bss_begin_guard;
 
-static uint32_t volatile __attribute__ ((section (".bss_end")))
-__bss_end_guard;
+static uint32_t volatile
+    __attribute__ ((section (".bss_end"))) __bss_end_guard;
 
 #define DATA_GUARD_BAD_VALUE (0xCADEBABA)
 #define DATA_BEGIN_GUARD_VALUE (0x12345678)
 #define DATA_END_GUARD_VALUE (0x98765432)
 
-static uint32_t volatile __attribute__ ((section (".data_begin")))
-__data_begin_guard
+static uint32_t volatile
+    __attribute__ ((section (".data_begin"))) __data_begin_guard
     = DATA_BEGIN_GUARD_VALUE; // 305419896
 
-static uint32_t volatile __attribute__ ((section (".data_end")))
-__data_end_guard
+static uint32_t volatile
+    __attribute__ ((section (".data_end"))) __data_end_guard
     = DATA_END_GUARD_VALUE; // 2557891634
 
 #endif // defined(MICRO_OS_PLUS_DEBUG) &&
@@ -282,11 +278,12 @@ __data_end_guard
  * Debugging new startup configurations usually begins with placing
  * a breakpoint at `_start()`, and stepping through the routine.
  */
-void __attribute__ ((noreturn, weak)) _start (void)
+void __attribute__ ((noreturn, weak))
+_start (void)
 {
   // --------------------------------------------------------------------------
 
-#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE_EARLY)
+#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
 
   // Initialize hardware right after reset, to switch clock to higher
   // frequency and have the rest of the initializations run faster.
@@ -300,9 +297,9 @@ void __attribute__ ((noreturn, weak)) _start (void)
   //
   // On devices with an active watchdog, configure or disable it
   // to accommodate for the initializations duration.
-  micro_os_plus_startup_initialize_hardware_early ();
+  micro_os_plus_startup_initialise_hardware_early ();
 
-#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE_EARLY
+#endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
 
   // Use Old Style DATA and BSS section initialization,
   // that will manage a single BSS sections.
@@ -316,12 +313,13 @@ void __attribute__ ((noreturn, weak)) _start (void)
       __data_begin_guard = DATA_GUARD_BAD_VALUE;
       __data_end_guard = DATA_GUARD_BAD_VALUE;
 
-#endif // MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS
+#endif // defined(MICRO_OS_PLUS_DEBUG) &&
+       // (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
-#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_MULTIPLE_RAM_SECTIONS)
+#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
 
       // Copy the DATA segment from flash to RAM (inlined).
-      micro_os_plus_initialize_data (&__data_load_addr__, &__data_begin__,
+      micro_os_plus_initialise_data (&__data_load_addr__, &__data_begin__,
                                      &__data_end__);
 
       // Alternate solution in case the compiler complains about
@@ -341,10 +339,10 @@ void __attribute__ ((noreturn, weak)) _start (void)
           uint32_t* region_begin = (uint32_t*)(*p++);
           uint32_t* region_end = (uint32_t*)(*p++);
 
-          micro_os_plus_initialize_data (from, region_begin, region_end);
+          micro_os_plus_initialise_data (from, region_begin, region_end);
         }
 
-#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_MULTIPLE_RAM_SECTIONS
+#endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
 
 #if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
@@ -359,7 +357,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
             }
         }
 
-#endif // MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS
+#endif // defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
     }
 
 #if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
@@ -369,10 +367,10 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
 #endif
 
-#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_MULTIPLE_RAM_SECTIONS)
+#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
 
   // Zero fill the BSS section (inlined).
-  micro_os_plus_initialize_bss (&__bss_begin__, &__bss_end__);
+  micro_os_plus_initialise_bss (&__bss_begin__, &__bss_end__);
 
 #else
 
@@ -386,10 +384,10 @@ void __attribute__ ((noreturn, weak)) _start (void)
       uint32_t* region_begin = (uint32_t*)(*p++);
       uint32_t* region_end = (uint32_t*)(*p++);
 
-      micro_os_plus_initialize_bss (region_begin, region_end);
+      micro_os_plus_initialise_bss (region_begin, region_end);
     }
 
-#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_MULTIPLE_RAM_SECTIONS
+#endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
 
 #if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
@@ -403,14 +401,14 @@ void __attribute__ ((noreturn, weak)) _start (void)
         }
     }
 
-#endif // MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS
+#endif // defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
   // Initialize the trace output device. From this moment on,
   // trace::printf() calls are available (including in static
   // constructors).
-  trace::initialize ();
+  trace::initialise ();
 
-#if defined(MICRO_OS_PLUS_INCLUDE_VERSION)
+#if defined(MICRO_OS_PLUS_VERSION_ENABLED)
   // For an accurate version, include the `@micro-os-plus/version` package.
   trace::puts (
       "\nµOS++ IIIe version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_VERSION);
@@ -418,10 +416,9 @@ void __attribute__ ((noreturn, weak)) _start (void)
                " Liviu Ionescu");
 #else
   trace::puts ("\nµOS++ IIIe "
-               "version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_QUICK_VERSION);
-  trace::puts (
-      "Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_QUICK_YEAR
-      " Liviu Ionescu");
+               "version " MICRO_OS_PLUS_QUICK_VERSION_STRING);
+  trace::puts ("Copyright (c) 2007-" MICRO_OS_PLUS_QUICK_YEAR_INTEGER
+               " Liviu Ionescu");
 #endif
 
 #if defined(__clang__)
@@ -453,22 +450,22 @@ void __attribute__ ((noreturn, weak)) _start (void)
 #endif
   trace::puts ("\n");
 
-#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE)
+#if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
 
   // Hook to continue the initializations. Usually compute and store the
   // clock frequency in a global variable, cleared above.
-  micro_os_plus_startup_initialize_hardware ();
+  micro_os_plus_startup_initialise_hardware ();
   trace::puts ("Hardware initialized");
 
-#endif // MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALIZE_HARDWARE
+#endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED
 
-#if defined(MICRO_OS_PLUS_USE_SEMIHOSTING)
+#if defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
   initialise_monitor_handles ();
-#endif // MICRO_OS_PLUS_USE_SEMIHOSTING
+#endif // defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
 
   // Must be done before `micro_os_plus_run_init_array()`, in case
   // dynamic memory is needed in constructors.
-  micro_os_plus_startup_initialize_free_store (
+  micro_os_plus_startup_initialise_free_store (
       &__heap_begin__, static_cast<std::size_t> (
                            (reinterpret_cast<char*> ((&__heap_end__))
                             - reinterpret_cast<char*> ((&__heap_begin__)))));
@@ -483,7 +480,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
   // Get the argc/argv (useful in semihosting configurations).
   int argc;
   char** argv;
-  micro_os_plus_startup_initialize_args (&argc, &argv);
+  micro_os_plus_startup_initialise_args (&argc, &argv);
 
   trace::dump_args (argc, argv);
   trace::puts ();
@@ -515,10 +512,10 @@ void __attribute__ ((noreturn, weak)) _start (void)
 
 // ----------------------------------------------------------------------------
 
-#if !defined(MICRO_OS_PLUS_USE_SEMIHOSTING)
+#if !defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
 
 // Semihosting uses a more elaborate version of
-// micro_os_plus_startup_initialize_args() to parse arguments received from
+// micro_os_plus_startup_initialise_args() to parse arguments received from
 // host.
 
 #pragma GCC diagnostic push
@@ -534,7 +531,7 @@ void __attribute__ ((noreturn, weak)) _start (void)
 // non-volatile memory.
 
 void __attribute__ ((weak))
-micro_os_plus_startup_initialize_args (int* p_argc, char*** p_argv)
+micro_os_plus_startup_initialise_args (int* p_argc, char*** p_argv)
 {
   // By the time we reach this, the data and bss should have been initialized.
 
@@ -557,23 +554,25 @@ micro_os_plus_startup_initialize_args (int* p_argc, char*** p_argv)
 
 #pragma GCC diagnostic pop
 
-#endif // !defined(MICRO_OS_PLUS_USE_SEMIHOSTING)
+#endif // !defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
 // Redefine this function to initialise the free store.
 void __attribute__ ((weak))
-micro_os_plus_startup_initialize_free_store (void* heap_address,
+micro_os_plus_startup_initialise_free_store (void* heap_address,
                                              std::size_t heap_size_bytes)
 {
-  trace::printf ("Heap: @0x%08X (%d KiB)\n", heap_address,
+  trace::printf ("Heap: @0x%08" PRIXPTR " (%d KiB)\n",
+                 reinterpret_cast<std::uintptr_t> (heap_address),
                  heap_size_bytes / 1024);
 }
 
 // The RTOS redefines this function to display memory allocator reports or
 // other statistics.
-void __attribute__ ((weak)) micro_os_plus_terminate_goodbye (void)
+void __attribute__ ((weak))
+micro_os_plus_terminate_goodbye (void)
 {
   trace::puts ("\nHasta la vista!");
 }
@@ -598,7 +597,7 @@ void* __dso_handle = static_cast<void*> (0);
 
 // ----------------------------------------------------------------------------
 
-#endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP)
+#endif // defined(MICRO_OS_PLUS_STARTUP_ENABLED)
 
 // ----------------------------------------------------------------------------
 
