@@ -1,0 +1,76 @@
+{
+  "$schema": "https://xpack.github.io/xcdl/schemas/xcdl-2.0.0.json",
+  "minimumXcdlRequired": "2.0.0",
+  "license": "MIT",
+  "copyright": "Copyright (c) 2022-2026 Liviu Ionescu. All rights reserved.",
+  "cdlComponents": [
+    {
+      "id": "micro-os-plus.startup",
+      "display": "Startup code",
+      "description": "The portable startup C++ code for µOS++ applications",
+      "defaultEnable": true,
+      "publicIncludeFolders": [
+        "include"
+      ],
+      "sourceFiles": [
+        "src/startup.cpp"
+      ],
+      "dependencies": [
+        "micro-os-plus.architecture",
+        "micro-os-plus.diag.trace",
+        "micro-os-plus.semihosting"
+      ],
+      // "defaultDefine": "MICRO_OS_PLUS_STARTUP_ENABLED",
+      "cdlOptions": [
+        {
+          "id": "guard-checks",
+          "display": "Guard checks",
+          "description": "Add guard checks for data & bss",
+          // "defaultDefine": "MICRO_OS_PLUS_STARTUP_GUARD_CHECKS_ENABLED"
+        },
+        {
+          "id": "initialise-multiple-ram-sections",
+          "display": "Initialise multiple RAM sections",
+          "description": "Iterate over the array of multiple RAM sections, if supported by the architecture",
+          // "defaultDefine": "MICRO_OS_PLUS_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS_ENABLED"
+        },
+        {
+          "id": "initialise-hardware-early",
+          "display": "Initialise hardware early",
+          "description": "Call the custom early hardware initialization",
+          // "defaultDefine": "MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_EARLY_ENABLED"
+        },
+        {
+          "id": "initialise-hardware",
+          "display": "Initialise hardware",
+          "description": "Call the custom hardware initialization",
+          // "defaultDefine": "MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED"
+        }
+      ],
+      "cdlComponents": [
+        {
+          "id": "exit",
+          "display": "Exit and abort",
+          "description": "The exit() and abort() functions used to terminate the application in a civilised way, especially when using semihosting",
+          "sourceFiles": [
+            "src/exit.c"
+          ],
+          "dependencies": [
+            "micro-os-plus.architecture",
+            "micro-os-plus.diag.trace"
+          ],
+          // "defaultDefine": "MICRO_OS_PLUS_STARTUP_EXIT_ENABLED"
+        },
+        {
+          "id": "sbrk",
+          "display": "sbrk allocator",
+          "description": "The low level heap allocator, in sync with the startup and the linker scripts",
+          "sourceFiles": [
+            "src/_sbrk.c"
+          ],
+          // "defaultDefine": "MICRO_OS_PLUS_STARTUP_SBRK_ENABLED"
+        }
+      ]
+    }
+  ]
+}
