@@ -6,9 +6,80 @@ Please check
 [GitHub](https://github.com/micro-os-plus/startup-xpack/issues/)
 and close existing issues and pull requests.
 
+## 2026-07-20
+
+* 66ac557 update for new xcdl macros
+* 3c3f9ad update with xcdl-export
+* fdfc9d2 update xcdl-package.jsonc
+* 3b0832c re-generate top commons
+
+## 2026-06-11
+
+* fce1977 prefer project-config.h
+
+## 2026-06-06
+
+* 96ddc1f use __has_include(<micro-os-plus/config.h>)
+* eb580d4 copyright update 2026
+
+## 2025-11-20
+
+* ec98bef rename npm-pack
+
+## 2025-10-07
+
+* 7a971d9 update copyright notices
+
+## 2023-11-28
+
+* 5e6ed62 README updates
+* 2d49acf package.json: cosmetise scripts
+
+## 2023-10-19
+
+* aa48828 package.json: cosmetise description
+* 714f4fe README updates
+
+## 2023-07-14
+
+* 03d0318 README updates
+* 9615bf7 package.json: cosmetise urls
+* 782fb27 package.json: minXpm 0.16.2
+
+## 2023-06-04
+
+* 99ed1bd update for @scope/name
+
+## 2023-06-03
+
+* f5a9a8a lower case ci.yml
+* 73fc208 package.json min 0.16.0
+
+## 2023-05-08
+
+* b37fe81 .npmignore update
+* 9ad993e README updates
+* 34b49be README updates
+* 9bcc4e9 meson.build cosmetics
+
+## 2022-08-16
+
+* 918c43b package.json min 0.14.0 & defaults
+
+## 2022-08-03
+
+* f6cc591 README updates
+* 5bfb7af .vscode/settings.json: cmake.ignoreCMakeListsMissing
+* d938287 .vscode/settings.json: makefile.configureOnOpen
+
+## 2022-08-02
+
+* 109c859 READMEs updates
+
 ## 2022-07-30
 
-* v5.2.0
+* d8d1d81 5.2.0
+* cb13874 prepare v5.2.0
 * 0dc5ed1 #11: Display "Built with GCC..." line on trace
 
 ## 2022-07-28
