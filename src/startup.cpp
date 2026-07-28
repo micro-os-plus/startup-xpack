@@ -564,7 +564,7 @@ void __attribute__ ((weak))
 micro_os_plus_startup_initialise_free_store (void* heap_address,
                                              std::size_t heap_size_bytes)
 {
-  trace::printf ("Heap: @0x%08" PRIXPTR " (%d KiB)\n",
+  trace::printf ("Heap: @0x%08" PRIXPTR " (%zu KiB)\n",
                  reinterpret_cast<std::uintptr_t> (heap_address),
                  heap_size_bytes / 1024);
 }
