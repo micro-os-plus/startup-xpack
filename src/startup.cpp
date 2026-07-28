@@ -14,11 +14,11 @@
 
 // ----------------------------------------------------------------------------
 
-#include <micro-os-plus/architecture.h>
+#include "micro-os-plus/architecture.h"
 
-#include <micro-os-plus/diag/trace.h>
-#include <micro-os-plus/startup.h>
-#include <micro-os-plus/semihosting.h>
+#include "micro-os-plus/diag/trace.h"
+#include "micro-os-plus/startup.h"
+#include "micro-os-plus/semihosting.h"
 
 #include <cstdint>
 #include <cstdlib>
@@ -238,7 +238,8 @@ micro_os_plus_run_fini_array (void)
 
 #pragma GCC diagnostic pop
 
-#if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
+#if defined(MICRO_OS_PLUS_DEBUG_ENABLED) \
+    && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
 // These definitions are used to check if the routines used to
 // clear the BSS and to copy the initialized DATA perform correctly.
@@ -263,7 +264,7 @@ static uint32_t volatile
     __attribute__ ((section (".data_end"))) __data_end_guard
     = DATA_END_GUARD_VALUE; // 2557891634
 
-#endif // defined(MICRO_OS_PLUS_DEBUG) &&
+#endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED) &&
        // (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
 /**
@@ -308,13 +309,14 @@ _start (void)
   // no need to copy.
   if (&__data_load_addr__ != &__data_begin__)
     {
-#if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
+#if defined(MICRO_OS_PLUS_DEBUG_ENABLED) \
+    && defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
       __data_begin_guard = DATA_GUARD_BAD_VALUE;
       __data_end_guard = DATA_GUARD_BAD_VALUE;
 
-#endif // defined(MICRO_OS_PLUS_DEBUG) &&
-       // (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
+#endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED) &&
+       // defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
 #if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
 
@@ -344,7 +346,8 @@ _start (void)
 
 #endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
 
-#if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
+#if defined(MICRO_OS_PLUS_DEBUG_ENABLED) \
+    && defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
       if ((__data_begin_guard != DATA_BEGIN_GUARD_VALUE)
           || (__data_end_guard != DATA_END_GUARD_VALUE))
@@ -357,10 +360,12 @@ _start (void)
             }
         }
 
-#endif // defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
+#endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED) &&
+       // defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
     }
 
-#if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
+#if defined(MICRO_OS_PLUS_DEBUG_ENABLED) \
+    && defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
   __bss_begin_guard = BSS_GUARD_BAD_VALUE;
   __bss_end_guard = BSS_GUARD_BAD_VALUE;
@@ -389,7 +394,8 @@ _start (void)
 
 #endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
 
-#if defined(MICRO_OS_PLUS_DEBUG) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
+#if defined(MICRO_OS_PLUS_DEBUG_ENABLED) \
+    && defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
   if ((__bss_begin_guard != 0) || (__bss_end_guard != 0))
     {
@@ -401,7 +407,8 @@ _start (void)
         }
     }
 
-#endif // defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
+#endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED) &&
+       // defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
   // Initialize the trace output device. From this moment on,
   // trace::printf() calls are available (including in static
@@ -442,12 +449,12 @@ _start (void)
 #else
   trace::printf (", no exceptions");
 #endif
-#if defined(MICRO_OS_PLUS_DEBUG)
-  trace::printf (", with MICRO_OS_PLUS_DEBUG");
-#endif
+#if defined(MICRO_OS_PLUS_DEBUG_ENABLED)
+  trace::printf (", with MICRO_OS_PLUS_DEBUG_ENABLED");
+#endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED)
 #if defined(DEBUG)
   trace::printf (", with DEBUG");
-#endif
+#endif // defined(DEBUG)
   trace::puts ("\n");
 
 #if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
@@ -500,9 +507,9 @@ _start (void)
   exit (code);
 
   // Oops, should not get here.
-#if defined(MICRO_OS_PLUS_DEBUG)
+#if defined(MICRO_OS_PLUS_DEBUG_ENABLED)
   architecture::brk ();
-#endif // defined(MICRO_OS_PLUS_DEBUG)
+#endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED)
   while (true)
     {
       architecture::wfi ();

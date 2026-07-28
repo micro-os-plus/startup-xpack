@@ -38,7 +38,7 @@
 #if defined(__cplusplus)
 extern "C"
 {
-#endif // __cplusplus
+#endif // defined(__cplusplus)
 
   /**
    * @addtogroup micro-os-plus-app-hooks
@@ -150,7 +150,7 @@ extern "C"
 
 #if defined(__cplusplus)
 }
-#endif // __cplusplus
+#endif // defined(__cplusplus)
 
 // ----------------------------------------------------------------------------
 

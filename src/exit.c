@@ -82,9 +82,9 @@ exit (int code)
   // overloaded by the application, better safe than sorry.
   micro_os_plus_terminate (code);
 
-#if defined(MICRO_OS_PLUS_DEBUG)
+#if defined(MICRO_OS_PLUS_DEBUG_ENABLED)
   micro_os_plus_architecture_brk ();
-#endif // defined(MICRO_OS_PLUS_DEBUG)
+#endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED)
   // If it does not want to die, loop.
   while (true)
     {
@@ -119,9 +119,9 @@ _Exit (int code)
   // Reset hardware or terminate the semihosting session.
   micro_os_plus_terminate (code);
 
-#if defined(MICRO_OS_PLUS_DEBUG)
+#if defined(MICRO_OS_PLUS_DEBUG_ENABLED)
   micro_os_plus_architecture_brk ();
-#endif // defined(MICRO_OS_PLUS_DEBUG)
+#endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED)
   while (true)
     {
       micro_os_plus_architecture_wfi ();
