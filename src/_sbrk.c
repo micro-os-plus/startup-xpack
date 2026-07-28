@@ -14,7 +14,7 @@
 
 // ----------------------------------------------------------------------------
 
-#include <micro-os-plus/startup.h>
+#include "micro-os-plus/startup.h"
 
 #include <unistd.h>
 #include <stdlib.h>

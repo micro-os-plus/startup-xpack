@@ -16,9 +16,9 @@
 
 // ----------------------------------------------------------------------------
 
-#include <micro-os-plus/startup.h>
-#include <micro-os-plus/architecture.h>
-#include <micro-os-plus/diag/trace.h>
+#include "micro-os-plus/startup.h"
+#include "micro-os-plus/architecture.h"
+#include "micro-os-plus/diag/trace.h"
 
 #include <stdlib.h>
 #include <stdbool.h>
