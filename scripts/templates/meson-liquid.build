@@ -1,8 +1,8 @@
 {%- assign packageScope = package.name | remove_first: '@' | split: '/' | first %}
 {%- assign packageName = package.name | remove_first: '@' | split: '/' | last -%}
 # -----------------------------------------------------------------------------
-# DO NOT EDIT!
-# Automatically generated from {{libraryFilePath}}.
+# DO NOT EDIT! Automatically generated from template file:
+# {{libraryFilePath}}
 #
 # This file is part of the µOS++ project (https://micro-os-plus.github.io/).
 # Copyright (c) 2022-2026 Liviu Ionescu. All rights reserved.
@@ -23,6 +23,7 @@
 #
 {% for component in xcdl.cdlComponents -%}
 {%- assign nameUnderscore = component.id | replace: '-', '_' | replace: '.', '_' -%}
+{%- assign aliasUnderscore = component.alias | replace: '-', '_' | replace: '.', '_' -%}
 # `dependencies: [{{nameUnderscore}}_dependency],`
 {% endfor %}
 # Note: the Meson configuration is provided only as a proof of concept;
@@ -67,10 +68,31 @@ _local_sources += [
 {%- endfor %}
 ]
 {%- endif %}
+{%- assign defines = "" | split: "" %}
+{%- if component.publicDefines and component.publicDefines.size > 0 %}
+  {%- assign defines = defines | concat: component.publicDefines %}
+{%- endif %}
+{%- if component.privateDefines and component.privateDefines.size > 0 %}
+  {%- assign defines = defines | concat: component.privateDefines %}
+{%- endif %}
+{%- if defines.size > 0 %}
+_local_compile_args += [
+{%- for define in defines %}
+  '-D{{define}}',
+{%- endfor %}
+]
+{%- endif %}
+{%- assign compilerOptions = "" | split: "" %}
 {%- if component.publicCompilerOptions and component.publicCompilerOptions.size > 0 %}
+  {%- assign compilerOptions = compilerOptions | concat: component.publicCompilerOptions %}
+{%- endif %}
+{%- if component.privateCompilerOptions and component.privateCompilerOptions.size > 0 %}
+  {%- assign compilerOptions = compilerOptions | concat: component.privateCompilerOptions %}
+{%- endif %}
+{%- if compilerOptions.size > 0 %}
 
-compile_args += [
-{%- for option in component.publicCompilerOptions %}
+_local_compile_args += [
+{%- for option in compilerOptions %}
   '{{option}}',
 {%- endfor %}
 ]
@@ -107,6 +129,34 @@ foreach name : _local_sources + _local_compile_definitions + _local_compile_args
   message('+ ' + name)
 endforeach
 message('> {{nameUnderscore}}_dependency')
+
+{%- if component.alias %}
+
+# -----------------------------------------------------------------------------
+# Alias.
+
+{{aliasUnderscore}}_dependency = declare_dependency(
+  include_directories: include_directories(_local_include_directories),
+  compile_args: _local_compile_args,
+  sources: files(_local_sources),
+  dependencies: _local_dependencies,
+  link_args: _local_link_args,
+  link_with: _local_link_with,
+)
+
+# Meson dependencies cannot differentiate between C and C++ compile args;
+# they are therefore exposed as separate variables alongside the dependency.
+{{aliasUnderscore}}_dependency_compile_c_args = _local_compile_c_args
+{{aliasUnderscore}}_dependency_compile_cpp_args = _local_compile_cpp_args
+
+foreach name : _local_include_directories
+  message('+ -I ' + name)
+endforeach
+foreach name : _local_sources + _local_compile_definitions + _local_compile_args + _local_compile_c_args + _local_compile_cpp_args
+  message('+ ' + name)
+endforeach
+message('> {{aliasUnderscore}}_dependency')
+{%- endif %}
 
 # -----------------------------------------------------------------------------
 {% endfor %}
