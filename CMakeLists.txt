@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# DO NOT EDIT! Automatically generated from xcdl-package.jsonc.
+# DO NOT EDIT! Automatically generated from template file: xcdl-package.jsonc
 #
 # This file is part of the µOS++ project (https://micro-os-plus.github.io/).
 # Copyright (c) 2021-2026 Liviu Ionescu. All rights reserved.
@@ -32,7 +32,7 @@ project (
   micro-os-plus-startup
   DESCRIPTION
     "A source code library with the µOS++ startup code for bare-metal platforms"
-  LANGUAGES CXX
+  LANGUAGES C CXX ASM
 )
 
 # To access the optional functions, include the
