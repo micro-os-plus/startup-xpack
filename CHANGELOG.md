@@ -6,8 +6,22 @@ Please check
 [GitHub](https://github.com/micro-os-plus/startup-xpack/issues/)
 and close existing issues and pull requests.
 
+## 2026-07-31
+
+* cd769ae re-generate top xcdl
+* 481fb25 re-generate top commons
+* 707d168 cosmetise includes
+
+## 2026-07-28
+
+* 6bbf017 cosmetise includes
+* 8aa3527 cosmetise #if defined()/#endif // defined()
+* a8d34b5 startup.cpp fix trace::printf format
+* 804b19e update copyright notices
+
 ## 2026-07-20
 
+* 00f6ebc prepare 6.0.0
 * 66ac557 update for new xcdl macros
 * 3c3f9ad update with xcdl-export
 * fdfc9d2 update xcdl-package.jsonc
