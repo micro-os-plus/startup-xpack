@@ -27,12 +27,12 @@
 #include <sys/types.h>
 #include <inttypes.h>
 
-#if __has_include(<micro-os-plus/version.h>)
-#include <micro-os-plus/version.h>
+#if __has_include("micro-os-plus/version.h")
+#include "micro-os-plus/version.h"
 #else
 #define MICRO_OS_PLUS_QUICK_VERSION_STRING "7.x"
 #define MICRO_OS_PLUS_QUICK_YEAR_INTEGER "2026"
-#endif // __has_include(<micro-os-plus/version.h>)
+#endif // __has_include("micro-os-plus/version.h")
 
 // ----------------------------------------------------------------------------
 
@@ -492,15 +492,19 @@ _start (void)
   trace::dump_args (argc, argv);
   trace::puts ();
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic push
 
 // ISO C++ forbids taking address of function '::main' [-Wpedantic]
 #pragma GCC diagnostic ignored "-Wpedantic"
+#endif // defined(__GNUC__)
 
   // Call the main entry point, and save the exit code.
   int code = main (argc, argv);
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic pop
+#endif // defined(__GNUC__)
 
   // Standard program termination;
   // `atexit()` and C++ static destructors are executed.
@@ -525,8 +529,10 @@ _start (void)
 // micro_os_plus_startup_initialise_args() to parse arguments received from
 // host.
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif // defined(__GNUC__)
 
 // This is the standard default implementation for the routine to
 // process arguments. It returns a single empty arg.
@@ -559,12 +565,17 @@ micro_os_plus_startup_initialise_args (int* p_argc, char*** p_argv)
   return;
 }
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic pop
+#endif // defined(__GNUC__)
 
 #endif // !defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic push
+
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif // defined(__GNUC__)
 
 // Redefine this function to initialise the free store.
 void __attribute__ ((weak))
@@ -584,7 +595,9 @@ micro_os_plus_terminate_goodbye (void)
   trace::puts ("\nHasta la vista!");
 }
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic pop
+#endif // defined(__GNUC__)
 
 // ----------------------------------------------------------------------------
 

@@ -17,16 +17,17 @@
 #if defined(__cplusplus)
 #if !(__cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L))
 #error "C++20 or higher is required"
-#endif
+#endif // !(__cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >=
+       // 202002L))
 #endif // defined(__cplusplus)
 
 #if __has_include("micro-os-plus/project-config.h")
 #include "micro-os-plus/project-config.h"
 #endif // __has_include("micro-os-plus/project-config.h")
 
-#if __has_include(<micro-os-plus/startup-defines.h>)
-#include <micro-os-plus/startup-defines.h>
-#endif // __has_include(<micro-os-plus/startup-defines.h>)
+#if __has_include("micro-os-plus/startup-defines.h")
+#include "micro-os-plus/startup-defines.h"
+#endif // __has_include("micro-os-plus/startup-defines.h")
 
 // ----------------------------------------------------------------------------
 
