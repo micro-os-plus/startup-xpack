@@ -6,8 +6,14 @@ Please check
 [GitHub](https://github.com/micro-os-plus/startup-xpack/issues/)
 and close existing issues and pull requests.
 
+## 2026-08-04
+
+* v6.0.0
+* 9edddca re-generate top commons
+
 ## 2026-07-31
 
+* 83329ca CHANGELOG update
 * cd769ae re-generate top xcdl
 * 481fb25 re-generate top commons
 * 707d168 cosmetise includes
