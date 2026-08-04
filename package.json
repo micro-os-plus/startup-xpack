@@ -1,6 +1,6 @@
 {
   "name": "@micro-os-plus/startup",
-  "version": "6.0.0-pre",
+  "version": "6.0.0",
   "description": "A source code library with the µOS++ startup code for bare-metal platforms",
   "keywords": [
     "xpack",
