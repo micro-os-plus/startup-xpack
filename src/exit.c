@@ -95,8 +95,11 @@ exit (int code)
 
 // ----------------------------------------------------------------------------
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic push
+
 #pragma GCC diagnostic ignored "-Wmissing-attributes"
+#endif // defined(__GNUC__)
 
 // On Release, call the hardware reset procedure.
 // On Debug, use a breakpoint to notify the debugger.
@@ -132,7 +135,9 @@ _Exit (int code)
 void __attribute__ ((weak, noreturn, alias ("_Exit")))
 _exit (int status);
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic pop
+#endif // defined(__GNUC__)
 
 #endif // defined(MICRO_OS_PLUS_STARTUP_ENABLED) &&
        // defined(MICRO_OS_PLUS_STARTUP_EXIT_ENABLED)

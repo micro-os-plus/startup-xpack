@@ -197,8 +197,11 @@ extern function_ptr_t __attribute__ ((weak)) __init_array_end[];
 extern function_ptr_t __attribute__ ((weak)) __fini_array_start[];
 extern function_ptr_t __attribute__ ((weak)) __fini_array_end[];
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic push
+
 #pragma GCC diagnostic ignored "-Waggregate-return"
+#endif // defined(__GNUC__)
 
 // Iterate over all the preinit/init routines (mainly static constructors).
 inline __attribute__ ((always_inline)) void
@@ -236,7 +239,9 @@ micro_os_plus_run_fini_array (void)
   //_fini(); // DO NOT ENABLE THIS!
 }
 
+#if defined(__GNUC__)
 #pragma GCC diagnostic pop
+#endif // defined(__GNUC__)
 
 #if defined(MICRO_OS_PLUS_DEBUG_ENABLED) \
     && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
@@ -531,6 +536,7 @@ _start (void)
 
 #if defined(__GNUC__)
 #pragma GCC diagnostic push
+
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #endif // defined(__GNUC__)
 
