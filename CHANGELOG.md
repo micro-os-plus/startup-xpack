@@ -6,9 +6,20 @@ Please check
 [GitHub](https://github.com/micro-os-plus/startup-xpack/issues/)
 and close existing issues and pull requests.
 
+## 2026-08-13
+
+* v6.1.0
+* 26e7993 #12: split the specific startup code
+
+## 2026-08-05 
+
+* 2641a45 #if defined() cosmetics
+
 ## 2026-08-04
 
-* v6.0.0
+* 1b33bf6 README update
+* 2622be1 6.0.0
+* 70e2dd5 prepare v6.0.0
 * 9edddca re-generate top commons
 
 ## 2026-07-31
