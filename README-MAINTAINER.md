@@ -119,20 +119,13 @@ xpm run test-all -C ~/Work/micro-os-plus/startup-xpack.git
 
 ### Test on all platforms
 
-In addition, it is possible to manually trigger a **test-all** job, that
-runs all available builds, on all supported platforms, including Linux Arm
-and macOS Apple Silicon.
+Manually start the **test-all** workflow and wait for it to complete:
 
-For this:
-
-- start the `~/actions-runners/micro-os-plus/run.sh &` runner on `xbbma` and `xbbla`
-- ensure that the `xpack-development` branch is pushed
-- run the `trigger-workflow-test-all` action
-- wait for the **test-all** job to complete
-  (<https://github.com/micro-os-plus/startup-xpack/actions/workflows/test-all.yml>)
+- https://github.com/micro-os-plus/startup-xpack/actions/workflows/test-all.yml
 
 ### Publish
 
+- `npm login`
 - `npm publish --tag test` (use `npm publish --access public` when
   publishing for the first time)
 
