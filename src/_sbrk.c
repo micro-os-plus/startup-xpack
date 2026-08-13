@@ -83,8 +83,7 @@ _sbrk (ptrdiff_t incr)
   return (caddr_t)current_block_address;
 }
 
-#endif // defined(MICRO_OS_PLUS_STARTUP_ENABLED) &&
-       // defined(MICRO_OS_PLUS_STARTUP_SBRK_ENABLED)
+#endif // defined(MICRO_OS_PLUS_STARTUP_ENABLED) && defined(MICRO_OS_PLUS_STARTUP_SBRK_ENABLED)
 
 // ----------------------------------------------------------------------------
 

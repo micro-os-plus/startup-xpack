@@ -17,8 +17,7 @@
 #if defined(__cplusplus)
 #if !(__cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L))
 #error "C++20 or higher is required"
-#endif // !(__cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >=
-       // 202002L))
+#endif // !(__cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L))
 #endif // defined(__cplusplus)
 
 #if __has_include("micro-os-plus/project-config.h")
@@ -54,6 +53,16 @@ extern "C"
    * @name Startup Routines
    * @{
    */
+
+  /**
+   * @brief Initialise and run `main()`.
+   * @par Parameters
+   *  None.
+   * @par Returns
+   *  Nothing.
+   */
+  void
+  micro_os_plus_startup_run_main (void);
 
 #if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
 

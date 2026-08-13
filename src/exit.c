@@ -139,8 +139,7 @@ _exit (int status);
 #pragma GCC diagnostic pop
 #endif // defined(__GNUC__)
 
-#endif // defined(MICRO_OS_PLUS_STARTUP_ENABLED) &&
-       // defined(MICRO_OS_PLUS_STARTUP_EXIT_ENABLED)
+#endif // defined(MICRO_OS_PLUS_STARTUP_ENABLED) && defined(MICRO_OS_PLUS_STARTUP_EXIT_ENABLED)
 
 // ----------------------------------------------------------------------------
 

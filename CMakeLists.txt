@@ -123,7 +123,11 @@ add_library (micro-os-plus-startup-interface INTERFACE EXCLUDE_FROM_ALL)
 
 target_include_directories (micro-os-plus-startup-interface INTERFACE "include")
 
-target_sources (micro-os-plus-startup-interface INTERFACE "src/startup.cpp")
+target_sources (
+  micro-os-plus-startup-interface
+  INTERFACE "src/_start.cpp" "src/run-main.cpp" "src/initialise-args.cpp"
+            "src/initialise-free-store.cpp"
+)
 
 target_link_libraries (
   micro-os-plus-startup-interface

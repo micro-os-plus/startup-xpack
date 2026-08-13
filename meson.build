@@ -136,7 +136,10 @@ _local_include_directories += [
 ]
 
 _local_sources += [
-  'src/startup.cpp',
+  'src/_start.cpp',
+  'src/run-main.cpp',
+  'src/initialise-args.cpp',
+  'src/initialise-free-store.cpp',
 ]
 
 _local_dependencies += [

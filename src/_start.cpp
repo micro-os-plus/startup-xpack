@@ -16,23 +16,10 @@
 
 #include "micro-os-plus/architecture.h"
 
-#include "micro-os-plus/diag/trace.h"
+// #include "micro-os-plus/diag/trace.h"
 #include "micro-os-plus/startup.h"
-#include "micro-os-plus/semihosting.h"
 
 #include <cstdint>
-#include <cstdlib>
-#include <algorithm>
-#include <cstring>
-#include <sys/types.h>
-#include <inttypes.h>
-
-#if __has_include("micro-os-plus/version.h")
-#include "micro-os-plus/version.h"
-#else
-#define MICRO_OS_PLUS_QUICK_VERSION_STRING "7.x"
-#define MICRO_OS_PLUS_QUICK_YEAR_INTEGER "2026"
-#endif // __has_include("micro-os-plus/version.h")
 
 // ----------------------------------------------------------------------------
 
@@ -110,9 +97,6 @@ extern uint32_t __bss_regions_array_end__;
 
 #endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
 
-extern uint32_t __heap_begin__;
-extern uint32_t __heap_end__;
-
 // Note: Strictly speaking, according to the recent C/C++ standards,
 // using symbols defined in the linker scripts rely on undefined
 // behaviour, since comparing pointers that do not point to elements
@@ -122,9 +106,6 @@ extern uint32_t __heap_end__;
 // If this happens, the workaround is to disable the specific
 // optimization that caused it, or reduce the optimization level
 // for this file only.
-
-extern "C" int
-main (int argc, char* argv[]);
 
 // ----------------------------------------------------------------------------
 
@@ -143,17 +124,6 @@ extern "C"
   static void
   micro_os_plus_initialise_bss (std::uintptr_t* region_begin,
                                 std::uintptr_t* region_end);
-
-  static void
-  micro_os_plus_run_init_array (void);
-
-  // Not static since it is called from exit()
-  void
-  micro_os_plus_run_fini_array (void);
-
-  // Specific to newlib libgloss.
-  void
-  initialise_monitor_handles (void);
 }
 
 // ----------------------------------------------------------------------------
@@ -185,64 +155,6 @@ micro_os_plus_initialise_bss (std::uintptr_t* region_begin,
     }
 }
 
-typedef void (*function_ptr_t) (void);
-
-// These magic symbols are provided by the linker. newlib standard.
-extern function_ptr_t __attribute__ ((weak)) __preinit_array_start[];
-extern function_ptr_t __attribute__ ((weak)) __preinit_array_end[];
-
-extern function_ptr_t __attribute__ ((weak)) __init_array_start[];
-extern function_ptr_t __attribute__ ((weak)) __init_array_end[];
-
-extern function_ptr_t __attribute__ ((weak)) __fini_array_start[];
-extern function_ptr_t __attribute__ ((weak)) __fini_array_end[];
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-
-#pragma GCC diagnostic ignored "-Waggregate-return"
-#endif // defined(__GNUC__)
-
-// Iterate over all the preinit/init routines (mainly static constructors).
-inline __attribute__ ((always_inline)) void
-micro_os_plus_run_init_array (void)
-{
-  trace::printf ("%s()\n", __func__);
-
-  std::for_each (__preinit_array_start, __preinit_array_end,
-                 [] (const function_ptr_t pf) { pf (); } //
-  );
-
-  // If the application needs to run the code in the .init section,
-  // please use the startup files, since this requires the code in
-  // crti.o and crtn.o to add the function prologue/epilogue.
-  //_init(); // DO NOT ENABLE THIS!
-
-  std::for_each (__init_array_start, __init_array_end,
-                 [] (const function_ptr_t pf) { pf (); } //
-  );
-}
-
-// Run all the cleanup routines (mainly the static destructors).
-void
-micro_os_plus_run_fini_array (void)
-{
-  trace::printf ("%s()\n", __func__);
-
-  std::for_each (__fini_array_start, __fini_array_end,
-                 [] (const function_ptr_t pf) { pf (); } //
-  );
-
-  // If the application needs to run the code in the .fini section,
-  // please use the startup files, since this requires the code in
-  // crti.o and crtn.o to add the function prologue/epilogue.
-  //_fini(); // DO NOT ENABLE THIS!
-}
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif // defined(__GNUC__)
-
 #if defined(MICRO_OS_PLUS_DEBUG_ENABLED) \
     && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
@@ -269,7 +181,8 @@ static uint32_t volatile
     __attribute__ ((section (".data_end"))) __data_end_guard
     = DATA_END_GUARD_VALUE; // 2557891634
 
-#endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED) && (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
+#endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED) &&
+// (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
 /**
  * @details
@@ -306,8 +219,7 @@ _start (void)
 
 #endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
 
-  // Use Old Style DATA and BSS section initialization,
-  // that will manage a single BSS sections.
+  // --------------------------------------------------------------------------
 
   // When running in RAM, the .data section is already in place,
   // no need to copy.
@@ -363,8 +275,11 @@ _start (void)
             }
         }
 
-#endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED) && defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
+#endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED) &&
+      // defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
     }
+
+    // --------------------------------------------------------------------------
 
 #if defined(MICRO_OS_PLUS_DEBUG_ENABLED) \
     && defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
@@ -412,105 +327,9 @@ _start (void)
 #endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED) &&
   // defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
-  // Initialize the trace output device. From this moment on,
-  // trace::printf() calls are available (including in static
-  // constructors).
-  trace::initialise ();
+  // --------------------------------------------------------------------------
 
-#if defined(MICRO_OS_PLUS_VERSION_ENABLED)
-  // For an accurate version, include the `@micro-os-plus/version` package.
-  trace::puts (
-      "\nµOS++ IIIe version " MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_VERSION);
-  trace::puts ("Copyright (c) 2007-" MICRO_OS_PLUS_STRING_MICRO_OS_PLUS_YEAR
-               " Liviu Ionescu");
-#else
-  trace::puts ("\nµOS++ IIIe "
-               "version " MICRO_OS_PLUS_QUICK_VERSION_STRING);
-  trace::puts ("Copyright (c) 2007-" MICRO_OS_PLUS_QUICK_YEAR_INTEGER
-               " Liviu Ionescu");
-#endif
-
-#if defined(__clang__)
-  trace::printf ("Built with clang " __VERSION__);
-#elif defined(__GNUC__)
-  trace::printf ("Built with GCC " __VERSION__);
-#else
-#error "Built with an unknown compiler"
-#endif
-#if !(defined(__APPLE__) || defined(__linux__) || defined(__unix__) \
-      || defined(WIN32))
-// This is relevant only on bare-metal.
-#if defined(__ARM_PCS_VFP) || defined(__ARM_FP)
-  trace::printf (", with FP");
-#else
-  trace::printf (", no FP");
-#endif
-#endif
-#if defined(__EXCEPTIONS)
-  trace::printf (", with exceptions");
-#else
-  trace::printf (", no exceptions");
-#endif
-#if defined(MICRO_OS_PLUS_DEBUG_ENABLED)
-  trace::printf (", with MICRO_OS_PLUS_DEBUG_ENABLED");
-#endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED)
-#if defined(DEBUG)
-  trace::printf (", with DEBUG");
-#endif // defined(DEBUG)
-  trace::puts ("\n");
-
-#if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
-
-  // Hook to continue the initializations. Usually compute and store the
-  // clock frequency in a global variable, cleared above.
-  micro_os_plus_startup_initialise_hardware ();
-  trace::puts ("Hardware initialized");
-
-#endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED
-
-#if defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
-  initialise_monitor_handles ();
-#endif // defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
-
-  // Must be done before `micro_os_plus_run_init_array()`, in case
-  // dynamic memory is needed in constructors.
-  micro_os_plus_startup_initialise_free_store (
-      &__heap_begin__, static_cast<std::size_t> (
-                           (reinterpret_cast<char*> ((&__heap_end__))
-                            - reinterpret_cast<char*> ((&__heap_begin__)))));
-
-  // Warning: `malloc()` may need `errno` which may depend on knowing
-  // the current thread.
-
-  // Call the standard library initialization (mandatory for C++ to
-  // execute the static objects constructors).
-  micro_os_plus_run_init_array ();
-
-  // Get the argc/argv (useful in semihosting configurations).
-  int argc;
-  char** argv;
-  micro_os_plus_startup_initialise_args (&argc, &argv);
-
-  trace::dump_args (argc, argv);
-  trace::puts ();
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-
-// ISO C++ forbids taking address of function '::main' [-Wpedantic]
-#pragma GCC diagnostic ignored "-Wpedantic"
-#endif // defined(__GNUC__)
-
-  // Call the main entry point, and save the exit code.
-  int code = main (argc, argv);
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif // defined(__GNUC__)
-
-  // Standard program termination;
-  // `atexit()` and C++ static destructors are executed.
-  exit (code);
+  micro_os_plus_startup_run_main ();
 
   // Oops, should not get here.
 #if defined(MICRO_OS_PLUS_DEBUG_ENABLED)
@@ -522,85 +341,6 @@ _start (void)
     }
   /* NOTREACHED */
 }
-
-// ----------------------------------------------------------------------------
-
-#if !defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
-
-// Semihosting uses a more elaborate version of
-// micro_os_plus_startup_initialise_args() to parse arguments received from
-// host.
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif // defined(__GNUC__)
-
-// This is the standard default implementation for the routine to
-// process arguments. It returns a single empty arg.
-//
-// For semihosting applications, this is redefined to get the real
-// arguments from the debugger.
-//
-// The application can redefine it to fetch some arguments from a
-// non-volatile memory.
-
-void __attribute__ ((weak))
-micro_os_plus_startup_initialise_args (int* p_argc, char*** p_argv)
-{
-  // By the time we reach this, the data and bss should have been initialized.
-
-  // The strings pointed to by the argv array shall be modifiable by the
-  // program, and retain their last-stored values between program startup
-  // and program termination. (static, no const)
-  static char name[] = "";
-
-  // The string pointed to by argv[0] represents the program name;
-  // argv[0][0] shall be the null character if the program name is not
-  // available from the host environment. argv[argc] shall be a null pointer.
-  // (static, no const)
-  static char* argv[2] = { name, NULL };
-
-  *p_argc = 1;
-  *p_argv = &argv[0];
-
-  return;
-}
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif // defined(__GNUC__)
-
-#endif // !defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif // defined(__GNUC__)
-
-// Redefine this function to initialise the free store.
-void __attribute__ ((weak))
-micro_os_plus_startup_initialise_free_store (void* heap_address,
-                                             std::size_t heap_size_bytes)
-{
-  trace::printf ("Heap: @0x%08" PRIXPTR " (%zu KiB)\n",
-                 reinterpret_cast<std::uintptr_t> (heap_address),
-                 heap_size_bytes / 1024);
-}
-
-// The RTOS redefines this function to display memory allocator reports or
-// other statistics.
-void __attribute__ ((weak))
-micro_os_plus_terminate_goodbye (void)
-{
-  trace::puts ("\nHasta la vista!");
-}
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif // defined(__GNUC__)
 
 // ----------------------------------------------------------------------------
 
