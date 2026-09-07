@@ -180,7 +180,7 @@ micro_os_plus_startup_run_main (void)
 
   // Hook to continue the initializations. Usually compute and store the
   // clock frequency in a global variable, cleared above.
-  micro_os_plus_startup_initialise_hardware ();
+  micro_os_plus_startup_initialise_hardware_hook ();
   trace::puts ("Hardware initialized");
 
 #endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED
@@ -191,10 +191,14 @@ micro_os_plus_startup_run_main (void)
 
   // Must be done before `micro_os_plus_run_init_array()`, in case
   // dynamic memory is needed in constructors.
-  micro_os_plus_startup_initialise_free_store (
+  micro_os_plus_startup_initialise_free_store_hook (
       &__heap_begin__, static_cast<std::size_t> (
                            (reinterpret_cast<char*> ((&__heap_end__))
                             - reinterpret_cast<char*> ((&__heap_begin__)))));
+
+  // micro_os_plus_startup_initialise_free_store_hook (
+  //     &end, static_cast<std::size_t> ((reinterpret_cast<char*> ((&__HeapLimit))
+  //                                      - reinterpret_cast<char*> ((&end)))));
 
   // Warning: `malloc()` may need `errno` which may depend on knowing
   // the current thread.
@@ -204,9 +208,13 @@ micro_os_plus_startup_run_main (void)
   micro_os_plus_run_init_array ();
 
   // Get the argc/argv (useful in semihosting configurations).
+
+  // The application can redefine this function to fetch some arguments
+  // from a non-volatile memory.
+
   int argc;
   char** argv;
-  micro_os_plus_startup_initialise_args (&argc, &argv);
+  micro_os_plus_startup_initialise_args_hook (&argc, &argv);
 
   trace::dump_args (argc, argv);
   trace::puts ();

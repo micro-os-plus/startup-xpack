@@ -29,7 +29,7 @@
 #if !defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
 
 // Semihosting uses a more elaborate version of
-// micro_os_plus_startup_initialise_args() to parse arguments received from
+// micro_os_plus_startup_initialise_args_hook() to parse arguments received from
 // host.
 
 #if defined(__GNUC__)
@@ -47,8 +47,7 @@
 // The application can redefine it to fetch some arguments from a
 // non-volatile memory.
 
-void __attribute__ ((weak))
-micro_os_plus_startup_initialise_args (int* p_argc, char*** p_argv)
+micro_os_plus_startup_initialise_args_hook (int* p_argc, char*** p_argv)
 {
   // By the time we reach this, the data and bss should have been initialized.
 

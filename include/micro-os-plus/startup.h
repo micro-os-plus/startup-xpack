@@ -67,64 +67,64 @@ extern "C"
 #if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
 
   /**
-   * @brief Initialise hardware early.
+   * @brief Initialise hardware early hook.
    * @par Parameters
    *  None.
    * @par Returns
    *  Nothing.
    */
   void
-  micro_os_plus_startup_initialise_hardware_early (void);
+  micro_os_plus_startup_initialise_hardware_early_hook (void);
 
 #endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
 
 #if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
 
   /**
-   * @brief Initialise hardware.
+   * @brief Initialise hardware hook.
    * @par Parameters
    *  None.
    * @par Returns
    *  Nothing.
    */
   void
-  micro_os_plus_startup_initialise_hardware (void);
+  micro_os_plus_startup_initialise_hardware_hook (void);
 
 #endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
 
   /**
-   * @brief Initialise the free store.
+   * @brief Initialise the free store hook.
    * @param heap_address The first unallocated RAM address (after the BSS).
    * @param heap_size_bytes The free store size.
    * @par Returns
    *  Nothing.
    */
   void
-  micro_os_plus_startup_initialise_free_store (void* heap_address,
-                                               size_t heap_size_bytes);
+  micro_os_plus_startup_initialise_free_store_hook (void* heap_address,
+                                                    size_t heap_size_bytes);
 
 #if defined(MICRO_OS_PLUS_HAS_INTERRUPTS_STACK)
 
   /**
-   * @brief Initialise the interrupts stack.
+   * @brief Initialise the interrupts stack hook.
    * @param stack_begin_address The stack bottom address.
    * @param stack_size_bytes The stack size.
    * @par Returns
    *  Nothing.
    */
   void
-  micro_os_plus_startup_initialise_interrupts_stack (void* stack_begin_address,
-                                                     size_t stack_size_bytes);
+  micro_os_plus_startup_initialise_interrupts_stack_hook (
+      void* stack_begin_address, size_t stack_size_bytes);
 
 #endif // defined(MICRO_OS_PLUS_HAS_INTERRUPTS_STACK)
 
   /**
-   * @brief Initialise arguments.
+   * @brief Initialise arguments hook.
    * @param [out] p_argc Pointer to argc.
    * @param [out] p_argv Pointer to argv.
    */
   void
-  micro_os_plus_startup_initialise_args (int* p_argc, char*** p_argv);
+  micro_os_plus_startup_initialise_args_hook (int* p_argc, char*** p_argv);
 
   /**
    * @}

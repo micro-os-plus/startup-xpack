@@ -51,7 +51,7 @@ using namespace micro_os_plus;
 // Note: External memory with variable size (size known after reading the
 // chip type) cannot be initialized via these linker script static tables
 // and need to be processed in the
-// `micro_os_plus_startup_initialise_hardware_early ()` hook.
+// `micro_os_plus_startup_initialise_hardware_early_hook ()` hook.
 //
 // The normal configuration is standalone, with all support
 // functions implemented locally.
@@ -215,7 +215,7 @@ _start (void)
   //
   // On devices with an active watchdog, configure or disable it
   // to accommodate for the initializations duration.
-  micro_os_plus_startup_initialise_hardware_early ();
+  micro_os_plus_startup_initialise_hardware_early_hook ();
 
 #endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
 
