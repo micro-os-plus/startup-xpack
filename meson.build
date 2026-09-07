@@ -29,7 +29,7 @@
 # -----------------------------------------------------------------------------
 
 # A source code library with the µOS++ startup code for bare-metal platforms.
-message('Processing xPack @micro-os-plus/startup...')
+message('Processing xpm package @micro-os-plus/startup...')
 
 # -----------------------------------------------------------------------------
 
