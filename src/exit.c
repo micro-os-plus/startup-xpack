@@ -38,7 +38,8 @@ __call_exitprocs (int, void*);
 
 // ----------------------------------------------------------------------------
 
-void __attribute__ ((weak, noreturn))
+[[noreturn, gnu::weak]]
+void
 abort (void)
 {
   micro_os_plus_trace_puts ("abort(), exiting...");
@@ -63,7 +64,8 @@ abort (void)
  * When all cleanups are done, `_Exit()` is called to perform
  * the actual termination.
  */
-void __attribute__ ((noreturn))
+[[noreturn]]
+void
 exit (int code)
 {
   micro_os_plus_trace_printf ("\n%s(%d)\n", __func__, code);
@@ -108,7 +110,8 @@ exit (int code)
 // is required. For example, when semihosting is used, this
 // function sends the return code to the host.
 
-void __attribute__ ((weak, noreturn))
+[[noreturn, gnu::weak]]
+void
 _Exit (int code)
 {
   micro_os_plus_trace_printf ("%s(%d)\n", __func__, code);
@@ -132,7 +135,8 @@ _Exit (int code)
   /* NOTREACHED */
 }
 
-void __attribute__ ((weak, noreturn, alias ("_Exit")))
+[[noreturn, gnu::weak, gnu::alias ("_Exit")]]
+void
 _exit (int status);
 
 #if defined(__GNUC__)

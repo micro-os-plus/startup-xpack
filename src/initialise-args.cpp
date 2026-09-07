@@ -47,6 +47,8 @@
 // The application can redefine it to fetch some arguments from a
 // non-volatile memory.
 
+[[gnu::weak]]
+void
 micro_os_plus_startup_initialise_args_hook (int* p_argc, char*** p_argv)
 {
   // By the time we reach this, the data and bss should have been initialized.

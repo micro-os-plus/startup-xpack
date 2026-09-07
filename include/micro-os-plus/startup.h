@@ -61,6 +61,7 @@ extern "C"
    * @par Returns
    *  Nothing.
    */
+  [[noreturn]]
   void
   micro_os_plus_startup_run_main (void);
 
@@ -151,7 +152,8 @@ extern "C"
    * @par Returns
    *  Nothing.
    */
-  void __attribute__ ((noreturn))
+  [[noreturn]]
+  void
   micro_os_plus_terminate (int code);
 
   /**

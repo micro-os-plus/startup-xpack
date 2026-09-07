@@ -48,6 +48,7 @@ using namespace micro_os_plus;
 #endif // defined(__GNUC__)
 
 // Redefine this function to initialise the free store.
+[[gnu::weak]]
 void
 micro_os_plus_startup_initialise_free_store_hook (void* heap_address,
                                                   std::size_t heap_size_bytes)

@@ -113,6 +113,7 @@ extern uint32_t __bss_regions_array_end__;
 
 extern "C"
 {
+  [[noreturn]]
   void
   _start (void);
 
@@ -128,6 +129,8 @@ extern "C"
 
 // ----------------------------------------------------------------------------
 
+[[gnu::always_inline]]
+inline void
 micro_os_plus_startup_initialise_data (std::uintptr_t* from,
                                        std::uintptr_t* region_begin,
                                        std::uintptr_t* region_end)
@@ -141,6 +144,8 @@ micro_os_plus_startup_initialise_data (std::uintptr_t* from,
     }
 }
 
+[[gnu::always_inline]]
+inline void
 micro_os_plus_startup_initialise_bss (std::uintptr_t* region_begin,
                                       std::uintptr_t* region_end)
 {
@@ -161,23 +166,19 @@ micro_os_plus_startup_initialise_bss (std::uintptr_t* region_begin,
 
 #define BSS_GUARD_BAD_VALUE (0xCADEBABA)
 
-static uint32_t volatile
-    __attribute__ ((section (".bss_begin"))) __bss_begin_guard;
+static uint32_t volatile __bss_begin_guard [[gnu::section (".bss_begin")]];
 
-static uint32_t volatile
-    __attribute__ ((section (".bss_end"))) __bss_end_guard;
+static uint32_t volatile __bss_end_guard [[gnu::section (".bss_end")]];
 
 #define DATA_GUARD_BAD_VALUE (0xCADEBABA)
 #define DATA_BEGIN_GUARD_VALUE (0x12345678)
 #define DATA_END_GUARD_VALUE (0x98765432)
 
-static uint32_t volatile
-    __attribute__ ((section (".data_begin"))) __data_begin_guard
-    = DATA_BEGIN_GUARD_VALUE; // 305419896
+static uint32_t volatile __data_begin_guard [[gnu::section (".data_begin")]]
+= DATA_BEGIN_GUARD_VALUE; // 305419896
 
-static uint32_t volatile
-    __attribute__ ((section (".data_end"))) __data_end_guard
-    = DATA_END_GUARD_VALUE; // 2557891634
+static uint32_t volatile __data_end_guard [[gnu::section (".data_end")]]
+= DATA_END_GUARD_VALUE; // 2557891634
 
 #endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED) &&
 // (MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
@@ -194,7 +195,8 @@ static uint32_t volatile
  * Debugging new startup configurations usually begins with placing
  * a breakpoint at `_start()`, and stepping through the routine.
  */
-void __attribute__ ((noreturn, weak))
+[[noreturn, gnu::weak]]
+void
 _start (void)
 {
   // --------------------------------------------------------------------------

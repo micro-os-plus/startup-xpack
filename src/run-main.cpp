@@ -44,17 +44,22 @@ using namespace micro_os_plus;
 extern uint32_t __heap_begin__;
 extern uint32_t __heap_end__;
 
+// extern uint32_t __heap_begin__;
+// extern uint32_t __HeapLimit;
+// extern uint32_t end;
+// extern uint32_t __HeapLimit;
+
 typedef void (*function_ptr_t) (void);
 
 // These magic symbols are provided by the linker. newlib standard.
-extern function_ptr_t __attribute__ ((weak)) __preinit_array_start[];
-extern function_ptr_t __attribute__ ((weak)) __preinit_array_end[];
+extern function_ptr_t __preinit_array_start [[gnu::weak]][];
+extern function_ptr_t __preinit_array_end [[gnu::weak]][];
 
-extern function_ptr_t __attribute__ ((weak)) __init_array_start[];
-extern function_ptr_t __attribute__ ((weak)) __init_array_end[];
+extern function_ptr_t __init_array_start [[gnu::weak]][];
+extern function_ptr_t __init_array_end [[gnu::weak]][];
 
-extern function_ptr_t __attribute__ ((weak)) __fini_array_start[];
-extern function_ptr_t __attribute__ ((weak)) __fini_array_end[];
+extern function_ptr_t __fini_array_start [[gnu::weak]][];
+extern function_ptr_t __fini_array_end [[gnu::weak]][];
 
 extern "C"
 {
@@ -80,23 +85,30 @@ extern "C"
 #endif // defined(__GNUC__)
 
 // Iterate over all the preinit/init routines (mainly static constructors).
-inline __attribute__ ((always_inline)) void
+[[gnu::always_inline]]
+inline void
 micro_os_plus_run_init_array (void)
 {
   trace::printf ("%s()\n", __func__);
 
-  std::for_each (__preinit_array_start, __preinit_array_end,
-                 [] (const function_ptr_t pf) { pf (); } //
-  );
+  if (&__preinit_array_start != &__preinit_array_end)
+    {
+      std::for_each (__preinit_array_start, __preinit_array_end,
+                     [] (const function_ptr_t pf) { pf (); } //
+      );
+    }
 
   // If the application needs to run the code in the .init section,
   // please use the startup files, since this requires the code in
   // crti.o and crtn.o to add the function prologue/epilogue.
   //_init(); // DO NOT ENABLE THIS!
 
-  std::for_each (__init_array_start, __init_array_end,
-                 [] (const function_ptr_t pf) { pf (); } //
-  );
+  if (&__init_array_start != &__init_array_end)
+    {
+      std::for_each (__init_array_start, __init_array_end,
+                     [] (const function_ptr_t pf) { pf (); } //
+      );
+    }
 }
 
 // Run all the cleanup routines (mainly the static destructors).
@@ -105,9 +117,12 @@ micro_os_plus_run_fini_array (void)
 {
   trace::printf ("%s()\n", __func__);
 
-  std::for_each (__fini_array_start, __fini_array_end,
-                 [] (const function_ptr_t pf) { pf (); } //
-  );
+  if (&__fini_array_start != &__fini_array_end)
+    {
+      std::for_each (__fini_array_start, __fini_array_end,
+                     [] (const function_ptr_t pf) { pf (); } //
+      );
+    }
 
   // If the application needs to run the code in the .fini section,
   // please use the startup files, since this requires the code in
@@ -119,7 +134,8 @@ micro_os_plus_run_fini_array (void)
 #pragma GCC diagnostic pop
 #endif // defined(__GNUC__)
 
-void __attribute__ ((noreturn, weak))
+[[noreturn, gnu::weak]]
+void
 micro_os_plus_startup_run_main (void)
 {
   // Initialize the trace output device. From this moment on,
@@ -252,7 +268,8 @@ micro_os_plus_startup_run_main (void)
 
 // The RTOS redefines this function to display memory allocator reports or
 // other statistics.
-void __attribute__ ((weak))
+[[gnu::weak]]
+void
 micro_os_plus_terminate_goodbye (void)
 {
   trace::puts ("\nHasta la vista!");
