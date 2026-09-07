@@ -167,7 +167,14 @@ micro_os_plus_startup_run_main (void)
 #if defined(DEBUG)
   trace::printf (", with DEBUG");
 #endif // defined(DEBUG)
-  trace::puts ("\n");
+  trace::puts ();
+
+#if defined(MICRO_OS_PLUS_DEBUG_ENABLED) \
+    || defined(MICRO_OS_PLUS_DIAG_TRACE_ENABLED)
+  micro_os_plus_architecture_show_cpuid ();
+#endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED) || defined(MICRO_OS_PLUS_DIAG_TRACE_ENABLED)
+
+  trace::puts ();
 
 #if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
 
