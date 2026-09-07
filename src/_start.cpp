@@ -117,21 +117,20 @@ extern "C"
   _start (void);
 
   static void
-  micro_os_plus_initialise_data (std::uintptr_t* from,
-                                 std::uintptr_t* region_begin,
-                                 std::uintptr_t* region_end);
+  micro_os_plus_startup_initialise_data (std::uintptr_t* from,
+                                         std::uintptr_t* region_begin,
+                                         std::uintptr_t* region_end);
 
   static void
-  micro_os_plus_initialise_bss (std::uintptr_t* region_begin,
-                                std::uintptr_t* region_end);
+  micro_os_plus_startup_initialise_bss (std::uintptr_t* region_begin,
+                                        std::uintptr_t* region_end);
 }
 
 // ----------------------------------------------------------------------------
 
-inline __attribute__ ((always_inline)) void
-micro_os_plus_initialise_data (std::uintptr_t* from,
-                               std::uintptr_t* region_begin,
-                               std::uintptr_t* region_end)
+micro_os_plus_startup_initialise_data (std::uintptr_t* from,
+                                       std::uintptr_t* region_begin,
+                                       std::uintptr_t* region_end)
 {
   // Iterate and copy word by word.
   // Assume that the pointers are word aligned.
@@ -142,9 +141,8 @@ micro_os_plus_initialise_data (std::uintptr_t* from,
     }
 }
 
-inline __attribute__ ((always_inline)) void
-micro_os_plus_initialise_bss (std::uintptr_t* region_begin,
-                              std::uintptr_t* region_end)
+micro_os_plus_startup_initialise_bss (std::uintptr_t* region_begin,
+                                      std::uintptr_t* region_end)
 {
   // Iterate and clear word by word.
   // Assume that the pointers are word aligned.
@@ -236,8 +234,8 @@ _start (void)
 #if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
 
       // Copy the DATA segment from flash to RAM (inlined).
-      micro_os_plus_initialise_data (&__data_load_addr__, &__data_begin__,
-                                     &__data_end__);
+      micro_os_plus_startup_initialise_data (&__data_load_addr__,
+                                             &__data_begin__, &__data_end__);
 
       // Alternate solution in case the compiler complains about
       // undefined behaviour of the linker script pointers.
@@ -256,7 +254,8 @@ _start (void)
           uint32_t* region_begin = (uint32_t*)(*p++);
           uint32_t* region_end = (uint32_t*)(*p++);
 
-          micro_os_plus_initialise_data (from, region_begin, region_end);
+          micro_os_plus_startup_initialise_data (from, region_begin,
+                                                 region_end);
         }
 
 #endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
@@ -292,7 +291,7 @@ _start (void)
 #if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
 
   // Zero fill the BSS section (inlined).
-  micro_os_plus_initialise_bss (&__bss_begin__, &__bss_end__);
+  micro_os_plus_startup_initialise_bss (&__bss_begin__, &__bss_end__);
 
 #else
 
@@ -306,7 +305,7 @@ _start (void)
       uint32_t* region_begin = (uint32_t*)(*p++);
       uint32_t* region_end = (uint32_t*)(*p++);
 
-      micro_os_plus_initialise_bss (region_begin, region_end);
+      micro_os_plus_startup_initialise_bss (region_begin, region_end);
     }
 
 #endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
