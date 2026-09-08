@@ -215,7 +215,10 @@ _start (void)
   //
   // On devices with an active watchdog, configure or disable it
   // to accommodate for the initializations duration.
-  micro_os_plus_startup_initialise_hardware_early_hook ();
+  if (micro_os_plus_startup_initialise_hardware_early_hook () != 0)
+    {
+      goto fail;
+    }
 
 #endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
 
@@ -331,6 +334,10 @@ _start (void)
   // --------------------------------------------------------------------------
 
   micro_os_plus_startup_run_main ();
+
+#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
+fail:
+#endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
 
   // Oops, should not get here.
 #if defined(MICRO_OS_PLUS_DEBUG_ENABLED)

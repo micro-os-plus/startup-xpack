@@ -192,11 +192,18 @@ micro_os_plus_startup_run_main (void)
 
   trace::puts ();
 
+  int code = 0;
+
 #if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
 
   // Hook to continue the initializations. Usually compute and store the
   // clock frequency in a global variable, cleared above.
-  micro_os_plus_startup_initialise_hardware_hook ();
+  code = micro_os_plus_startup_initialise_hardware_hook ();
+  if (code != 0)
+    {
+      goto fail;
+    }
+
   trace::puts ("Hardware initialized");
 
 #endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED
@@ -243,11 +250,15 @@ micro_os_plus_startup_run_main (void)
 #endif // defined(__GNUC__)
 
   // Call the main entry point, and save the exit code.
-  int code = main (argc, argv);
+  code = main (argc, argv);
 
 #if defined(__GNUC__)
 #pragma GCC diagnostic pop
 #endif // defined(__GNUC__)
+
+#if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
+fail:
+#endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
 
   // Standard program termination;
   // `atexit()` and C++ static destructors are executed.

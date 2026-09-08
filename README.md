@@ -129,7 +129,8 @@ This library defines a C function that can be called from the
 reset handler.
 
 ```c
-void __attribute__ ((noreturn, weak))
+[[noreturn, gnu::weak]]
+void
 _start (void);
 ```
 
@@ -171,21 +172,21 @@ The
 ```c
 #if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
 
-void
-micro_os_plus_startup_initialise_hardware_early (void);
+int
+micro_os_plus_startup_initialise_hardware_early_hook (void);
 
 #endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
 
 #if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
 
-void
-micro_os_plus_startup_initialise_hardware (void);
+int
+micro_os_plus_startup_initialise_hardware_hook (void);
 
 #endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
 
 // A weak definition is provided here.
 void
-micro_os_plus_startup_initialise_free_store (void* heap_address,
+micro_os_plus_startup_initialise_free_store_hook (void* heap_address,
                                               size_t heap_size_bytes);
 
 // A weak definition is provided here. The RTOS redefines it.

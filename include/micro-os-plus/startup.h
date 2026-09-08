@@ -71,10 +71,9 @@ extern "C"
    * @brief Initialise hardware early hook.
    * @par Parameters
    *  None.
-   * @par Returns
-   *  Nothing.
+   * @returns 0 for success, non 0 for failure.
    */
-  void
+  int
   micro_os_plus_startup_initialise_hardware_early_hook (void);
 
 #endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
@@ -85,10 +84,9 @@ extern "C"
    * @brief Initialise hardware hook.
    * @par Parameters
    *  None.
-   * @par Returns
-   *  Nothing.
+   * @returns 0 for success, non 0 for failure.
    */
-  void
+  int
   micro_os_plus_startup_initialise_hardware_hook (void);
 
 #endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
