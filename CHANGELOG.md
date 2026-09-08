@@ -6,12 +6,29 @@ Please check
 [GitHub](https://github.com/micro-os-plus/startup-xpack/issues/)
 and close existing issues and pull requests.
 
+## 2026-09-08
+
+* v7.0.0
+* 33149ed re-format cmake
+* b5845d2 hooks return values
+
+## 2026-09-07
+
+* 21715e8 cosmetise attributes
+* 366b63b rename startup functions
+* 25744a4 rename hooks
+* bed2898 add _show_cpuid
+* 63c52dd add sections.ld
+* 6609c2a cosmetics xpm packages
+
 ## 2026-08-13
 
-* v6.1.0
+* ef88ae2 README update
+* b82bb14 6.1.0
+* efd7eeb prepare v6.1.0
 * 26e7993 #12: split the specific startup code
 
-## 2026-08-05 
+## 2026-08-05
 
 * 2641a45 #if defined() cosmetics
 
