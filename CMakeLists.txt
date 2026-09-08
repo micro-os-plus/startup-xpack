@@ -27,23 +27,27 @@
 # -----------------------------------------------------------------------------
 
 # https://cmake.org/cmake/help/v3.20/
-cmake_minimum_required(VERSION 3.20)
-project(
+cmake_minimum_required (VERSION 3.20)
+project (
   micro-os-plus-startup
   DESCRIPTION
     "A source code library with the µOS++ startup code for bare-metal platforms"
-  LANGUAGES C CXX ASM)
+  LANGUAGES C CXX ASM
+)
 
 # To access the optional functions, include the
 # `cmake/micro-os-plus-build-helper.cmake` file from the
 # `@micro-os-plus/build-helper` package.
 
-if(COMMAND xpack_get_package_name_and_version)
-  xpack_get_package_name_and_version("${CMAKE_CURRENT_SOURCE_DIR}/package.json")
-  message(
+if (COMMAND xpack_get_package_name_and_version)
+  xpack_get_package_name_and_version (
+    "${CMAKE_CURRENT_SOURCE_DIR}/package.json"
+  )
+  message (
     VERBOSE
-    "Processing xpm package ${PACKAGE_JSON_NAME}@${PACKAGE_JSON_VERSION}...")
-endif()
+    "Processing xpm package ${PACKAGE_JSON_NAME}@${PACKAGE_JSON_VERSION}..."
+  )
+endif ()
 
 # -----------------------------------------------------------------------------
 
@@ -63,78 +67,85 @@ endif()
 # https://cmake.org/cmake/help/v3.20/command/add_library.html?highlight=interface#interface-libraries
 # Visibility keywords: PRIVATE applies to the target itself; INTERFACE passes
 # properties up to targets that link against it; PUBLIC does both.
-add_library(micro-os-plus-startup-exit-interface INTERFACE EXCLUDE_FROM_ALL)
+add_library (micro-os-plus-startup-exit-interface INTERFACE EXCLUDE_FROM_ALL)
 
-target_sources(micro-os-plus-startup-exit-interface INTERFACE "src/exit.c")
+target_sources (micro-os-plus-startup-exit-interface INTERFACE "src/exit.c")
 
-target_link_libraries(
+target_link_libraries (
   micro-os-plus-startup-exit-interface INTERFACE "micro-os-plus::architecture"
-                                                 "micro-os-plus::diag-trace")
+                                                 "micro-os-plus::diag-trace"
+)
 
-if(COMMAND xpack_display_target_lists)
-  xpack_display_target_lists(micro-os-plus-startup-exit-interface)
-endif()
+if (COMMAND xpack_display_target_lists)
+  xpack_display_target_lists (micro-os-plus-startup-exit-interface)
+endif ()
 
 # -----------------------------------------------------------------------------
 # Alias.
 
 # https://cmake.org/cmake/help/v3.20/command/add_library.html#alias-libraries
-add_library(micro-os-plus::startup-exit ALIAS
-            micro-os-plus-startup-exit-interface)
-message(VERBOSE
-        "> micro-os-plus::startup-exit -> micro-os-plus-startup-exit-interface")
+add_library (
+  micro-os-plus::startup-exit ALIAS micro-os-plus-startup-exit-interface
+)
+message (VERBOSE
+         "> micro-os-plus::startup-exit -> micro-os-plus-startup-exit-interface"
+)
 
 # -----------------------------------------------------------------------------
 
 # https://cmake.org/cmake/help/v3.20/command/add_library.html?highlight=interface#interface-libraries
 # Visibility keywords: PRIVATE applies to the target itself; INTERFACE passes
 # properties up to targets that link against it; PUBLIC does both.
-add_library(micro-os-plus-startup-sbrk-interface INTERFACE EXCLUDE_FROM_ALL)
+add_library (micro-os-plus-startup-sbrk-interface INTERFACE EXCLUDE_FROM_ALL)
 
-target_sources(micro-os-plus-startup-sbrk-interface INTERFACE "src/_sbrk.c")
+target_sources (micro-os-plus-startup-sbrk-interface INTERFACE "src/_sbrk.c")
 
-if(COMMAND xpack_display_target_lists)
-  xpack_display_target_lists(micro-os-plus-startup-sbrk-interface)
-endif()
+if (COMMAND xpack_display_target_lists)
+  xpack_display_target_lists (micro-os-plus-startup-sbrk-interface)
+endif ()
 
 # -----------------------------------------------------------------------------
 # Alias.
 
 # https://cmake.org/cmake/help/v3.20/command/add_library.html#alias-libraries
-add_library(micro-os-plus::startup-sbrk ALIAS
-            micro-os-plus-startup-sbrk-interface)
-message(VERBOSE
-        "> micro-os-plus::startup-sbrk -> micro-os-plus-startup-sbrk-interface")
+add_library (
+  micro-os-plus::startup-sbrk ALIAS micro-os-plus-startup-sbrk-interface
+)
+message (VERBOSE
+         "> micro-os-plus::startup-sbrk -> micro-os-plus-startup-sbrk-interface"
+)
 
 # -----------------------------------------------------------------------------
 
 # https://cmake.org/cmake/help/v3.20/command/add_library.html?highlight=interface#interface-libraries
 # Visibility keywords: PRIVATE applies to the target itself; INTERFACE passes
 # properties up to targets that link against it; PUBLIC does both.
-add_library(micro-os-plus-startup-interface INTERFACE EXCLUDE_FROM_ALL)
+add_library (micro-os-plus-startup-interface INTERFACE EXCLUDE_FROM_ALL)
 
-target_include_directories(micro-os-plus-startup-interface INTERFACE "include")
+target_include_directories (micro-os-plus-startup-interface INTERFACE "include")
 
-target_sources(
+target_sources (
   micro-os-plus-startup-interface
   INTERFACE "src/_start.cpp" "src/run-main.cpp" "src/initialise-args.cpp"
-            "src/initialise-free-store.cpp")
+            "src/initialise-free-store.cpp"
+)
 
-target_link_libraries(
+target_link_libraries (
   micro-os-plus-startup-interface
   INTERFACE "micro-os-plus::architecture" "micro-os-plus::diag-trace"
             "micro-os-plus::semihosting" "micro-os-plus::startup-exit"
-            "micro-os-plus::startup-sbrk")
+            "micro-os-plus::startup-sbrk"
+)
 
-if(COMMAND xpack_display_target_lists)
-  xpack_display_target_lists(micro-os-plus-startup-interface)
-endif()
+if (COMMAND xpack_display_target_lists)
+  xpack_display_target_lists (micro-os-plus-startup-interface)
+endif ()
 
 # -----------------------------------------------------------------------------
 # Alias.
 
 # https://cmake.org/cmake/help/v3.20/command/add_library.html#alias-libraries
-add_library(micro-os-plus::startup ALIAS micro-os-plus-startup-interface)
-message(VERBOSE "> micro-os-plus::startup -> micro-os-plus-startup-interface")
+add_library (micro-os-plus::startup ALIAS micro-os-plus-startup-interface)
+message (VERBOSE "> micro-os-plus::startup -> micro-os-plus-startup-interface")
 
 # -----------------------------------------------------------------------------
