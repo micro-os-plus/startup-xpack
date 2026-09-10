@@ -45,7 +45,7 @@ using namespace micro_os_plus;
 // - run the fini array (for the C++ static destructors)
 // - call _exit(), directly or via exit()
 //
-// If MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS is
+// If MICRO_OS_PLUS_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS_ENABLED is
 // defined, the code is capable of initializing multiple regions.
 //
 // Note: External memory with variable size (size known after reading the
@@ -67,7 +67,7 @@ using namespace micro_os_plus;
 // ----------------------------------------------------------------------------
 
 // All following symbols should be defined in the linker script.
-#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
+#if !defined(MICRO_OS_PLUS_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS_ENABLED)
 
 // Begin address for the initialization values of the .data section.
 extern std::uintptr_t __data_load_addr__;
@@ -95,7 +95,7 @@ extern uint32_t __data_regions_array_end__;
 extern uint32_t __bss_regions_array_begin__;
 extern uint32_t __bss_regions_array_end__;
 
-#endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
+#endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS_ENABLED)
 
 // Note: Strictly speaking, according to the recent C/C++ standards,
 // using symbols defined in the linker scripts rely on undefined
@@ -236,7 +236,7 @@ _start (void)
 
 #endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED) && defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
 
-#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
+#if !defined(MICRO_OS_PLUS_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS_ENABLED)
 
       // Copy the DATA segment from flash to RAM (inlined).
       micro_os_plus_startup_initialise_data (&__data_load_addr__,
@@ -263,7 +263,7 @@ _start (void)
                                                  region_end);
         }
 
-#endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
+#endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS_ENABLED)
 
 #if defined(MICRO_OS_PLUS_DEBUG_ENABLED) \
     && defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
@@ -293,7 +293,7 @@ _start (void)
 
 #endif
 
-#if !defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
+#if !defined(MICRO_OS_PLUS_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS_ENABLED)
 
   // Zero fill the BSS section (inlined).
   micro_os_plus_startup_initialise_bss (&__bss_begin__, &__bss_end__);
@@ -313,7 +313,7 @@ _start (void)
       micro_os_plus_startup_initialise_bss (region_begin, region_end);
     }
 
-#endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS)
+#endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS_ENABLED)
 
 #if defined(MICRO_OS_PLUS_DEBUG_ENABLED) \
     && defined(MICRO_OS_PLUS_BOOL_STARTUP_GUARD_CHECKS)
