@@ -10,24 +10,23 @@
  */
 
 /*
- * Linker script for FLASH & RAM only configurations.
+ * Linker script for FLASH & RAM configurations.
+ *
+ * When running on QEMU with lots of memory, a simple configuration
+ * is to split it in two, possibly equal, parts, and allocate the
+ * first as FLASH and the second as RAM (see the `mem.ld` files).
  *
  * Static constructors/destructors use the new .init_array/.fini_array
  * definitions; the old .init/.fini are no longer used, but the sections
  * must still be present when using librdimon.
  *
- * TODO: check elf-redboot.ld
- *
  * The heap starts immediately after the last statically allocated
  * .bss/.noinit section (the _end symbol), and extends up to the stack.
  *
  * To make use of the multi-region initialisations, define
- * MICRO_OS_PLUS_INCLUDE_STARTUP_INIT_MULTIPLE_RAM_SECTIONS
- * for the startup.cpp file.
+ * MICRO_OS_PLUS_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS_ENABLED
+ * used in the `startup.cpp` file.
  */
-
-OUTPUT_FORMAT("elf32-littlearm", "elf32-bigarm", "elf32-littlearm")
-OUTPUT_ARCH(arm)
 
 /*
  * The entry point is important for debuggers and simulators, the
@@ -73,6 +72,17 @@ SECTIONS
   } >FLASH
 
   /*
+   * On RISC-V devices the startup address is a regular address, so this
+   * must be the very first section.
+   * Apart from the assembly code used to initialise the stack,
+   * do not place anything else into this section.
+   */
+  .reset_entry : ALIGN(4)
+  {
+    KEEP(*(SORT_NONE(.reset_entry) SORT_NONE(.reset_entry.*)))
+  } >FLASH
+
+  /*
    * Dynamic Run Time Metadata.
    * Normally the debugger reaches this section by resolving a symbol,
    * but in case it should scan memory for the magic, better place this
@@ -81,6 +91,19 @@ SECTIONS
   .drtm : ALIGN(4)
   {
     KEEP(*(.drtm .drtm.*))
+  } >FLASH
+
+  /*
+   * For convenience, place the RISC-V trap code at the beginning.
+   * µOS++ SiFive specific, not standard and not used by other projects.
+   */
+  .trap_entry : ALIGN(4)
+  {
+      *(.exceptions_array .exceptions_array.*)
+      *(.interrupts_local_array .interrupts_local_array.*)
+      *(.interrupts_global_array .interrupts_global_array.*)
+      *(.trap_entry .trap_entry.*)
+      *(.traps_handlers .traps_handlers.*)
   } >FLASH
 
   /*
@@ -305,8 +328,30 @@ SECTIONS
     *(.data .data.*)
     *(.gnu.linkonce.d.*)
 
+    . = ALIGN(8);
+    /*
+      * RISC-V specific; the compiler optimises memory accesses
+      * in the +/- 2K range around __global_pointer$ to GP relative.
+      * For this to work, GP must be loaded during startup with the
+      * address of __global_pointer$.
+      * This optimisation favours a 4K range. Newlib places
+      * several impure and malloc pointers in the .sdata section.
+      * Placed here, immediately before .sdata/.sbss, so the GP
+      * window actually covers the small-data/small-bss region
+      * instead of being offset by the size of .data.
+      */
+    PROVIDE( __global_pointer$ = . + (4K / 2) );
+
     *(.sdata .sdata.*)
     *(.gnu.linkonce.s.*)
+
+    /* RISC-V specific. Might be used by `-mcmodel=medlow`. */
+    . = ALIGN(8);
+    *(.srodata.cst16)
+    *(.srodata.cst8)
+    *(.srodata.cst4)
+    *(.srodata.cst2)
+    *(.srodata .srodata.*)
 
     *(.data_end .data_end.*)       /* µOS++ __data_end_guard; must be last */
     . = ALIGN(4);
@@ -334,8 +379,8 @@ SECTIONS
   {
     __bss_start = .;               /* Standard newlib definition. */
     __bss_start__ = .;             /* Standard newlib definition. */
-    __bss_begin__ = .;          /* µOS++ specific */
-    *(.bss_begin .bss_begin.*)    /* µOS++ __bss_begin_guard */
+    __bss_begin__ = .;             /* µOS++ specific */
+    *(.bss_begin .bss_begin.*)     /* µOS++ __bss_begin_guard */
 
     *(.sbss .sbss.*)
     *(.gnu.linkonce.sb.*)
@@ -367,12 +412,12 @@ SECTIONS
   {
     /* _sbrk() expects at least word alignment. */
     . = ALIGN(8);
-    PROVIDE( __end__ = . ); /* Used by crt0.S arm & aarch64 */
-    PROVIDE( __end = . ); /* Used by crt0.S sparc, m68k */
-    PROVIDE( _end = . ); /* Used by libgloss sbrk() */
-    PROVIDE( end = . ); /* Used by newlib _sbrk() arm & aarch64 */
+    PROVIDE( __end__ = . );       /* Used by crt0.S arm & aarch64 */
+    PROVIDE( __end = . );         /* Used by crt0.S sparc, m68k */
+    PROVIDE( _end = . );          /* Used by libgloss sbrk() */
+    PROVIDE( end = . );           /* Used by newlib _sbrk() arm & aarch64 */
 
-    PROVIDE( __heap_begin__ = . );     /* µOS++ extension. */
+    PROVIDE( __heap_begin__ = . );/* µOS++ extension. */
     KEEP(*(.heap*))
   } >RAM
 
@@ -384,12 +429,13 @@ SECTIONS
     PROVIDE( _heap_end = . );      /* Used by sbrk in some architectures */
     PROVIDE( _heap_end_ = . );     /* Used by sbrk in some architectures */
     PROVIDE( __heap_end = . );     /* Used by sbrk in some architectures */
+/*
     PROVIDE(__heap_limit = .);
     PROVIDE(__HeapLimit = .);
-
+*/
     PROVIDE( __heap_end__ = . );   /* µOS++ extension. */
 
-    PROVIDE( __stack_limit__ = . );   /* µOS++ extension. */
+    PROVIDE( __stack_limit__ = . );/* µOS++ extension. */
 
    /*
     * libgloss also uses `__heap_limit` in _sbrk(), initially set to
