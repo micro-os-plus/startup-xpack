@@ -6,9 +6,16 @@ Please check
 [GitHub](https://github.com/micro-os-plus/startup-xpack/issues/)
 and close existing issues and pull requests.
 
+## 2026-09-10
+
+* v7.1.0
+* 1ad9917 sections.ld add risc-v sections
+* 2d3d369 fix INITIALISE_MULTIPLE_RAM_SECTIONS
+
 ## 2026-09-08
 
-* v7.0.0
+* a00eae6 7.0.0
+* 0c50697 prepare v7.0.0
 * 33149ed re-format cmake
 * b5845d2 hooks return values
 
