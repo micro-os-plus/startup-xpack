@@ -6,9 +6,15 @@ Please check
 [GitHub](https://github.com/micro-os-plus/startup-xpack/issues/)
 and close existing issues and pull requests.
 
+## 2026-09-11
+
+* v7.2.0
+* b6b54a3 __real_main & separate initialise-free-store component
+
 ## 2026-09-10
 
-* v7.1.0
+* da9a9aa 7.1.0
+* 9692754 prepare v7.1.0
 * 1ad9917 sections.ld add risc-v sections
 * 2d3d369 fix INITIALISE_MULTIPLE_RAM_SECTIONS
 
