@@ -15,8 +15,7 @@
       "sourceFiles": [
         "src/_start.cpp",
         "src/run-main.cpp",
-        "src/initialise-args.cpp",
-        "src/initialise-free-store.cpp"
+        "src/initialise-args.cpp"
       ],
       "dependencies": [
         "micro-os-plus.architecture",
@@ -48,6 +47,12 @@
           "display": "Initialise hardware",
           "description": "Call the custom hardware initialization",
           // "defaultDefine": "MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED"
+        },
+        {
+          "id": "call-real-main",
+          "display": "Call real main",
+          "description": "When the main is wrapped, call the real main function",
+          // "defaultDefine": "MICRO_OS_PLUS_STARTUP_CALL_REAL_MAIN_ENABLED"
         }
       ],
       "cdlComponents": [
@@ -72,6 +77,15 @@
             "src/_sbrk.c"
           ],
           // "defaultDefine": "MICRO_OS_PLUS_STARTUP_SBRK_ENABLED"
+        },
+        {
+          "id": "initialise-free-store",
+          "display": "Initialise free store",
+          "description": "Initialise the free store (heap) for dynamic memory allocation",
+          "sourceFiles": [
+            "src/initialise-free-store.cpp"
+          ],
+          // "defaultDefine": "MICRO_OS_PLUS_STARTUP_INITIALISE_FREE_STORE_ENABLED"
         }
       ]
     }

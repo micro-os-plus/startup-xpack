@@ -33,7 +33,8 @@
 
 // ----------------------------------------------------------------------------
 
-#if defined(MICRO_OS_PLUS_STARTUP_ENABLED)
+#if defined(MICRO_OS_PLUS_STARTUP_ENABLED) \
+    && defined(MICRO_OS_PLUS_STARTUP_INITIALISE_FREE_STORE_ENABLED)
 
 // ----------------------------------------------------------------------------
 
@@ -64,7 +65,7 @@ micro_os_plus_startup_initialise_free_store_hook (void* heap_address,
 
 // ----------------------------------------------------------------------------
 
-#endif // defined(MICRO_OS_PLUS_STARTUP_ENABLED)
+#endif // defined(MICRO_OS_PLUS_STARTUP_ENABLED) && defined(MICRO_OS_PLUS_STARTUP_INITIALISE_FREE_STORE_ENABLED)
 
 // ----------------------------------------------------------------------------
 

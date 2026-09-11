@@ -21,6 +21,7 @@
 # ~~~
 # target_link_libraries(your-target PUBLIC micro-os-plus::startup-exit)
 # target_link_libraries(your-target PUBLIC micro-os-plus::startup-sbrk)
+# target_link_libraries(your-target PUBLIC micro-os-plus::startup-initialise-free-store)
 # target_link_libraries(your-target PUBLIC micro-os-plus::startup)
 # ~~~
 
@@ -120,21 +121,57 @@ message (VERBOSE
 # https://cmake.org/cmake/help/v3.20/command/add_library.html?highlight=interface#interface-libraries
 # Visibility keywords: PRIVATE applies to the target itself; INTERFACE passes
 # properties up to targets that link against it; PUBLIC does both.
+add_library (
+  micro-os-plus-startup-initialise-free-store-interface INTERFACE
+  EXCLUDE_FROM_ALL
+)
+
+target_sources (
+  micro-os-plus-startup-initialise-free-store-interface
+  INTERFACE "src/initialise-free-store.cpp"
+)
+
+if (COMMAND xpack_display_target_lists)
+  xpack_display_target_lists (
+    micro-os-plus-startup-initialise-free-store-interface
+  )
+endif ()
+
+# -----------------------------------------------------------------------------
+# Alias.
+
+# https://cmake.org/cmake/help/v3.20/command/add_library.html#alias-libraries
+add_library (
+  micro-os-plus::startup-initialise-free-store ALIAS
+  micro-os-plus-startup-initialise-free-store-interface
+)
+message (
+  VERBOSE
+  "> micro-os-plus::startup-initialise-free-store -> micro-os-plus-startup-initialise-free-store-interface"
+)
+
+# -----------------------------------------------------------------------------
+
+# https://cmake.org/cmake/help/v3.20/command/add_library.html?highlight=interface#interface-libraries
+# Visibility keywords: PRIVATE applies to the target itself; INTERFACE passes
+# properties up to targets that link against it; PUBLIC does both.
 add_library (micro-os-plus-startup-interface INTERFACE EXCLUDE_FROM_ALL)
 
 target_include_directories (micro-os-plus-startup-interface INTERFACE "include")
 
 target_sources (
-  micro-os-plus-startup-interface
-  INTERFACE "src/_start.cpp" "src/run-main.cpp" "src/initialise-args.cpp"
-            "src/initialise-free-store.cpp"
+  micro-os-plus-startup-interface INTERFACE "src/_start.cpp" "src/run-main.cpp"
+                                            "src/initialise-args.cpp"
 )
 
 target_link_libraries (
   micro-os-plus-startup-interface
-  INTERFACE "micro-os-plus::architecture" "micro-os-plus::diag-trace"
-            "micro-os-plus::semihosting" "micro-os-plus::startup-exit"
+  INTERFACE "micro-os-plus::architecture"
+            "micro-os-plus::diag-trace"
+            "micro-os-plus::semihosting"
+            "micro-os-plus::startup-exit"
             "micro-os-plus::startup-sbrk"
+            "micro-os-plus::startup-initialise-free-store"
 )
 
 if (COMMAND xpack_display_target_lists)

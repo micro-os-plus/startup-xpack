@@ -41,6 +41,19 @@ using namespace micro_os_plus;
 
 // ----------------------------------------------------------------------------
 
+#if defined(MICRO_OS_PLUS_STARTUP_CALL_REAL_MAIN_ENABLED)
+
+// When the `main()` function is wrapped, the user `main()` becomes
+// `__real_main()`.
+
+// Redefine `main` to `__real_main` that the startup will call the user
+// function.
+#define main __real_main
+
+#endif // defined(MICRO_OS_PLUS_STARTUP_CALL_REAL_MAIN_ENABLED)
+
+// ----------------------------------------------------------------------------
+
 extern uint32_t __heap_begin__;
 extern uint32_t __heap_end__;
 
@@ -212,6 +225,8 @@ micro_os_plus_startup_run_main (void)
   initialise_monitor_handles ();
 #endif // defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
 
+#if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_FREE_STORE_ENABLED)
+
   // Must be done before `micro_os_plus_run_init_array()`, in case
   // dynamic memory is needed in constructors.
   micro_os_plus_startup_initialise_free_store_hook (
@@ -219,9 +234,7 @@ micro_os_plus_startup_run_main (void)
                            (reinterpret_cast<char*> ((&__heap_end__))
                             - reinterpret_cast<char*> ((&__heap_begin__)))));
 
-  // micro_os_plus_startup_initialise_free_store_hook (
-  //     &end, static_cast<std::size_t> ((reinterpret_cast<char*> ((&__HeapLimit))
-  //                                      - reinterpret_cast<char*> ((&end)))));
+#endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_FREE_STORE_ENABLED)
 
   // Warning: `malloc()` may need `errno` which may depend on knowing
   // the current thread.
