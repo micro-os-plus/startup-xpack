@@ -51,7 +51,7 @@
         {
           "id": "call-real-main",
           "display": "Call real main",
-          "description": "When the main is wrapped, call the real main function",
+          "description": "When the main is wrapped, call the real main function, otherwise main will loop",
           // "defaultDefine": "MICRO_OS_PLUS_STARTUP_CALL_REAL_MAIN_ENABLED"
         }
       ],
