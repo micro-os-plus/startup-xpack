@@ -6,9 +6,17 @@ Please check
 [GitHub](https://github.com/micro-os-plus/startup-xpack/issues/)
 and close existing issues and pull requests.
 
+## 2026-09-16
+
+* v8.0.0
+* 501e97e xcdl-package.jsonc update description
+* f42e033 split sections.ld
+* 4ea0c02 fix MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_EARLY_ENABLED
+
 ## 2026-09-11
 
-* v7.2.0
+* 58efd23 7.2.0
+* e45ecbc prepare v7.2.0
 * b6b54a3 __real_main & separate initialise-free-store component
 
 ## 2026-09-10
