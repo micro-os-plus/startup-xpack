@@ -201,7 +201,7 @@ _start (void)
 {
   // --------------------------------------------------------------------------
 
-#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
+#if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_EARLY_ENABLED)
 
   // Initialize hardware right after reset, to switch clock to higher
   // frequency and have the rest of the initializations run faster.
@@ -220,7 +220,7 @@ _start (void)
       goto fail;
     }
 
-#endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
+#endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_EARLY_ENABLED)
 
   // --------------------------------------------------------------------------
 
@@ -335,9 +335,9 @@ _start (void)
 
   micro_os_plus_startup_run_main ();
 
-#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
+#if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_EARLY_ENABLED)
 fail:
-#endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
+#endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_EARLY_ENABLED)
 
   // Oops, should not get here.
 #if defined(MICRO_OS_PLUS_DEBUG_ENABLED)

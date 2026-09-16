@@ -65,7 +65,7 @@ extern "C"
   void
   micro_os_plus_startup_run_main (void);
 
-#if defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
+#if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_EARLY_ENABLED)
 
   /**
    * @brief Initialise hardware early hook.
@@ -76,7 +76,7 @@ extern "C"
   int
   micro_os_plus_startup_initialise_hardware_early_hook (void);
 
-#endif // defined(MICRO_OS_PLUS_INCLUDE_STARTUP_INITIALISE_HARDWARE_EARLY)
+#endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_EARLY_ENABLED)
 
 #if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
 
