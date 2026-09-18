@@ -78,20 +78,6 @@ exit (int code)
 
   // This should normally be the end of it.
   _Exit (code);
-
-  // Reset again, in case _Exit() did not kill it.
-  // This normally should not happen, but since it can be
-  // overloaded by the application, better safe than sorry.
-  micro_os_plus_startup_exit_terminate_hook (code);
-
-#if defined(MICRO_OS_PLUS_DEBUG_ENABLED)
-  micro_os_plus_architecture_brk ();
-#endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED)
-  // If it does not want to die, loop.
-  while (true)
-    {
-      micro_os_plus_architecture_wfi ();
-    }
   /* NOTREACHED */
 }
 
