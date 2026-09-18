@@ -192,11 +192,11 @@ micro_os_plus_startup_initialise_free_store_hook (void* heap_address,
 // A weak definition is provided here. The RTOS redefines it.
 // Called from _Exit().
 void
-micro_os_plus_terminate_goodbye (void);
+micro_os_plus_startup_exit_goodbye_hook (void);
 
 // Must be defined by the device package.
 void __attribute__ ((noreturn))
-micro_os_plus_terminate (int code);
+micro_os_plus_startup_exit_terminate_hook (int code);
 ```
 
 ### Build & integration info

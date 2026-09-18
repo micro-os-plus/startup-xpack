@@ -149,6 +149,17 @@ extern "C"
    */
 
   /**
+   * @brief Exit.
+   * @par Parameters
+   *  None.
+   * @par Returns
+   *  Nothing.
+   */
+  [[noreturn]]
+  void
+  micro_os_plus_startup_exit (int code);
+
+  /**
    * @brief Display statistics and say goodbye before terminating.
    * @par Parameters
    *  None.
@@ -156,7 +167,7 @@ extern "C"
    *  Nothing.
    */
   void
-  micro_os_plus_terminate_goodbye (void);
+  micro_os_plus_startup_exit_goodbye_hook (void);
 
   /**
    * @brief Terminate the application. There is no more life after this.
@@ -166,7 +177,7 @@ extern "C"
    */
   [[noreturn]]
   void
-  micro_os_plus_terminate (int code);
+  micro_os_plus_startup_exit_terminate_hook (int code);
 
   /**
    * @}

@@ -293,7 +293,7 @@ fail:
 // other statistics.
 [[gnu::weak]]
 void
-micro_os_plus_terminate_goodbye (void)
+micro_os_plus_startup_exit_goodbye_hook (void)
 {
   trace::puts ("\nHasta la vista!");
 }

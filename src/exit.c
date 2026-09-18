@@ -82,7 +82,7 @@ exit (int code)
   // Reset again, in case _Exit() did not kill it.
   // This normally should not happen, but since it can be
   // overloaded by the application, better safe than sorry.
-  micro_os_plus_terminate (code);
+  micro_os_plus_startup_exit_terminate_hook (code);
 
 #if defined(MICRO_OS_PLUS_DEBUG_ENABLED)
   micro_os_plus_architecture_brk ();
@@ -109,15 +109,14 @@ exit (int code)
 // It can be redefined by the application, if more functionality
 // is required. For example, when semihosting is used, this
 // function sends the return code to the host.
-
-[[noreturn, gnu::weak]]
+[[noreturn]]
 void
-_Exit (int code)
+micro_os_plus_startup_exit (int code)
 {
   micro_os_plus_trace_printf ("%s(%d)\n", __func__, code);
 
   // Print some statistics about memory use.
-  micro_os_plus_terminate_goodbye ();
+  micro_os_plus_startup_exit_goodbye_hook ();
 
   // Gracefully terminate the trace session.
   micro_os_plus_trace_flush ();
@@ -127,7 +126,7 @@ _Exit (int code)
 #endif // defined(MICRO_OS_PLUS_STARTUP_FINALISE_HARDWARE_ENABLED)
 
   // Reset hardware or terminate the semihosting session.
-  micro_os_plus_terminate (code);
+  micro_os_plus_startup_exit_terminate_hook (code);
 
 #if defined(MICRO_OS_PLUS_DEBUG_ENABLED)
   micro_os_plus_architecture_brk ();
@@ -136,6 +135,14 @@ _Exit (int code)
     {
       micro_os_plus_architecture_wfi ();
     }
+  /* NOTREACHED */
+}
+
+[[noreturn, gnu::weak]]
+void
+_Exit (int code)
+{
+  micro_os_plus_startup_exit (code);
   /* NOTREACHED */
 }
 
