@@ -6,7 +6,7 @@
 
 ## A source code library with the µOS++ portable startup code for bare-metal platforms
 
-This project provides the **startup** source library as an xPack
+This project provides the **startup** source library as an xpm package
 dependency and includes a portable startup code for bare-metal platforms.
 
 The myth that startup code must be written in assembly because
@@ -32,7 +32,7 @@ For maintainer info, please see the
 
 ## Install
 
-As a source library xPack, the easiest way to add it to a project is via
+As a source library xpm package, the easiest way to add it to a project is via
 **xpm**, but it can also be used as any Git project, for example as a submodule.
 
 ### Prerequisites
@@ -106,7 +106,7 @@ into `xpack`.
 
 ### Overview
 
-This source xPack provides the `_startup()` routine, as a replacement for
+This source code library provides the `_startup()` routine, as a replacement for
 the newlib code in crt0.o or GCC code in crtbegin.o.
 
 It is responsible for clearing the BSS, copying the DATA section,
