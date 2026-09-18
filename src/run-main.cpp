@@ -203,8 +203,6 @@ micro_os_plus_startup_run_main (void)
   micro_os_plus_architecture_show_cpuid ();
 #endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED) || defined(MICRO_OS_PLUS_DIAG_TRACE_ENABLED)
 
-  trace::puts ();
-
   int code = 0;
 
 #if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
@@ -217,6 +215,7 @@ micro_os_plus_startup_run_main (void)
       goto fail;
     }
 
+  trace::puts ();
   trace::puts ("Hardware initialized");
 
 #endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED
