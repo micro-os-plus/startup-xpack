@@ -62,7 +62,7 @@ micro_os_plus_startup_initialise_args_hook (int* p_argc, char*** p_argv)
   // argv[0][0] shall be the null character if the program name is not
   // available from the host environment. argv[argc] shall be a null pointer.
   // (static, no const)
-  static char* argv[2] = { name, NULL };
+  static char* argv[2] = { name, nullptr };
 
   *p_argc = 1;
   *p_argv = &argv[0];
