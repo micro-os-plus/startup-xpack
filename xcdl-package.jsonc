@@ -49,6 +49,12 @@
           // "defaultDefine": "MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED"
         },
         {
+          "id": "finalise-hardware",
+          "display": "Finalise hardware",
+          "description": "Call the custom hardware finalization",
+          // "defaultDefine": "MICRO_OS_PLUS_STARTUP_FINALISE_HARDWARE_ENABLED"
+        },
+        {
           "id": "call-real-main",
           "display": "Call real main",
           "description": "When the main is wrapped, call the real main function, otherwise main will loop",

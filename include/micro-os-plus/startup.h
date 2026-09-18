@@ -91,6 +91,20 @@ extern "C"
 
 #endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
 
+#if defined(MICRO_OS_PLUS_STARTUP_FINALISE_HARDWARE_ENABLED)
+
+  /**
+   * @brief Finalise hardware hook.
+   * @par Parameters
+   *  None.
+   * @par Returns
+   *  Nothing.
+   */
+  void
+  micro_os_plus_startup_finalise_hardware_hook (void);
+
+#endif // defined(MICRO_OS_PLUS_STARTUP_FINALISE_HARDWARE_ENABLED)
+
   /**
    * @brief Initialise the free store hook.
    * @param heap_address The first unallocated RAM address (after the BSS).
