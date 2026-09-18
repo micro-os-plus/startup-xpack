@@ -21,6 +21,7 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <stddef.h>
+#include <stdalign.h>
 
 // ----------------------------------------------------------------------------
 
@@ -58,11 +59,14 @@ _sbrk (ptrdiff_t incr)
 
   current_block_address = current_heap_end;
 
-  // Need to align heap to word boundary, for efficiency reasons and
-  // to possibly avoid hardware faults.
-  // So we assume that the heap starts on word boundary,
-  // hence make sure we always add a multiple of 4 to it.
-  incr = (incr + 3) & (~3); // align value to 4
+  // Need to align heap to the strictest fundamental alignment, for
+  // efficiency reasons and to possibly avoid hardware faults.
+  // So we assume that the heap starts properly aligned,
+  // hence make sure we always add a multiple of that alignment to it.
+#define STARTUP_SBRK_ALIGN_ ((ptrdiff_t)alignof (max_align_t))
+  incr = (incr + (STARTUP_SBRK_ALIGN_ - 1)) & ~(STARTUP_SBRK_ALIGN_ - 1);
+#undef STARTUP_SBRK_ALIGN_
+
   if ((current_heap_end + incr > (char*)&__heap_end__)
 #if defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
       // Honour heap limit if it's valid.
