@@ -68,6 +68,9 @@ _sbrk (ptrdiff_t incr)
 #undef STARTUP_SBRK_ALIGN_
 
   if ((current_heap_end + incr > (char*)&__heap_end__)
+      // Also reject a negative `incr` that would move the break below
+      // the start of the heap.
+      || (current_heap_end + incr < (char*)&__heap_begin__)
 #if defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
       // Honour heap limit if it's valid.
       || (__heap_limit != (char*)0xCAFEDEAD
