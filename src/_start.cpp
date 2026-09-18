@@ -88,12 +88,12 @@ extern std::uintptr_t __bss_end__;
 // arrays". These arrays are created by the linker via the managed linker
 // script of each RW data mechanism. It contains the load address, execution
 // address and length section and the execution and length of each BSS (zero
-// initialized) section.
-extern uint32_t __data_regions_array_begin__;
-extern uint32_t __data_regions_array_end__;
+// initialised) section.
+extern std::uint32_t __data_regions_array_begin__;
+extern std::uint32_t __data_regions_array_end__;
 
-extern uint32_t __bss_regions_array_begin__;
-extern uint32_t __bss_regions_array_end__;
+extern std::uint32_t __bss_regions_array_begin__;
+extern std::uint32_t __bss_regions_array_end__;
 
 #endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_MULTIPLE_RAM_SECTIONS_ENABLED)
 
@@ -166,18 +166,20 @@ micro_os_plus_startup_initialise_bss (std::uintptr_t* region_begin,
 
 #define BSS_GUARD_BAD_VALUE (0xCADEBABA)
 
-static uint32_t volatile __bss_begin_guard [[gnu::section (".bss_begin")]];
+static std::uint32_t volatile __bss_begin_guard
+    [[gnu::section (".bss_begin")]];
 
-static uint32_t volatile __bss_end_guard [[gnu::section (".bss_end")]];
+static std::uint32_t volatile __bss_end_guard [[gnu::section (".bss_end")]];
 
 #define DATA_GUARD_BAD_VALUE (0xCADEBABA)
 #define DATA_BEGIN_GUARD_VALUE (0x12345678)
 #define DATA_END_GUARD_VALUE (0x98765432)
 
-static uint32_t volatile __data_begin_guard [[gnu::section (".data_begin")]]
-= DATA_BEGIN_GUARD_VALUE; // 305419896
+static std::uint32_t volatile __data_begin_guard
+    [[gnu::section (".data_begin")]]
+    = DATA_BEGIN_GUARD_VALUE; // 305419896
 
-static uint32_t volatile __data_end_guard [[gnu::section (".data_end")]]
+static std::uint32_t volatile __data_end_guard [[gnu::section (".data_end")]]
 = DATA_END_GUARD_VALUE; // 2557891634
 
 #endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED) &&
@@ -252,12 +254,14 @@ _start (void)
 #else
 
       // Copy all DATA sections from flash to RAM.
-      for (uint32_t* p = &__data_regions_array_begin__;
+      for (std::uint32_t* p = &__data_regions_array_begin__;
            p < &__data_regions_array_end__;)
         {
-          uint32_t* from = (uint32_t*)(*p++);
-          uint32_t* region_begin = (uint32_t*)(*p++);
-          uint32_t* region_end = (uint32_t*)(*p++);
+          std::uintptr_t* from = reinterpret_cast<std::uintptr_t*> (*p++);
+          std::uintptr_t* region_begin
+              = reinterpret_cast<std::uintptr_t*> (*p++);
+          std::uintptr_t* region_end
+              = reinterpret_cast<std::uintptr_t*> (*p++);
 
           micro_os_plus_startup_initialise_data (from, region_begin,
                                                  region_end);
@@ -304,11 +308,11 @@ _start (void)
   // Note: the linker script uses LONG() and generates 32-bits pointers.
   // This is not a problem if RAM is in the first 4 GB part, but for
   // 64-bits devices it might not be true and requires QUAD().
-  for (uint32_t* p = &__bss_regions_array_begin__;
+  for (std::uint32_t* p = &__bss_regions_array_begin__;
        p < &__bss_regions_array_end__;)
     {
-      uint32_t* region_begin = (uint32_t*)(*p++);
-      uint32_t* region_end = (uint32_t*)(*p++);
+      std::uintptr_t* region_begin = reinterpret_cast<std::uintptr_t*> (*p++);
+      std::uintptr_t* region_end = reinterpret_cast<std::uintptr_t*> (*p++);
 
       micro_os_plus_startup_initialise_bss (region_begin, region_end);
     }
