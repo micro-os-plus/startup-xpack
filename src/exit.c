@@ -99,8 +99,6 @@ exit (int code)
 void
 micro_os_plus_startup_exit (int code)
 {
-  micro_os_plus_trace_printf ("%s(%d)\n", __func__, code);
-
   // Print some statistics about memory use.
   micro_os_plus_startup_exit_goodbye_hook ();
 
@@ -128,6 +126,8 @@ micro_os_plus_startup_exit (int code)
 void
 _Exit (int code)
 {
+  micro_os_plus_trace_printf ("%s(%d)\n", __func__, code);
+
   micro_os_plus_startup_exit (code);
   /* NOTREACHED */
 }
