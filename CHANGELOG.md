@@ -6,9 +6,15 @@ Please check
 [GitHub](https://github.com/micro-os-plus/startup-xpack/issues/)
 and close existing issues and pull requests.
 
+## 2026-09-18
+
+* v8.1.0
+* edacc7f add micro_os_plus_startup_finalise_hardware_hook()
+
 ## 2026-09-16
 
-* v8.0.0
+* 48d8844 8.0.0
+* 211ff6c prepare v8.0.0
 * 501e97e xcdl-package.jsonc update description
 * f42e033 split sections.ld
 * 4ea0c02 fix MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_EARLY_ENABLED
