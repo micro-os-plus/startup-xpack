@@ -38,20 +38,27 @@
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #endif // defined(__GNUC__)
 
-// This is the standard default implementation for the routine to
-// process arguments. It returns a single empty arg.
-//
-// For semihosting applications, this is redefined to get the real
-// arguments from the debugger.
-//
-// The application can redefine it to fetch some arguments from a
-// non-volatile memory.
-
+/**
+ * @brief Initialise arguments hook.
+ * @param [out] p_argc Pointer to argc.
+ * @param [out] p_argv Pointer to argv.
+ * @par Returns
+ *  Nothing.
+ *
+ * @details
+ * This is the standard default implementation for the routine to
+ * process arguments. It returns a single, empty argument (the program
+ * name).
+ *
+ * For semihosting applications, this is redefined to get the real
+ * arguments from the debugger. The application can also redefine it
+ * to fetch some arguments from non-volatile memory.
+ */
 [[gnu::weak]]
 void
 micro_os_plus_startup_initialise_args_hook (int* p_argc, char*** p_argv)
 {
-  // By the time we reach this, the data and bss should have been initialized.
+  // By the time we reach this, the data and bss should have been initialised.
 
   // The strings pointed to by the argv array shall be modifiable by the
   // program, and retain their last-stored values between program startup

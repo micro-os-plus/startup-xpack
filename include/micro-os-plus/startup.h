@@ -111,6 +111,18 @@ extern "C"
    * @param heap_size_bytes The free store size.
    * @par Returns
    *  Nothing.
+   *
+   * @details
+   * The default (weak) implementation only traces the heap region; it
+   * does not reserve or allocate anything.
+   *
+   * If overridden to install a custom allocator over
+   * `[heap_address, heap_address + heap_size_bytes)`, note that this
+   * region is the same one `_sbrk()` (`src/_sbrk.c`, in the separate
+   * `sbrk` component) independently grows a heap over, via the
+   * `__heap_begin__`/`__heap_end__` linker symbols, to back newlib's
+   * `malloc()`/`new`. The two are not coordinated; do not enable both
+   * over the same region unless that overlap is intended.
    */
   void
   micro_os_plus_startup_initialise_free_store_hook (void* heap_address,
@@ -135,6 +147,8 @@ extern "C"
    * @brief Initialise arguments hook.
    * @param [out] p_argc Pointer to argc.
    * @param [out] p_argv Pointer to argv.
+   * @par Returns
+   *  Nothing.
    */
   void
   micro_os_plus_startup_initialise_args_hook (int* p_argc, char*** p_argv);
@@ -175,7 +189,6 @@ extern "C"
    * @par Returns
    *  Nothing.
    */
-  [[noreturn]]
   void
   micro_os_plus_startup_exit_terminate_hook (int code);
 

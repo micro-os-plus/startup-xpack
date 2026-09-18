@@ -22,6 +22,7 @@
 #include <errno.h>
 #include <stddef.h>
 #include <stdalign.h>
+#include <stdint.h>
 
 // ----------------------------------------------------------------------------
 
@@ -37,6 +38,13 @@ _sbrk (ptrdiff_t incr);
 
 // The definitions used here should be kept in sync with the
 // stack definitions in the linker script.
+//
+// Note: this grows a heap over [__heap_begin__, __heap_end__) to back
+// newlib's malloc()/new. This is independent of, and not coordinated
+// with, micro_os_plus_startup_initialise_free_store_hook() (see
+// startup.h), which some applications override to install a custom
+// allocator over the same region. Do not enable both over the same
+// region unless that overlap is intended.
 
 extern uint32_t __heap_begin__; // Defined by the linker script.
 extern uint32_t __heap_end__; // Defined by the linker script.
@@ -46,6 +54,24 @@ extern uint32_t __heap_end__; // Defined by the linker script.
 char* __heap_limit = (char*)0xCAFEDEAD;
 #endif // defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
 
+/**
+ * @brief Extend or shrink the heap (newlib `sbrk()` syscall stub).
+ * @param [in] incr Number of bytes to add to the current heap break;
+ *  may be negative to shrink it.
+ * @return A pointer to the start of the newly allocated block, or
+ *  `(caddr_t) -1` with `errno` set to `ENOMEM` if the request cannot
+ *  be satisfied.
+ *
+ * @details
+ * Rounds `incr` up to a multiple of `alignof(max_align_t)`, then
+ * grows or shrinks a heap tracked in a function-local `static`
+ * pointer, seeded from `__heap_begin__` on first call and bounded by
+ * `__heap_end__` (and, when semihosting is enabled, by `__heap_limit`
+ * if it has been set to a valid value). Backs newlib's `malloc()`/
+ * `new`; see the note above for its relationship with
+ * `micro_os_plus_startup_initialise_free_store_hook()`.
+ */
+[[gnu::weak]]
 void*
 _sbrk (ptrdiff_t incr)
 {
@@ -63,6 +89,8 @@ _sbrk (ptrdiff_t incr)
   // efficiency reasons and to possibly avoid hardware faults.
   // So we assume that the heap starts properly aligned,
   // hence make sure we always add a multiple of that alignment to it.
+  // `incr` is trusted, as passed in by the C library allocator, not to
+  // overflow `ptrdiff_t` once rounded up.
 #define STARTUP_SBRK_ALIGN_ ((ptrdiff_t)alignof (max_align_t))
   incr = (incr + (STARTUP_SBRK_ALIGN_ - 1)) & ~(STARTUP_SBRK_ALIGN_ - 1);
 #undef STARTUP_SBRK_ALIGN_
@@ -90,7 +118,8 @@ _sbrk (ptrdiff_t incr)
   return (caddr_t)current_block_address;
 }
 
-#endif // defined(MICRO_OS_PLUS_STARTUP_ENABLED) && defined(MICRO_OS_PLUS_STARTUP_SBRK_ENABLED)
+#endif /* defined(MICRO_OS_PLUS_STARTUP_ENABLED)
+           && defined(MICRO_OS_PLUS_STARTUP_SBRK_ENABLED) */
 
 // ----------------------------------------------------------------------------
 

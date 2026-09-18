@@ -20,6 +20,7 @@
 #include "micro-os-plus/startup.h"
 #include "micro-os-plus/semihosting.h"
 
+#include <cstdint>
 #include <cstdlib>
 #include <algorithm>
 
@@ -54,15 +55,15 @@ using namespace micro_os_plus;
 
 // ----------------------------------------------------------------------------
 
-extern uint32_t __heap_begin__;
-extern uint32_t __heap_end__;
+extern std::uint32_t __heap_begin__;
+extern std::uint32_t __heap_end__;
 
 // extern uint32_t __heap_begin__;
 // extern uint32_t __HeapLimit;
 // extern uint32_t end;
 // extern uint32_t __HeapLimit;
 
-typedef void (*function_ptr_t) (void);
+using function_ptr_t = void (*) (void);
 
 // These magic symbols are provided by the linker. newlib standard.
 extern function_ptr_t __preinit_array_start [[gnu::weak]][];
@@ -74,19 +75,49 @@ extern function_ptr_t __init_array_end [[gnu::weak]][];
 extern function_ptr_t __fini_array_start [[gnu::weak]][];
 extern function_ptr_t __fini_array_end [[gnu::weak]][];
 
+// Note: Strictly speaking, according to the recent C/C++ standards,
+// using symbols defined in the linker scripts rely on undefined
+// behaviour, since comparing pointers that do not point to elements
+// of the same area or members of the same object is undefined.
+// The danger is that compilers that perform very aggressive
+// optimisations may completely remove such code.
+// If this happens, the workaround is to disable the specific
+// optimisation that caused it, or reduce the optimisation level
+// for this file only.
+
 extern "C"
 {
   static void
-  micro_os_plus_run_init_array (void);
+  micro_os_plus_run_init_array (void) noexcept;
 
   // Not static since it is called from exit()
   void
-  micro_os_plus_run_fini_array (void);
+  micro_os_plus_run_fini_array (void) noexcept;
 
-  // Specific to newlib libgloss.
+  /**
+   * @brief Initialise the semihosting monitor file handles.
+   * @par Parameters
+   *  None.
+   * @par Returns
+   *  Nothing.
+   *
+   * @details
+   * Specific to newlib libgloss; provided by the semihosting library,
+   * not defined in this package.
+   */
   void
   initialise_monitor_handles (void);
 
+  /**
+   * @brief The application entry point.
+   * @param [in] argc Number of command line arguments.
+   * @param [in] argv Array of pointers to the command line argument
+   *  strings; `argv[argc]` is a null pointer.
+   * @return The exit code, passed on to `exit()`.
+   *
+   * @details
+   * Implemented by the application; not defined in this package.
+   */
   int
   main (int argc, char* argv[]);
 }
@@ -97,10 +128,21 @@ extern "C"
 #pragma GCC diagnostic ignored "-Waggregate-return"
 #endif // defined(__GNUC__)
 
-// Iterate over all the preinit/init routines (mainly static constructors).
+/**
+ * @brief Run the preinit/init array.
+ * @par Parameters
+ *  None.
+ * @par Returns
+ *  Nothing.
+ *
+ * @details
+ * Iterates over the preinit array, then the init array (mainly C++
+ * static constructors), and calls each entry in order. Each array is
+ * skipped entirely if empty (start and end coincide).
+ */
 [[gnu::always_inline]]
 inline void
-micro_os_plus_run_init_array (void)
+micro_os_plus_run_init_array (void) noexcept
 {
   trace::printf ("%s()\n", __func__);
 
@@ -124,9 +166,20 @@ micro_os_plus_run_init_array (void)
     }
 }
 
-// Run all the cleanup routines (mainly the static destructors).
+/**
+ * @brief Run the fini array.
+ * @par Parameters
+ *  None.
+ * @par Returns
+ *  Nothing.
+ *
+ * @details
+ * Iterates over the fini array (mainly C++ static destructors) and
+ * calls each entry in order. Skipped entirely if empty. Not `static`,
+ * since it is also called from `exit()` (`exit.c`).
+ */
 void
-micro_os_plus_run_fini_array (void)
+micro_os_plus_run_fini_array (void) noexcept
 {
   trace::printf ("%s()\n", __func__);
 
@@ -147,6 +200,18 @@ micro_os_plus_run_fini_array (void)
 #pragma GCC diagnostic pop
 #endif // defined(__GNUC__)
 
+/**
+ * @brief Initialise and run `main()`.
+ * @par Parameters
+ *  None.
+ * @par Returns
+ *  Nothing.
+ *
+ * @details
+ * Initialises tracing, runs the preinit/init arrays (C++ static
+ * constructors), fetches `argc`/`argv`, calls `main()`, and finally
+ * calls `exit()` with the value `main()` returned. Never returns.
+ */
 [[noreturn, gnu::weak]]
 void
 micro_os_plus_startup_run_main (void)
@@ -167,7 +232,7 @@ micro_os_plus_startup_run_main (void)
                "version " MICRO_OS_PLUS_QUICK_VERSION_STRING);
   trace::puts ("Copyright (c) 2007-" MICRO_OS_PLUS_QUICK_YEAR_INTEGER
                " Liviu Ionescu");
-#endif
+#endif // defined(MICRO_OS_PLUS_VERSION_ENABLED)
 
 #if defined(__clang__)
   trace::printf ("Built with clang " __VERSION__);
@@ -175,7 +240,7 @@ micro_os_plus_startup_run_main (void)
   trace::printf ("Built with GCC " __VERSION__);
 #else
 #error "Built with an unknown compiler"
-#endif
+#endif // defined(__clang__)
 #if !(defined(__APPLE__) || defined(__linux__) || defined(__unix__) \
       || defined(WIN32))
 // This is relevant only on bare-metal.
@@ -183,13 +248,13 @@ micro_os_plus_startup_run_main (void)
   trace::printf (", with FP");
 #else
   trace::printf (", no FP");
-#endif
-#endif
+#endif // defined(__ARM_PCS_VFP) || defined(__ARM_FP)
+#endif // !Unix
 #if defined(__EXCEPTIONS)
   trace::printf (", with exceptions");
 #else
   trace::printf (", no exceptions");
-#endif
+#endif // defined(__EXCEPTIONS)
 #if defined(MICRO_OS_PLUS_DEBUG_ENABLED)
   trace::printf (", with MICRO_OS_PLUS_DEBUG_ENABLED");
 #endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED)
@@ -201,13 +266,14 @@ micro_os_plus_startup_run_main (void)
 #if defined(MICRO_OS_PLUS_DEBUG_ENABLED) \
     || defined(MICRO_OS_PLUS_DIAG_TRACE_ENABLED)
   micro_os_plus_architecture_show_cpuid ();
-#endif // defined(MICRO_OS_PLUS_DEBUG_ENABLED) || defined(MICRO_OS_PLUS_DIAG_TRACE_ENABLED)
+#endif /* defined(MICRO_OS_PLUS_DEBUG_ENABLED)
+           || defined(MICRO_OS_PLUS_DIAG_TRACE_ENABLED) */
 
   int code = 0;
 
 #if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
 
-  // Hook to continue the initializations. Usually compute and store the
+  // Hook to continue the initialisations. Usually compute and store the
   // clock frequency in a global variable, cleared above.
   code = micro_os_plus_startup_initialise_hardware_hook ();
   if (code != 0)
@@ -216,9 +282,9 @@ micro_os_plus_startup_run_main (void)
     }
 
   trace::puts ();
-  trace::puts ("Hardware initialized");
+  trace::puts ("Hardware initialised");
 
-#endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED
+#endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
 
 #if defined(MICRO_OS_PLUS_SEMIHOSTING_ENABLED)
   initialise_monitor_handles ();
@@ -238,7 +304,7 @@ micro_os_plus_startup_run_main (void)
   // Warning: `malloc()` may need `errno` which may depend on knowing
   // the current thread.
 
-  // Call the standard library initialization (mandatory for C++ to
+  // Call the standard library initialisation (mandatory for C++ to
   // execute the static objects constructors).
   micro_os_plus_run_init_array ();
 
@@ -289,8 +355,19 @@ fail:
 
 // ----------------------------------------------------------------------------
 
-// The RTOS redefines this function to display memory allocator reports or
-// other statistics.
+/**
+ * @brief Display statistics and say goodbye before terminating.
+ * @par Parameters
+ *  None.
+ * @par Returns
+ *  Nothing.
+ *
+ * @details
+ * The default (weak) implementation only prints a farewell message.
+ * An RTOS or application may redefine this function to display memory
+ * allocator reports or other statistics before the application
+ * terminates.
+ */
 [[gnu::weak]]
 void
 micro_os_plus_startup_exit_goodbye_hook (void)

@@ -38,6 +38,17 @@ __call_exitprocs (int, void*);
 
 // ----------------------------------------------------------------------------
 
+/**
+ * @brief Abort the application.
+ * @par Parameters
+ *  None.
+ * @par Returns
+ *  Nothing.
+ *
+ * @details
+ * Traces a message, then terminates via `_Exit(1)`, skipping the
+ * `atexit()` handlers and static destructors that `exit()` runs.
+ */
 [[noreturn, gnu::weak]]
 void
 abort (void)
@@ -51,6 +62,11 @@ abort (void)
 // ----------------------------------------------------------------------------
 
 /**
+ * @brief Terminate the application, after cleaning up.
+ * @param [in] code Exit code, passed on to `_Exit()`.
+ * @par Returns
+ *  Nothing.
+ *
  * @details
  * `exit()` does several cleanups before ending the application:
  *
@@ -89,12 +105,22 @@ exit (int code)
 #pragma GCC diagnostic ignored "-Wmissing-attributes"
 #endif // defined(__GNUC__)
 
-// On Release, call the hardware reset procedure.
-// On Debug, use a breakpoint to notify the debugger.
-//
-// It can be redefined by the application, if more functionality
-// is required. For example, when semihosting is used, this
-// function sends the return code to the host.
+/**
+ * @brief Exit.
+ * @param [in] code Exit code, 0 for success, non 0 for failure.
+ * @par Returns
+ *  Nothing.
+ *
+ * @details
+ * On Release, calls the hardware reset procedure; on Debug, uses a
+ * breakpoint to notify the debugger.
+ *
+ * The default (weak) implementation of
+ * `micro_os_plus_startup_exit_terminate_hook()` performs the actual
+ * reset/breakpoint; it can be redefined by the application if more
+ * functionality is required, for example, when semihosting is used,
+ * to send the return code to the host.
+ */
 [[noreturn]]
 void
 micro_os_plus_startup_exit (int code)
@@ -122,6 +148,16 @@ micro_os_plus_startup_exit (int code)
   /* NOTREACHED */
 }
 
+/**
+ * @brief Terminate the application without cleaning up.
+ * @param [in] code Exit code, passed on to `micro_os_plus_startup_exit()`.
+ * @par Returns
+ *  Nothing.
+ *
+ * @details
+ * Unlike `exit()`, does not run `atexit()` handlers or static
+ * destructors; goes straight to `micro_os_plus_startup_exit()`.
+ */
 [[noreturn, gnu::weak]]
 void
 _Exit (int code)
@@ -132,6 +168,15 @@ _Exit (int code)
   /* NOTREACHED */
 }
 
+/**
+ * @brief POSIX alias for `_Exit()`.
+ * @param [in] status Exit code, passed on to `_Exit()`.
+ * @par Returns
+ *  Nothing.
+ *
+ * @details
+ * A `gnu::alias` to `_Exit()`; declaration only, no separate body.
+ */
 [[noreturn, gnu::weak, gnu::alias ("_Exit")]]
 void
 _exit (int status);
@@ -140,7 +185,8 @@ _exit (int status);
 #pragma GCC diagnostic pop
 #endif // defined(__GNUC__)
 
-#endif // defined(MICRO_OS_PLUS_STARTUP_ENABLED) && defined(MICRO_OS_PLUS_STARTUP_EXIT_ENABLED)
+#endif /* defined(MICRO_OS_PLUS_STARTUP_ENABLED)
+           && defined(MICRO_OS_PLUS_STARTUP_EXIT_ENABLED) */
 
 // ----------------------------------------------------------------------------
 

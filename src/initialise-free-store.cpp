@@ -48,7 +48,19 @@ using namespace micro_os_plus;
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #endif // defined(__GNUC__)
 
-// Redefine this function to initialise the free store.
+/**
+ * @brief Initialise the free store hook.
+ * @param heap_address The first unallocated RAM address (after the BSS).
+ * @param heap_size_bytes The free store size.
+ * @par Returns
+ *  Nothing.
+ *
+ * @details
+ * The default (weak) implementation only traces the heap region; it
+ * does not reserve or allocate anything. Redefine this function to
+ * install a custom allocator; see `startup.h` for the relationship
+ * with `_sbrk()`'s own, independent heap tracking.
+ */
 [[gnu::weak]]
 void
 micro_os_plus_startup_initialise_free_store_hook (void* heap_address,
@@ -65,7 +77,8 @@ micro_os_plus_startup_initialise_free_store_hook (void* heap_address,
 
 // ----------------------------------------------------------------------------
 
-#endif // defined(MICRO_OS_PLUS_STARTUP_ENABLED) && defined(MICRO_OS_PLUS_STARTUP_INITIALISE_FREE_STORE_ENABLED)
+#endif /* defined(MICRO_OS_PLUS_STARTUP_ENABLED)
+           && defined(MICRO_OS_PLUS_STARTUP_INITIALISE_FREE_STORE_ENABLED) */
 
 // ----------------------------------------------------------------------------
 
