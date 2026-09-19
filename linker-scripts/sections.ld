@@ -189,6 +189,21 @@ SECTIONS
   } >FLASH
 
   /*
+   * The post init code, i.e. an array of pointers to static constructors,
+   * to be executed after the usual constructors.
+   */
+  .postinit_array : ALIGN(4)
+  {
+    /* PROVIDE not used intentionally, this symbol must not be used */
+    __postinit_array_start = .;        /* Used by µOS++ startup */
+
+    KEEP(*(SORT_BY_INIT_PRIORITY(.postinit_array.*)))
+    KEEP(*(.postinit_array EXCLUDE_FILE(*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .ctors))
+
+    __postinit_array_end = .;          /* Used by µOS++ startup */
+  } >FLASH
+
+  /*
    * The fini code, i.e. an array of pointers to static destructors.
    */
   .fini_array : ALIGN(4)

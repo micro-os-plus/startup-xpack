@@ -72,6 +72,9 @@ extern function_ptr_t __preinit_array_end [[gnu::weak]][];
 extern function_ptr_t __init_array_start [[gnu::weak]][];
 extern function_ptr_t __init_array_end [[gnu::weak]][];
 
+extern function_ptr_t __postinit_array_start [[gnu::weak]][];
+extern function_ptr_t __postinit_array_end [[gnu::weak]][];
+
 extern function_ptr_t __fini_array_start [[gnu::weak]][];
 extern function_ptr_t __fini_array_end [[gnu::weak]][];
 
@@ -161,6 +164,13 @@ micro_os_plus_run_init_array (void) noexcept
   if (&__init_array_start != &__init_array_end)
     {
       std::for_each (__init_array_start, __init_array_end,
+                     [] (const function_ptr_t pf) { pf (); } //
+      );
+    }
+
+  if (&__postinit_array_start != &__postinit_array_end)
+    {
+      std::for_each (__postinit_array_start, __postinit_array_end,
                      [] (const function_ptr_t pf) { pf (); } //
       );
     }
