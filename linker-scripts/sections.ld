@@ -155,18 +155,21 @@ SECTIONS
     /*
      * Used to run the system inits before anything else.
      */
-    KEEP(*(.preinit_array_sysinit .preinit_array_sysinit.*))
+    KEEP(*(SORT_BY_INIT_PRIORITY(.preinit_array_sysinit.*)))
+    KEEP(*(.preinit_array_sysinit))
 
     /*
      * Used for other platform inits.
      */
-    KEEP(*(.preinit_array_platform .preinit_array_platform.*))
+    KEEP(*(SORT_BY_INIT_PRIORITY(.preinit_array_platform.*)))
+    KEEP(*(.preinit_array_platform))
 
     /*
      * The application inits. If you need to enforce some order in
      * execution, create new sections, as before.
      */
-    KEEP(*(.preinit_array .preinit_array.*))
+    KEEP(*(SORT_BY_INIT_PRIORITY(.preinit_array.*)))
+    KEEP(*(.preinit_array))
 
     __preinit_array_end = .;     /* Used by crt0.S */
   } >FLASH
