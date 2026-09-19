@@ -318,6 +318,18 @@ micro_os_plus_startup_run_main (void)
   // execute the static objects constructors).
   micro_os_plus_run_init_array ();
 
+#if defined(MICRO_OS_PLUS_STARTUP_POST_INIT_ARRAY_ENABLED)
+
+  // Hook to continue the initialisations. Usually compute and store the
+  // clock frequency in a global variable, cleared above.
+  code = micro_os_plus_startup_post_init_array_hook ();
+  if (code != 0)
+    {
+      goto fail;
+    }
+
+#endif // defined(MICRO_OS_PLUS_STARTUP_POST_INIT_ARRAY_ENABLED)
+
   // Get the argc/argv (useful in semihosting configurations).
 
   // The application can redefine this function to fetch some arguments
@@ -344,9 +356,11 @@ micro_os_plus_startup_run_main (void)
 #pragma GCC diagnostic pop
 #endif // defined(__GNUC__)
 
-#if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
+#if defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED) \
+    || defined(MICRO_OS_PLUS_STARTUP_POST_INIT_ARRAY_ENABLED)
 fail:
-#endif // defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED)
+#endif /* defined(MICRO_OS_PLUS_STARTUP_INITIALISE_HARDWARE_ENABLED) 
+       || defined(MICRO_OS_PLUS_STARTUP_POST_INIT_ARRAY_ENABLED) */
 
   // Standard program termination;
   // `atexit()` and C++ static destructors are executed.

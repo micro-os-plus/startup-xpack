@@ -55,6 +55,12 @@
           // "defaultDefine": "MICRO_OS_PLUS_STARTUP_FINALISE_HARDWARE_ENABLED"
         },
         {
+          "id": "post-init-array",
+          "display": "Post init array",
+          "description": "Call the custom post init array hook",
+          // "defaultDefine": "MICRO_OS_PLUS_STARTUP_POST_INIT_ARRAY_ENABLED"
+        },
+        {
           "id": "call-real-main",
           "display": "Call real main",
           "description": "When the main is wrapped, call the real main function, otherwise main will loop",

@@ -105,6 +105,19 @@ extern "C"
 
 #endif // defined(MICRO_OS_PLUS_STARTUP_FINALISE_HARDWARE_ENABLED)
 
+#if defined(MICRO_OS_PLUS_STARTUP_POST_INIT_ARRAY_ENABLED)
+
+  /**
+   * @brief Post init array hook.
+   * @par Parameters
+   *  None.
+   * @returns 0 for success, non 0 for failure.
+   */
+  int
+  micro_os_plus_startup_post_init_array_hook (void);
+
+#endif // defined(MICRO_OS_PLUS_STARTUP_POST_INIT_ARRAY_ENABLED)
+
   /**
    * @brief Initialise the free store hook.
    * @param heap_address The first unallocated RAM address (after the BSS).
