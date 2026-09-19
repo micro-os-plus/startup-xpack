@@ -6,9 +6,28 @@ Please check
 [GitHub](https://github.com/micro-os-plus/startup-xpack/issues/)
 and close existing issues and pull requests.
 
+## 2026-09-19
+
+* v9.0.0
+* 96a7a6d _sbrk.c: harden the test on incr
+* 5eb21d4 cleanup
+* af097bb .npmignore CLAUDE.md
+* c25d8d3 doxygen & cosmetics as per code review
+* b086626 _start.cpp use std::uint32_t std::uintptr_t
+* 8e7c5e6 initialise-args use nullptr
+* 1340840 exit.c move trace::printf to _Exit
+* a3c5c6f exit.c remove fallback
+* bba0505 _sbrk.c check < __heap_begin__
+
 ## 2026-09-18
 
-* v8.1.0
+* 7b49be4 add CLAUDE.md
+* 8aa12b9 README update
+* 797c0ea rework exit hooks
+* 2b5de69 _sbrk.c: use stdalign.h
+* e95b3ac run-main.cpp move empty line before hardware inits
+* 991e7dc 8.1.0
+* d0cf774 prepare v8.1.0
 * edacc7f add micro_os_plus_startup_finalise_hardware_hook()
 
 ## 2026-09-16

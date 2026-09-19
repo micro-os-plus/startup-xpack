@@ -51,18 +51,7 @@ For details please follow the instructions in the
 
 ### xpm
 
-Note: the package will be available from npmjs.com at a later date.
-
-For now, it can be installed from GitHub:
-
-```sh
-cd my-project
-xpm init # Unless a package.json is already present
-
-xpm install github:micro-os-plus/startup-xpack
-```
-
-When ready, this package will be available as
+This package is available as
 [`@micro-os-plus/startup`](https://www.npmjs.com/package/@micro-os-plus/startup)
 from the `npmjs.com` registry:
 
@@ -322,6 +311,11 @@ According to [semver](https://semver.org) rules:
 The incompatible changes, in reverse chronological order,
 are:
 
+- v9.x: add `micro_os_plus_startup_exit()` and exit hooks
+- v8.x: split `sections.ld` with separate `section-interrupt-vectors.ld`
+- v7.x: add sections.ld here and rename startup hooks that return values
+- v6.x: prefer `project-config.h`, split `micro_os_plus_startup_run_main()`
+- v5.x: rework guard macros
 - v4.x: use newlib linker script definitions
 - v3.x: rename MICRO_OS_PLUS_DEBUG
 - v2.x: rename namespaces, use `MICRO_OS_PLUS_` prefix
