@@ -89,9 +89,14 @@ _sbrk (ptrdiff_t incr)
   // efficiency reasons and to possibly avoid hardware faults.
   // So we assume that the heap starts properly aligned,
   // hence make sure we always add a multiple of that alignment to it.
-  // `incr` is trusted, as passed in by the C library allocator, not to
-  // overflow `ptrdiff_t` once rounded up.
 #define STARTUP_SBRK_ALIGN_ ((ptrdiff_t)alignof (max_align_t))
+  if (incr > PTRDIFF_MAX - (STARTUP_SBRK_ALIGN_ - 1))
+    {
+      // Reject an `incr` that would overflow `ptrdiff_t` once rounded
+      // up for alignment, rather than relying on it never happening.
+      errno = ENOMEM;
+      return (caddr_t)-1;
+    }
   incr = (incr + (STARTUP_SBRK_ALIGN_ - 1)) & ~(STARTUP_SBRK_ALIGN_ - 1);
 #undef STARTUP_SBRK_ALIGN_
 
