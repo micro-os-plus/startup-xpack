@@ -8,7 +8,12 @@ and close existing issues and pull requests.
 
 ## 2026-09-19
 
-* v9.0.0
+* v9.1.0
+* 2e26c43 add micro_os_plus_startup_post_init_array_hook
+* d67efa6 add postinit section
+* d465673 sections.ld: sort preinit entries
+* eaee2bc 9.0.0
+* a1c8192 prepare v9.0.0
 * 96a7a6d _sbrk.c: harden the test on incr
 * 5eb21d4 cleanup
 * af097bb .npmignore CLAUDE.md
